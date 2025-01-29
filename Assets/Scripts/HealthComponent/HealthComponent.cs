@@ -1,4 +1,6 @@
+using System;
 using Unity.Netcode;
+using UnityEngine;
 using UnityEngine.Events;
 
 public class HealthComponent : NetworkBehaviour
@@ -8,17 +10,25 @@ public class HealthComponent : NetworkBehaviour
 
     public NetworkVariable<int> Armor;
     public int MaxArmor;
-    
-    UnityEvent OnDeath;
 
-    private void OnDeathServerRpc()
+    public UnityEvent<GameObject> OnDeath;
+
+    private void Update()
     {
-        OnDeath.Invoke();
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Damage(5);
+        }
     }
 
-    private void OnDeathClientRpc()
+    private void OnDeathServerRpcAttribute()
     {
-        OnDeath.Invoke();
+        OnDeath.Invoke(this.gameObject);
+    }
+     
+    private void OnDeathClientRpcAttribute()
+    {
+        OnDeath.Invoke(this.gameObject);
     }
     
     public void Damage(int damage)
@@ -26,8 +36,8 @@ public class HealthComponent : NetworkBehaviour
         Health.Value -= damage;
         if (Health. Value <= 0)
         {
-            OnDeathServerRpc();
-            OnDeathClientRpc();
+            OnDeathServerRpcAttribute();
+            OnDeathClientRpcAttribute();
         }
     }
 }
