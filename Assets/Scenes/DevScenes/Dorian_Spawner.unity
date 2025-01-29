@@ -487,7 +487,7 @@ GameObject:
   - component: {fileID: 378066989}
   - component: {fileID: 378066987}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Spawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -690,7 +690,7 @@ GameObject:
   m_Component:
   - component: {fileID: 530728407}
   m_Layer: 0
-  m_Name: GameObject (1)
+  m_Name: SpawnPoint1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -805,7 +805,7 @@ GameObject:
   m_Component:
   - component: {fileID: 676658963}
   m_Layer: 0
-  m_Name: GameObject (3)
+  m_Name: SpawnPoint3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1555,7 +1555,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2100489033}
   m_Layer: 0
-  m_Name: GameObject (2)
+  m_Name: SpawnPoint2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
