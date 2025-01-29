@@ -30,15 +30,6 @@ public class Grappler : NetworkBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.Mouse1)) //a enlever
-        {
-            TryGrab();
-        }
-        else if (Input.GetKeyUp(KeyCode.Mouse1)) //a enlever
-        {
-            ReleaseGrab();
-        }
-
         if (_isGripped)
         {
             GrabUpdate();
@@ -51,10 +42,9 @@ public class Grappler : NetworkBehaviour
         return vector - Vector2.Dot(vector, normal) * normal;
     }
 
-    public void TryGrab()
+    public void TryGrab(Vector2 grabDirection)
     {
-        Vector2 direction = Camera.current.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-        RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, direction, _grappleRange, 1 << 6);
+        RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, grabDirection, _grappleRange, 1 << 6);
         if (hitInfo)
         {
             StartGrab(hitInfo.point);
@@ -66,6 +56,15 @@ public class Grappler : NetworkBehaviour
     {
         _isGripped = true;
         SwitchGrabVisualEffectClientRpc(hitPoint, true);
+    }
+    
+    public void TryReleaseGrab()
+    {
+        if (!_isGripped)
+        {
+            return;
+        }
+        ReleaseGrab();
     }
 
     private void ReleaseGrab()
