@@ -9,10 +9,7 @@ public class PlayerInput : MonoBehaviour
 
    public  void OnMove(InputAction.CallbackContext context)
     {
-        if (context.performed)
-        {
-            playerController.OnMove(context.ReadValue<Vector2>());
-        }
+        playerController.OnMove(context.ReadValue<Vector2>());
     }
 
     #endregion

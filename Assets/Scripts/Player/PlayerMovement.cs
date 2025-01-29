@@ -6,10 +6,11 @@ public class PlayerMovement : NetworkBehaviour
     public float MaxWalkSpeed = 7f; // Max walking speed
     public float Acceleration = 15f;
     public float Friction = 3f;
-    public float BoostForce = 20f; // Force applied with the special key - To be removed
 
     private Rigidbody2D _rigidBody;
 
+    private Vector2 _moveDirection;
+    
     private void Awake()
     {
         _rigidBody = GetComponent<Rigidbody2D>();
@@ -17,50 +18,33 @@ public class PlayerMovement : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsOwner) return;
-
-        // Apply a manual force with the Space key - To be removed
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (!IsOwner)
         {
-            Vector2 boostDirection = _rigidBody.linearVelocity.normalized;
-            _rigidBody.AddForce(boostDirection * BoostForce, ForceMode2D.Impulse);
+            return;
         }
     }
 
     private void FixedUpdate()
     {
-        if (!IsOwner) return;
-
-        TryMove();
+        if (!IsOwner)
+        {
+            return;
+        }
+        
+        Move(_moveDirection);
+        
+        // Apply friction to gradually slow down
+        _rigidBody.linearVelocity *= (1 - Friction * Time.fixedDeltaTime);
     }
 
-    private void TryMove()
+    public void TryMove(Vector2 movementDirection)
     {
-        Move();
+        _moveDirection = movementDirection;
+        Move(_moveDirection);
     }
 
-    private void Move()
+    private void Move(Vector2 movementDirection)
     {
-        // To be modified with actual inputs
-        Vector2 movementDirection = Vector2.zero;
-
-        if (Input.GetKey(KeyCode.W))
-        {
-            movementDirection.y += 1;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            movementDirection.y -= 1;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            movementDirection.x += 1;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            movementDirection.x -= 1;
-        }
-
         // Normalize the movement direction to avoid faster movement diagonally
         if (movementDirection.magnitude > 0)
         {
@@ -76,8 +60,5 @@ public class PlayerMovement : NetworkBehaviour
         {
             _rigidBody.AddForce(movementDirection * Acceleration, ForceMode2D.Force);
         }
-
-        // Apply friction to gradually slow down
-        _rigidBody.linearVelocity *= (1 - Friction * Time.fixedDeltaTime);
     }
 }

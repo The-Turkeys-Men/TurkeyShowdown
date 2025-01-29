@@ -3,11 +3,13 @@ using UnityEngine;
 
 public class PlayerController : NetworkBehaviour
 {
+    [SerializeField] private PlayerMovement _playerMovement;
+    
     #region Movement
     
     public void OnMove(Vector2 direction)
     {
-        //movement
+        _playerMovement.TryMove(direction);
     }
     
     #endregion
