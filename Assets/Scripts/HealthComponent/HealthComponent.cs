@@ -11,12 +11,23 @@ public class HealthComponent : NetworkBehaviour
     
     UnityEvent OnDeath;
 
+    private void OnDeathServerRpc()
+    {
+        OnDeath.Invoke();
+    }
+
+    private void OnDeathClientRpc()
+    {
+        OnDeath.Invoke();
+    }
+    
     public void Damage(int damage)
     {
         Health.Value -= damage;
         if (Health. Value <= 0)
         {
-            OnDeath.Invoke();
+            OnDeathServerRpc();
+            OnDeathClientRpc();
         }
     }
 }
