@@ -15,6 +15,7 @@ public class Grappler : NetworkBehaviour
     private bool _isGripped;
 
     private Vector2 _grappledPoint;
+    private float _grappleDistance;
 
     void Start()
     {
@@ -39,7 +40,9 @@ public class Grappler : NetworkBehaviour
     private Vector2 ProjectOnPlane(Vector2 vector, Vector2 normal)
     {
         normal.Normalize();
-        return vector - Vector2.Dot(vector, normal) * normal;
+        float magnitude = vector.magnitude;
+        Vector2 projectedVector = vector - Vector2.Dot(vector, normal) * normal;
+        return projectedVector.normalized * magnitude;
     }
 
     public void TryGrab(Vector2 grabDirection)
@@ -55,6 +58,7 @@ public class Grappler : NetworkBehaviour
     private void StartGrab(Vector2 hitPoint)
     {
         _isGripped = true;
+        _grappleDistance = Vector2.Distance(transform.position, hitPoint);
         SwitchGrabVisualEffectClientRpc(hitPoint, true);
     }
     
@@ -78,9 +82,15 @@ public class Grappler : NetworkBehaviour
         
         float distanceWithVelocity = Vector2.Distance((Vector2)transform.position + _rb.linearVelocity, _grappledPoint);
         float distanceWithInverseVelocity = Vector2.Distance((Vector2)transform.position - _rb.linearVelocity, _grappledPoint);
-        if (distanceWithVelocity > distanceWithInverseVelocity)
+        float threshold = 0.1f;
+        if (distanceWithVelocity > distanceWithInverseVelocity - threshold)
         {
+            _rb.position = _grappledPoint + (_rb.position - _grappledPoint).normalized * _grappleDistance;
             _rb.linearVelocity = ProjectOnPlane(_rb.linearVelocity, _grappledPoint - (Vector2)transform.position);
+        }
+        else
+        {
+            _grappleDistance = Vector2.Distance(transform.position, _grappledPoint);
         }
         UpdateGrabVisualEffectClientRpc();
     }

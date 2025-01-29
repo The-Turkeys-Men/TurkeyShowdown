@@ -228,7 +228,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   MaxWalkSpeed: 7
   Acceleration: 15
-  Friction: 3
+  Friction: 0
 --- !u!114 &2332458254201433568
 MonoBehaviour:
   m_ObjectHideFlags: 0
