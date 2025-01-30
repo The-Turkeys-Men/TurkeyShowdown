@@ -6,9 +6,9 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private Camera _camera;
     [SerializeField] private PlayerMovement _playerMovement;
     [SerializeField] private Grappler _playerGrappler;
-    
+
     #region Movement
-    
+
     public void OnMove(Vector2 direction)
     {
         _playerMovement.TryMove(direction);
