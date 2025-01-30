@@ -397,10 +397,11 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   Health:
     m_InternalValue: 20
-  MaxHealth: 20
+  MaxHealth: 100
+  BaseHealth: 20
   Armor:
     m_InternalValue: 0
-  MaxArmor: 0
+  MaxArmor: 50
   OnDeath:
     m_PersistentCalls:
       m_Calls: []

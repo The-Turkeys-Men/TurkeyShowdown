@@ -3,7 +3,6 @@ using Extensions;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class PlayerSpawner : NetworkBehaviour
 {
@@ -49,9 +48,7 @@ public class PlayerSpawner : NetworkBehaviour
     IEnumerator SpawnTimer(GameObject player)
     {
         yield return new WaitForSeconds(_respawnTime);
-        
-        var healthComponent = player.GetComponent<HealthComponent>();
-        healthComponent.Health.Value = healthComponent.MaxHealth;
+        player.GetComponent<HealthComponent>().Health.Value = player.GetComponent<HealthComponent>().BaseHealth;
         player.transform.position = _playerSpawnPoint[Random.Range(0, _playerSpawnPoint.Length)].position;
         player.SetActive(true);
         
