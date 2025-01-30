@@ -506,8 +506,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  playerPrefab: {fileID: 1766801901717005780, guid: c34eda09e521d3a47944ba3aa4844e05, type: 3}
-  playerSpawnPoint:
+  _playerPrefab: {fileID: 1766801901717005780, guid: c34eda09e521d3a47944ba3aa4844e05, type: 3}
+  _respawnTime: 2
+  _playerSpawnPoint:
   - {fileID: 378066988}
   - {fileID: 530728407}
   - {fileID: 2100489033}
