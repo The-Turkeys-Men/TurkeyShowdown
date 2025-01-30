@@ -13,14 +13,6 @@ public class HealthComponent : NetworkBehaviour
 
     public UnityEvent<GameObject> OnDeath;
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Damage(5);
-        }
-    }
-
     private void OnDeathServerRpcAttribute()
     {
         OnDeath.Invoke(this.gameObject);
