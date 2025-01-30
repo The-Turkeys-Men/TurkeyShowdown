@@ -1,5 +1,7 @@
 using System.Collections;
+using Extensions;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -16,36 +18,95 @@ public class PlayerSpawner : NetworkBehaviour
         NetworkManager.Singleton.OnClientConnectedCallback += SpawnPlayer;
     }
 
-    private void respawnPlayer(GameObject player)
-    {
-        player.SetActive(false);
-        StartCoroutine(SpawnTimer(player));
-    }
+    #region Respawn
 
+    [ClientRpc]
+    private void OnDeathClientRpc(ulong playerObjectId)
+    {
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject))
+        {
+            Debug.LogError("Failed to get player object");
+            return;
+        }
+        
+        playerObject.gameObject.SetActive(false);
+        StartCoroutine(SpawnTimer(playerObject.gameObject));
+    }
+    
+    [ServerRpc]
+    private void OnDeathServerRpc(ulong playerObjectId)
+    {
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject))
+        {
+            Debug.LogError("Failed to get player object");
+            return;
+        }
+        
+        playerObject.gameObject.SetActive(false);
+        StartCoroutine(SpawnTimer(playerObject.gameObject));
+    }
+    
     IEnumerator SpawnTimer(GameObject player)
     {
         yield return new WaitForSeconds(_respawnTime);
-        player.GetComponent<HealthComponent>().Health.Value = player.GetComponent<HealthComponent>().MaxHealth;
+        
+        var healthComponent = player.GetComponent<HealthComponent>();
+        healthComponent.Health.Value = healthComponent.MaxHealth;
         player.transform.position = _playerSpawnPoint[Random.Range(0, _playerSpawnPoint.Length)].position;
         player.SetActive(true);
+        
+        OnFinishRespawnClientRpc(player.GetNetworkObjectId());
     }
+
+    [ClientRpc]
+    private void OnFinishRespawnClientRpc(ulong playerObjectId)
+    {
+        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject))
+        {
+            Debug.LogError("Failed to get player object");
+            return;
+        }
+
+        var networkTransform = playerObject.GetComponent<NetworkTransform>();
+        networkTransform.Interpolate = false;
+        playerObject.transform.position = _playerSpawnPoint[Random.Range(0, _playerSpawnPoint.Length)].position;
+        playerObject.gameObject.SetActive(true);
+        StartCoroutine(ReactivateInterpolation(networkTransform));
+    }
+
+    private IEnumerator ReactivateInterpolation(NetworkTransform networkTransform)
+    {
+        yield return new WaitForSeconds(0.2f);
+        networkTransform.Interpolate = true;
+    }
+
+    #endregion
+    
+    
     
     private void SpawnPlayer(ulong clientId)
     {
-        if (IsServer)
+        if (!IsServer)
         {
-            NewPlayer = Instantiate(_playerPrefab, _playerSpawnPoint[Random.Range(0,_playerSpawnPoint.Length)].transform);
-            NewPlayer.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
-            NewPlayer.GetComponent<HealthComponent>().OnDeath.AddListener(respawnPlayer);
-            ClientRpcParams clientRpcParams = new()
-            {
-                Send = new()
-                {
-                    TargetClientIds = new[] { clientId }
-                }
-            };
-            ActivateCameraClientRpc(NewPlayer.GetComponent<NetworkObject>().NetworkObjectId,clientRpcParams);
+            return;
         }
+        
+        NewPlayer = Instantiate(_playerPrefab, _playerSpawnPoint[Random.Range(0,_playerSpawnPoint.Length)].transform);
+        NewPlayer.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+        NewPlayer.GetComponent<HealthComponent>().OnDeath.AddListener((playerObjectId) =>
+        {
+            OnDeathClientRpc(playerObjectId);
+            OnDeathServerRpc(playerObjectId);
+        });
+            
+        ClientRpcParams clientRpcParams = new()
+        {
+            Send = new()
+            {
+                TargetClientIds = new[] { clientId }
+            }
+        };
+        ActivateCameraClientRpc(NewPlayer.GetComponent<NetworkObject>().NetworkObjectId,clientRpcParams);
     }
 
     [ClientRpc]
