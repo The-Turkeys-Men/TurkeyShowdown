@@ -1,11 +1,13 @@
+using System.Collections.Generic;
 using Unity.Netcode;
 
 public interface IGameModeManager
 {
-    float TimeLeft { get; set; }
-    float MaxGameTime { get; set; }
-    int ScoreToWin { get; set; }
+    public float TimeLeft { get; set; }
+    public float MaxGameTime { get; set; }
+    public int ScoreToWin { get; set; }
+    public NetworkVariable<Dictionary<ulong, int>> PlayerScores { get; set; }
 
-    void OnWin();
-    void OnLose();
+    public void OnWin();
+    public void OnLose();
 }

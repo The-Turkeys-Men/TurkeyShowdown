@@ -1,140 +1,235 @@
 using System.Collections.Generic;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 {
-    [SerializeField] private float maxGameTime = 300f; // Temps de jeu max (5 minutes)
-    [SerializeField] private int scoreToWin = 10; // Score pour gagner
+    [SerializeField] private float maxGameTime = 300f;
+    [SerializeField] private int scoreToWin = 10;
 
     public float TimeLeft { get; set; }
-    public float MaxGameTime { get => maxGameTime; set => maxGameTime = value; }
-    public int ScoreToWin { get => scoreToWin; set => scoreToWin = value; }
+    public float MaxGameTime { get; set; }
+    public int ScoreToWin { get; set; }
 
-    public NetworkVariable<int> TimeLeftSync = new NetworkVariable<int>();
+    public NetworkVariable<Dictionary<ulong, int>> PlayerScores { get; set; } = new NetworkVariable<Dictionary<ulong, int>>(new Dictionary<ulong, int>());
 
-    // Définition de la structure pour les scores des joueurs
-    public struct PlayerScoreEntry : INetworkSerializable
-    {
-        public ulong PlayerID;
-        public int Score;
-
-        public PlayerScoreEntry(ulong playerID, int score)
-        {
-            PlayerID = playerID;
-            Score = score;
-        }
-
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-        {
-            serializer.SerializeValue(ref PlayerID);
-            serializer.SerializeValue(ref Score);
-        }
-    }
-
-    // Liste des scores synchronisée en réseau
-    private NetworkList<PlayerScoreEntry> PlayerScores;
+    private bool isGameActive = false;
+    [SerializeField] private GameObject scorePanel;
+    [SerializeField] private Button disconnectButton;
 
     private void Awake()
     {
-        Debug.Log("DeathMatchManager Awake()");
+        MaxGameTime = maxGameTime;
+        ScoreToWin = scoreToWin;
+        TimeLeft = maxGameTime;
+
+        if (scorePanel != null)
+        {
+            scorePanel.SetActive(false);
+        }
+
+        if (disconnectButton != null)
+        {
+            disconnectButton.onClick.AddListener(OnDisconnectButtonClicked);
+            disconnectButton.gameObject.SetActive(false);
+        }
     }
 
     public override void OnNetworkSpawn()
     {
-        base.OnNetworkSpawn();
-
         if (IsServer)
         {
-            Debug.Log("🚀 Server initialized, starting the timer!");
-            TimeLeft = MaxGameTime;
-            TimeLeftSync.Value = (int)TimeLeft;
-
-            // Initialisation correcte de la NetworkList
-            PlayerScores = new NetworkList<PlayerScoreEntry>();
-
-            InvokeRepeating(nameof(UpdateTimer), 1f, 1f);
+            // Inscription aux callbacks de connexion/déconnexion des clients
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+            
+            // Réinitialiser les scores à chaque démarrage du serveur
+            PlayerScores.Value = new Dictionary<ulong, int>();
         }
+    }
+
+    private void OnClientConnected(ulong clientId)
+    {
+        if (IsServer)
+        {
+            // Ajouter un nouveau joueur et initialiser son score
+            if (!PlayerScores.Value.ContainsKey(clientId))
+            {
+                PlayerScores.Value[clientId] = 0;
+                PlayerScores.SetDirty(true);
+            }
+
+            // Lancer la partie si ce n'est pas encore fait
+            if (!isGameActive)
+            {
+                StartGame();
+            }
+        }
+    }
+
+    private void OnClientDisconnected(ulong clientId)
+    {
+        if (IsServer)
+        {
+            // Retirer le joueur déconnecté et mettre à jour les scores
+            if (PlayerScores.Value.ContainsKey(clientId))
+            {
+                PlayerScores.Value.Remove(clientId);
+                PlayerScores.SetDirty(true);
+            }
+
+            // Si tous les joueurs se déconnectent, réinitialiser le serveur
+            if (NetworkManager.Singleton.ConnectedClients.Count == 0)
+            {
+                ResetServer();
+            }
+        }
+    }
+
+    private void StartGame()
+    {
+        isGameActive = true;
+        TimeLeft = MaxGameTime;
+    }
+
+    private void ResetServer()
+    {
+        isGameActive = false;
+        TimeLeft = MaxGameTime;
+        PlayerScores.Value.Clear(); // Effacer les scores des joueurs
+        PlayerScores.SetDirty(true);
+
+        // Réinitialiser l'état du jeu et les scores
+        if (scorePanel != null) scorePanel.SetActive(false);
+        if (disconnectButton != null) disconnectButton.gameObject.SetActive(false);
     }
 
     private void UpdateTimer()
     {
-        if (!IsServer) return;
+        if (!isGameActive) return;
 
-        if (TimeLeft > 0)
+        TimeLeft -= Time.deltaTime;
+        if (TimeLeft <= 0)
         {
-            TimeLeft--;
-            TimeLeftSync.Value = (int)TimeLeft;
-            Debug.Log($"🕒 Time Left: {TimeLeft}");
-        }
-        else
-        {
-            CancelInvoke(nameof(UpdateTimer));
-            Debug.Log("⏳ Game Over!");
+            TimeLeft = 0;
             OnLose();
+        }
+    }
+
+    public void OnPlayerKill(ulong killerId)
+    {
+        if (!isGameActive) return;
+
+        if (PlayerScores.Value.ContainsKey(killerId))
+        {
+            PlayerScores.Value[killerId]++;
+            PlayerScores.SetDirty(true);
+
+            if (PlayerScores.Value[killerId] >= ScoreToWin)
+            {
+                OnWin();
+            }
         }
     }
 
     public void OnWin()
     {
-        Debug.Log("🎉 OnWin");
+        EndGame();
     }
 
     public void OnLose()
     {
-        Debug.Log("💀 OnLose");
+        EndGame();
     }
 
-    public void OnPlayerKill(ulong playerID)
+    private void EndGame()
     {
-        if (!IsServer) return;
-
-        // 🔴 Correction du FindIndex qui n'existe pas sur NetworkList
-        int playerIndex = -1;
-        for (int i = 0; i < PlayerScores.Count; i++)
+        isGameActive = false;
+        if (IsServer)
         {
-            if (PlayerScores[i].PlayerID == playerID)
-            {
-                playerIndex = i;
-                break;
-            }
+            ShowScorePanelClientRpc();
         }
-
-        if (playerIndex >= 0)
-        {
-            // Incrémentation du score
-            var updatedScore = PlayerScores[playerIndex].Score + 1;
-            PlayerScores[playerIndex] = new PlayerScoreEntry(playerID, updatedScore);
-        }
-        else
-        {
-            // Ajouter un nouveau joueur avec 1 kill
-            PlayerScores.Add(new PlayerScoreEntry(playerID, 1));
-        }
-
-        // Correction du log pour éviter une erreur en cas de premier kill
-        int score = playerIndex >= 0 ? PlayerScores[playerIndex].Score : 1;
-        Debug.Log($"🔫 Player {playerID} score: {score}");
-
-        // Vérifier la victoire
-        if (score >= ScoreToWin)
-        {
-            OnWin();
-        }
+        PlayerScores.Value.Clear();  // Effacer les scores des joueurs à la fin de la partie
     }
 
     private void Update()
     {
+        if (IsServer)
+        {
+            UpdateTimer();
+        }
+
+        if (!isGameActive) return;
+
+        if (IsClient && Input.GetKeyDown(KeyCode.K))
+        {
+            AddKillForSelfServerRpc();
+        }
+    }
+
+    [ServerRpc]
+    private void AddKillForSelfServerRpc()
+    {
         if (!IsServer) return;
 
-        Debug.Log($"IsServer: {IsServer}");
-
-        if (Input.GetKeyDown(KeyCode.Space))
+        ulong clientId = NetworkManager.Singleton.LocalClientId;
+        if (PlayerScores.Value.ContainsKey(clientId))
         {
-            if (NetworkManager.Singleton.LocalClient != null)
+            PlayerScores.Value[clientId]++;
+            PlayerScores.SetDirty(true);
+
+            if (PlayerScores.Value[clientId] >= ScoreToWin)
             {
-                OnPlayerKill(NetworkManager.Singleton.LocalClient.ClientId);
+                OnWin();
             }
+        }
+    }
+
+    private void UpdateScoreDisplay()
+    {
+        if (scorePanel == null) return;
+        TextMeshProUGUI scoreDisplayText = scorePanel.GetComponentInChildren<TextMeshProUGUI>();
+        if (scoreDisplayText == null) return;
+
+        List<KeyValuePair<ulong, int>> sortedPlayers = new(PlayerScores.Value);
+        sortedPlayers.Sort((a, b) => b.Value.CompareTo(a.Value));
+
+        string scoreText = "Scores :\n";
+        foreach (var player in sortedPlayers)
+        {
+            scoreText += $"Joueur {player.Key} : {player.Value} points\n";
+        }
+        scoreDisplayText.text = scoreText;
+    }
+
+    private void OnDisconnectButtonClicked()
+    {
+        NetworkManager.Singleton.Shutdown();
+        if (scorePanel != null) scorePanel.SetActive(false);
+        if (disconnectButton != null) disconnectButton.gameObject.SetActive(false);
+    }
+
+    [ClientRpc]
+    private void ShowScorePanelClientRpc()
+    {
+        if (scorePanel != null)
+        {
+            scorePanel.SetActive(true);
+            UpdateScoreDisplay();
+        }
+        if (disconnectButton != null)
+        {
+            disconnectButton.gameObject.SetActive(true);
+        }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if (IsServer)
+        {
+            ResetServer();
         }
     }
 }
