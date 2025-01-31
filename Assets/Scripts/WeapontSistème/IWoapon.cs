@@ -21,7 +21,7 @@ public interface IWoapon
     public float MaxDistance{get;} 
     
 
-     void tryShoot();//verification
+    public void tryShoot();//verification
     public void TryThrowWeapon();
     public void Shoot();
     public void ThrowWeapon();

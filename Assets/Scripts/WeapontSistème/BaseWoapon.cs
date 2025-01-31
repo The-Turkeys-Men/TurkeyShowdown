@@ -51,7 +51,6 @@ public class BaseWoapon : NetworkBehaviour,IWoapon
     void Update()
     {
         
-        TryThrowWeapon();
         if(Mathf.Approximately(Rb.linearVelocity.magnitude, 0))
             {
                 
@@ -65,6 +64,10 @@ public class BaseWoapon : NetworkBehaviour,IWoapon
                     
                 }
             }
+    }
+    protected void Test()
+    {
+        ThrowWeapon(); 
     }
     public void ThrowWeapon()
     {

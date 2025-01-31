@@ -47,7 +47,7 @@ public class Playerweapon : NetworkBehaviour
     {
         if (Input.GetKey(KeyCode.F)) //sur le script PlayerWeapons
         {
-            Collider2D[] weaponColliders = Physics2D.OverlapCircleAll(transform.position, 3,  1 << LayerMask.NameToLayer("Weapon"));
+            Collider2D[] weaponColliders = Physics2D.OverlapCircleAll(transform.position, WeaponGrabRange,  1 << LayerMask.NameToLayer("Weapon"));
             if (weaponColliders.Length > 0) 
            {
                 BaseWoapon closestWeapon = null;
