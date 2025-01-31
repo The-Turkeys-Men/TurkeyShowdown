@@ -11,6 +11,8 @@ public interface IWoapon
     public float KnockbacForec{get;}
     public bool CanDeThrowed{get;}
     public float FireRilode{get;}
+    public int Ammo {get;}
+    public bool PickUp{get;}
     //[Header("projectile")]
     public GameObject ProjectilePrefab{get;}
     public float ProjectileSpeed{get;}
@@ -19,10 +21,10 @@ public interface IWoapon
     public float MaxDistance{get;} 
     
 
-    public void tryShoot();//verification
+     void tryShoot();//verification
     public void TryThrowWeapon();
-    protected void Shoot();
-    protected void ThrowWeapon();
+    public void Shoot();
+    public void ThrowWeapon();
 
 
     
