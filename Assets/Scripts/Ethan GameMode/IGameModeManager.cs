@@ -8,6 +8,6 @@ public interface IGameModeManager
     public int ScoreToWin { get; set; }
     public NetworkVariable<Dictionary<ulong, int>> PlayerScores { get; set; }
 
-    public void OnWin();
+    public void OnWin(ulong winnerId);
     public void OnLose();
 }

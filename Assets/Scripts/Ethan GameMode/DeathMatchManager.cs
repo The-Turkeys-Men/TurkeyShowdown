@@ -8,6 +8,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 {
     [SerializeField] private float maxGameTime = 300f;
     [SerializeField] private int scoreToWin = 10;
+    [SerializeField] private float disconnectDelay = 30f;
 
     public float TimeLeft { get; set; }
     public float MaxGameTime { get; set; }
@@ -16,8 +17,12 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     public NetworkVariable<Dictionary<ulong, int>> PlayerScores { get; set; } = new NetworkVariable<Dictionary<ulong, int>>(new Dictionary<ulong, int>());
 
     private bool isGameActive = false;
+    private bool isServerReady = true; // Flag to track if the server is ready to accept new connections
     [SerializeField] private GameObject scorePanel;
+    [SerializeField] private TextMeshProUGUI resultText;
     [SerializeField] private Button disconnectButton;
+
+    private const ulong NoWinner = ulong.MaxValue; // Default value to represent no winner
 
     private void Awake()
     {
@@ -41,12 +46,13 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     {
         if (IsServer)
         {
-            // Inscription aux callbacks de connexion/déconnexion des clients
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
-            
-            // Réinitialiser les scores à chaque démarrage du serveur
             PlayerScores.Value = new Dictionary<ulong, int>();
+        }
+        else if (IsClient)
+        {
+            Debug.Log("Client is connected to the server.");
         }
     }
 
@@ -54,14 +60,20 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     {
         if (IsServer)
         {
-            // Ajouter un nouveau joueur et initialiser son score
+            if (!isServerReady)
+            {
+                Debug.Log($"Server is not ready to accept new connections. Rejecting client {clientId}.");
+                NetworkManager.Singleton.DisconnectClient(clientId);
+                return;
+            }
+
             if (!PlayerScores.Value.ContainsKey(clientId))
             {
                 PlayerScores.Value[clientId] = 0;
                 PlayerScores.SetDirty(true);
+                Debug.Log($"Client {clientId} has been added to the scores dictionary with an initial score of 0.");
             }
 
-            // Lancer la partie si ce n'est pas encore fait
             if (!isGameActive)
             {
                 StartGame();
@@ -73,14 +85,12 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     {
         if (IsServer)
         {
-            // Retirer le joueur déconnecté et mettre à jour les scores
             if (PlayerScores.Value.ContainsKey(clientId))
             {
                 PlayerScores.Value.Remove(clientId);
                 PlayerScores.SetDirty(true);
             }
 
-            // Si tous les joueurs se déconnectent, réinitialiser le serveur
             if (NetworkManager.Singleton.ConnectedClients.Count == 0)
             {
                 ResetServer();
@@ -97,11 +107,11 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     private void ResetServer()
     {
         isGameActive = false;
+        isServerReady = true; // Server is ready to accept new connections again
         TimeLeft = MaxGameTime;
-        PlayerScores.Value.Clear(); // Effacer les scores des joueurs
+        PlayerScores.Value.Clear();
         PlayerScores.SetDirty(true);
 
-        // Réinitialiser l'état du jeu et les scores
         if (scorePanel != null) scorePanel.SetActive(false);
         if (disconnectButton != null) disconnectButton.gameObject.SetActive(false);
     }
@@ -129,29 +139,69 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
             if (PlayerScores.Value[killerId] >= ScoreToWin)
             {
-                OnWin();
+                OnWin(killerId);
             }
         }
     }
 
-    public void OnWin()
+    public void OnWin(ulong winnerId)
     {
-        EndGame();
+        EndGame(winnerId);
     }
 
     public void OnLose()
     {
-        EndGame();
+        // Find the player with the highest score
+        ulong bestPlayerId = NoWinner;
+        int bestScore = 0;
+
+        foreach (var player in PlayerScores.Value)
+        {
+            if (player.Value > bestScore)
+            {
+                bestScore = player.Value;
+                bestPlayerId = player.Key;
+            }
+        }
+
+        // If a player has a score greater than 0, declare them the winner
+        if (bestScore > 0)
+        {
+            OnWin(bestPlayerId);
+        }
+        else
+        {
+            EndGame(NoWinner); // Draw
+        }
     }
 
-    private void EndGame()
+    private void EndGame(ulong winnerId)
     {
         isGameActive = false;
+        isServerReady = false; // Server is not ready to accept new connections
         if (IsServer)
         {
-            ShowScorePanelClientRpc();
+            ShowScorePanelClientRpc(winnerId);
+            StartCoroutine(AutoDisconnectPlayers());
         }
-        PlayerScores.Value.Clear();  // Effacer les scores des joueurs à la fin de la partie
+    }
+
+    private System.Collections.IEnumerator AutoDisconnectPlayers()
+    {
+        yield return new WaitForSeconds(disconnectDelay);
+        if (IsServer)
+        {
+            // Hide the panel on the client side
+            HideScorePanelClientRpc();
+
+            // Create a copy of the client list to avoid modification during enumeration
+            var clients = new List<ulong>(NetworkManager.Singleton.ConnectedClients.Keys);
+            foreach (var clientId in clients)
+            {
+                NetworkManager.Singleton.DisconnectClient(clientId);
+            }
+            ResetServer();
+        }
     }
 
     private void Update()
@@ -163,31 +213,45 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
         if (!isGameActive) return;
 
-        if (IsClient && Input.GetKeyDown(KeyCode.K))
+        // Allow the client to increase their score by pressing K
+        if (IsClient && NetworkManager.Singleton.IsClient && Input.GetKeyDown(KeyCode.K))
         {
+            Debug.Log("Client pressed K. Sending request to the server...");
             AddKillForSelfServerRpc();
+            Debug.Log("Request sent to the server.");
         }
     }
 
-    [ServerRpc]
-    private void AddKillForSelfServerRpc()
+    [ServerRpc(RequireOwnership = false)]
+    private void AddKillForSelfServerRpc(ServerRpcParams rpcParams = default)
     {
-        if (!IsServer) return;
+        if (!IsServer)
+        {
+            Debug.LogWarning("RPC was called, but this is not the server.");
+            return;
+        }
 
-        ulong clientId = NetworkManager.Singleton.LocalClientId;
+        ulong clientId = rpcParams.Receive.SenderClientId;
+        Debug.Log($"Server received a request to add a kill for client {clientId}.");
+
         if (PlayerScores.Value.ContainsKey(clientId))
         {
             PlayerScores.Value[clientId]++;
             PlayerScores.SetDirty(true);
+            Debug.Log($"Client {clientId}'s score has been updated to {PlayerScores.Value[clientId]}.");
 
             if (PlayerScores.Value[clientId] >= ScoreToWin)
             {
-                OnWin();
+                OnWin(clientId);
             }
+        }
+        else
+        {
+            Debug.LogWarning($"Client {clientId} does not exist in the scores dictionary.");
         }
     }
 
-    private void UpdateScoreDisplay()
+    private void UpdateScoreDisplay(ulong winnerId)
     {
         if (scorePanel == null) return;
         TextMeshProUGUI scoreDisplayText = scorePanel.GetComponentInChildren<TextMeshProUGUI>();
@@ -199,9 +263,25 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
         string scoreText = "Scores :\n";
         foreach (var player in sortedPlayers)
         {
-            scoreText += $"Joueur {player.Key} : {player.Value} points\n";
+            scoreText += $"Player {player.Key} : {player.Value} points\n";
         }
         scoreDisplayText.text = scoreText;
+
+        if (resultText != null)
+        {
+            if (winnerId != NoWinner && winnerId == NetworkManager.Singleton.LocalClientId)
+            {
+                resultText.text = "Tu a Gagné !";
+            }
+            else if (winnerId != NoWinner)
+            {
+                resultText.text = "Tu a Perdu !";
+            }
+            else
+            {
+                resultText.text = "Match Nul !";
+            }
+        }
     }
 
     private void OnDisconnectButtonClicked()
@@ -212,16 +292,29 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     }
 
     [ClientRpc]
-    private void ShowScorePanelClientRpc()
+    private void ShowScorePanelClientRpc(ulong winnerId)
     {
         if (scorePanel != null)
         {
             scorePanel.SetActive(true);
-            UpdateScoreDisplay();
+            UpdateScoreDisplay(winnerId);
         }
         if (disconnectButton != null)
         {
             disconnectButton.gameObject.SetActive(true);
+        }
+    }
+
+    [ClientRpc]
+    private void HideScorePanelClientRpc()
+    {
+        if (scorePanel != null)
+        {
+            scorePanel.SetActive(false);
+        }
+        if (disconnectButton != null)
+        {
+            disconnectButton.gameObject.SetActive(false);
         }
     }
 
