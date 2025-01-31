@@ -4,45 +4,42 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 
 
-public class BaseWoapon : NetworkBehaviour,IWoapon
-
+public class BaseWoapon : NetworkBehaviour 
 {
-    public float FireRate {get;}
+    public float FireRate ;
 
-    public float Damage  {get;}
+    public float Damage  ;
 
-    public int MaxAmmo {get;}
-    public int SprayAmount {get;set;}
+    public int MaxAmmo ;
+    public int SprayAmount ;
 
-    public float RecoilForce {get;}
+    public float RecoilForce ;
 
-    public float KnockbacForec {get;}
+    public float KnockbacForec ;
 
-    public bool CanDeThrowed {get;}
+    public bool CanDeThrowed ;
 
-    public float FireRilode {get;set;}
+    public float FireRilode ;
 
-    public int Ammo {get;set;}
+    public int Ammo ;
 
-    public GameObject ProjectilePrefab {get;}
-    public bool PickUp {get; set;}
+    public GameObject ProjectilePrefab ;
+    public bool PickUp ;
     
 
-    public float ProjectileSpeed {get;}
-    public float MaxLiftime {get;}
-    public float MaxDistance {get;}
-    public Rigidbody2D Rb;
-    public float lance;
-    public bool Equipped;
-    
-
-
+    public float ProjectileSpeed ; 
+    public float MaxLiftime ;
+    public float MaxDistance ;
+    public Rigidbody2D Rb ;
+    public float lance ;
+    public bool Equipped=false;
     
      public void OnCollisionEnter2D(Collision2D collision)
     {
         if(!Mathf.Approximately(Rb.linearVelocity.magnitude, 0))
             {
                 Destroy(this);
+
             }
 
     }
@@ -51,12 +48,16 @@ public class BaseWoapon : NetworkBehaviour,IWoapon
     void Update()
     {
         
+        TryThrowWeapon();
+
         if(Mathf.Approximately(Rb.linearVelocity.magnitude, 0))
             {
                 
                 if(Ammo>0)
                 {
-                   PickUp=true; 
+                   PickUp=true;
+                   
+                   
                 }
                 else if (Ammo==0)
                 {
@@ -65,14 +66,10 @@ public class BaseWoapon : NetworkBehaviour,IWoapon
                 }
             }
     }
-    protected void Test()
-    {
-        ThrowWeapon(); 
-    }
     public void ThrowWeapon()
     {
        Equipped=false;
-        transform.SetParent(null);
+      
         Rb.linearVelocity=transform.TransformDirection(Vector3.forward*lance);
 
     }
@@ -81,6 +78,8 @@ public class BaseWoapon : NetworkBehaviour,IWoapon
     {
         
         
+        if(Equipped==true)
+        {
             if(Ammo>0)
             {
                 if((FireRilode+=Time.deltaTime)>=FireRate)
@@ -90,19 +89,23 @@ public class BaseWoapon : NetworkBehaviour,IWoapon
                 }
 
             }
-            else if (Ammo==0)
+            else 
+            if (Ammo==0)
             {
+                Debug.Log("truc2");
                 ThrowWeapon();
             }
-            
-
-        
+        }
 
     }
-    public void Shoot()
+    protected void truc()
+    {
+        Shoot();
+    }
+    public void  Shoot()
     {
         
-        Instantiate(ProjectilePrefab,transform.position,transform.rotation);
+        Instantiate(this.ProjectilePrefab,this.transform.position,this.transform.rotation);
         
         Ammo-=1;
     }
@@ -121,5 +124,4 @@ public class BaseWoapon : NetworkBehaviour,IWoapon
             
         
     }
-    
 }
