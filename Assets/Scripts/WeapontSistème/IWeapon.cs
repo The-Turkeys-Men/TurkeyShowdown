@@ -1,6 +1,7 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public interface IWoapon 
+public interface IWeapon 
 {
     
     public float FireRate{get;}//cadance 
@@ -8,15 +9,15 @@ public interface IWoapon
     public int MaxAmmo{get;}// munition max
     public int SprayAmount{get;}
     public float RecoilForce{get;}// soi meme 
-    public float KnockbacForec{get;}
-    public bool CanDeThrowed{get;}
-    public float FireRilode{get;}
-    public int Ammo {get;}
+    public float KnockbackForce{get;}
+    public bool CanBeThrowed{get;}
+    public float FireReload{get;}
+    public NetworkVariable<int> Ammo {get;}
     public bool PickUp{get;}
     //[Header("projectile")]
     public GameObject ProjectilePrefab{get;}
     public float ProjectileSpeed{get;}
-    public float MaxLiftime{get;}
+    public float MaxLifetime{get;}
     //[Header("raycast")]
     public float MaxDistance{get;} 
     
