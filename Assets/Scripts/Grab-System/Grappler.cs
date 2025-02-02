@@ -59,7 +59,9 @@ public class Grappler : NetworkBehaviour
     {
         _isGripped = true;
         _grappleDistance = Vector2.Distance(transform.position, hitPoint);
-        SwitchGrabVisualEffectClientRpc(hitPoint, true);
+        _grappledPoint = hitPoint;
+        SwitchGrabVisualEffect(hitPoint, true);
+        SwitchGrabVisualEffectServerRpc(hitPoint, true);
     }
     
     public void TryReleaseGrab()
@@ -73,13 +75,13 @@ public class Grappler : NetworkBehaviour
 
     private void ReleaseGrab()
     {
-        SwitchGrabVisualEffectClientRpc(Vector2.zero, false);
+        SwitchGrabVisualEffect(Vector2.zero, false);
+        SwitchGrabVisualEffectServerRpc(Vector2.zero, false);
         _isGripped = false;
     }
 
     private void GrabUpdate()
     {
-        
         float distanceWithVelocity = Vector2.Distance((Vector2)transform.position + _rb.linearVelocity, _grappledPoint);
         float distanceWithInverseVelocity = Vector2.Distance((Vector2)transform.position - _rb.linearVelocity, _grappledPoint);
         float threshold = 0.1f;
@@ -92,15 +94,32 @@ public class Grappler : NetworkBehaviour
         {
             _grappleDistance = Vector2.Distance(transform.position, _grappledPoint);
         }
-        UpdateGrabVisualEffectClientRpc();
+        _grappleVisual.SetPosition(1, _startGrabPoint.position);
+        UpdateGrabVisualEffectServerRpc();
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void SwitchGrabVisualEffectServerRpc(Vector2 hitPoint, bool activated)
+    {
+        SwitchGrabVisualEffectClientRpc(hitPoint, activated);
+    }
+    
     [ClientRpc]
     private void SwitchGrabVisualEffectClientRpc(Vector2 hitPoint, bool activated)
     {
+        SwitchGrabVisualEffect(hitPoint, activated);
+    }
+    
+    private void SwitchGrabVisualEffect(Vector2 hitPoint, bool activated)
+    {
         _grappleVisual.enabled = activated;
-        _grappledPoint = hitPoint;
         _grappleVisual.SetPosition(0, hitPoint);
+    }
+    
+    [ServerRpc]
+    private void UpdateGrabVisualEffectServerRpc()
+    {
+        UpdateGrabVisualEffectClientRpc();
     }
 
     [ClientRpc]

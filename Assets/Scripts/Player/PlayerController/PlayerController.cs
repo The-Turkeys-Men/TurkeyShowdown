@@ -39,6 +39,11 @@ public class PlayerController : NetworkBehaviour
 
     public void OnMove(Vector2 direction)
     {
+        if (!IsOwner)
+        {
+            return;
+        }
+        
         _playerMovement.TryMove(direction);
     }
     
@@ -48,6 +53,11 @@ public class PlayerController : NetworkBehaviour
     
     public void OnGrapple()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
+        
         Vector2 screenMousePos = Input.mousePosition;
         Vector2 direction = _camera.ScreenToWorldPoint(screenMousePos) - transform.position;
         _playerGrappler.TryGrab(direction);
@@ -55,6 +65,11 @@ public class PlayerController : NetworkBehaviour
 
     public void OnUnGrapple()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
+        
         _playerGrappler.TryReleaseGrab();
     }
     #endregion
@@ -63,11 +78,21 @@ public class PlayerController : NetworkBehaviour
 
     public void OnShoot()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
+        
         _playerWeapon.tryShoot();
     }
 
     public void OnThrowOrGrab()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
+        
         if (_playerWeapon.EquipedWeapon && _playerWeapon.EquipedWeapon.CanBeThrowed)
         {
             _playerWeapon.TryThrowWeapon();
