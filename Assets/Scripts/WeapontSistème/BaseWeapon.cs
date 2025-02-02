@@ -34,9 +34,11 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     
     [field:Header("raycast")]
     [field:SerializeField] public float MaxDistance { get; set; }
-    
+
+    public Transform ShootPoint { get; set; }
+
     public Rigidbody2D Rb ;
-    public float lance ;
+    public GameObject Visuals;
 
     public NetworkVariable<bool> IsThrowed = new(false);
 
@@ -140,7 +142,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         switch (WeaponShootType)
         {
             case ShootType.Projectile:
-                SpawnProjectileServerRpc(transform.position, direction);
+                SpawnProjectileServerRpc(ShootPoint.position, direction);
                 break;
             case ShootType.Raycast:
                 break;
@@ -149,19 +151,44 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     }
     
     [ServerRpc]
-    public virtual void OnShootServerRpc()
+    protected virtual void OnShootServerRpc()
     {
         FireRateTimer.Value = FireRate;
         Ammo.Value -= 1;
     }
 
     [ServerRpc]
-    public void SpawnProjectileServerRpc(Vector3 position, Vector2 direction)
+    private void SpawnProjectileServerRpc(Vector2 position, Vector2 direction)
     {
         direction.Normalize();
         GameObject spawnedBullet = Instantiate(ProjectilePrefab, position, Quaternion.identity);
         spawnedBullet.GetComponent<NetworkObject>().Spawn();
         spawnedBullet.GetComponent<Projectile>().Direction = direction;
         
+    }
+
+
+    [ServerRpc]
+    public void HideServerRpc()
+    {
+        HideClientRpc();
+    }
+    
+    [ClientRpc]
+    private void HideClientRpc()
+    {
+        Visuals.SetActive(false);
+    }
+    
+    [ServerRpc]
+    public void ShowServerRpc()
+    {
+        ShowClientRpc();
+    }
+    
+    [ClientRpc]
+    private void ShowClientRpc()
+    {
+        Visuals.SetActive(true);
     }
 }

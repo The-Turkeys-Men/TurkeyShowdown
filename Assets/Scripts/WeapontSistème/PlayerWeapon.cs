@@ -85,6 +85,7 @@ public class PlayerWeapon : NetworkBehaviour
         weaponComponent.Rb.simulated = true;
         weaponComponent.Rb.AddForce(direction.normalized * weaponComponent.ThrowForce, ForceMode2D.Impulse);
         weaponComponent.Rb.AddTorque(weaponComponent.ThrowTorque, ForceMode2D.Impulse);
+        weaponComponent.ShowServerRpc();
     }
 
     private void UnEquipWeapon()
@@ -127,6 +128,7 @@ public class PlayerWeapon : NetworkBehaviour
         }
 
         EquipedWeapon = closestWeapon.GetComponent<BaseWeapon>();
+        EquipedWeapon.ShootPoint = WeaponHolder;
         OnEquipWeaponServerRpc(OwnerClientId, GetComponent<NetworkObject>().NetworkObjectId, EquipedWeapon.GetComponent<NetworkObject>().NetworkObjectId);
         AskForOwnershipServerRpc(OwnerClientId, EquipedWeapon.GetComponent<NetworkObject>().NetworkObjectId);
         EquipedWeapon.GetComponent<Rigidbody2D>().simulated = false;
@@ -140,7 +142,9 @@ public class PlayerWeapon : NetworkBehaviour
         NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(weaponObjectId, out NetworkObject weaponNetworkObject);
 
         weaponNetworkObject.TrySetParent(playerNetworkObject);
-        weaponNetworkObject.GetComponent<BaseWeapon>().CanBePickUp.Value = false;
+        var baseWeapon = weaponNetworkObject.GetComponent<BaseWeapon>();
+        baseWeapon.CanBePickUp.Value = false;
+        baseWeapon.HideServerRpc();
     }
 
     [ServerRpc]

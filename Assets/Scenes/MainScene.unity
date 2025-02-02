@@ -1266,7 +1266,7 @@ MonoBehaviour:
   <CanBeThrowed>k__BackingField: 1
   <CanBePickUp>k__BackingField:
     m_InternalValue: 0
-  <WeaponShootType>k__BackingField: 0
+  <WeaponShootType>k__BackingField: 1
   <DamageByThrow>k__BackingField: 3
   <ThrowForce>k__BackingField: 10
   <ThrowTorque>k__BackingField: 3

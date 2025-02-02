@@ -29,6 +29,7 @@ public interface IWeapon
     //[Header("raycast")]
     public float MaxDistance{get;} 
     
+    public Transform ShootPoint { get; }
 
     public void tryShoot();//verification
     public void Shoot();
