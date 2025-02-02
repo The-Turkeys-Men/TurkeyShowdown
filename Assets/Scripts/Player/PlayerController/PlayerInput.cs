@@ -34,12 +34,18 @@ public class PlayerInput : MonoBehaviour
 
     public void OnShoot(InputAction.CallbackContext context)
     {
-        playerController.OnShoot();
+        if (context.started)
+        {
+            playerController.OnShoot();
+        }
     }
 
     public void OnThrow(InputAction.CallbackContext context)
     {
-        playerController.OnThrow();
+        if (context.started)
+        {
+            playerController.OnThrowOrGrab();
+        }
     }
     
     #endregion

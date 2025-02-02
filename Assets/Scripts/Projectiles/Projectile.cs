@@ -15,6 +15,7 @@ public class Projectile : NetworkBehaviour
     public float ExplosionRange;
     
     private float _currentLifeTime;
+    [HideInInspector] public Vector2 Direction;
     
     private void Initialize()
     {
@@ -31,14 +32,14 @@ public class Projectile : NetworkBehaviour
         Initialize();
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (!IsServer)
         {
             return;
         }
-        
-        if (other.rigidbody.TryGetComponent(out HealthComponent healthComponent))
+
+        if (other.transform.TryGetComponent(out HealthComponent healthComponent))
         {
             healthComponent.DamageServerRpc(Damage);
         }
@@ -52,6 +53,8 @@ public class Projectile : NetworkBehaviour
         {
             return;
         }
+        
+        _rigidbody.linearVelocity = Direction * Speed;
         
         _currentLifeTime += Time.deltaTime;
         if (_currentLifeTime >= MaxLifeTime)
