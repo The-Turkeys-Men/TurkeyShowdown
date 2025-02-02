@@ -27,8 +27,18 @@ public class PlayerWeapon : NetworkBehaviour
         {
             EquipedWeapon.transform.position = WeaponHolder.position;
             EquipedWeapon.transform.rotation = WeaponHolder.rotation;
+            UpdateWeaponPosServerRpc(EquipedWeapon.GetComponent<NetworkObject>().NetworkObjectId, WeaponHolder.position);
         }
     }
+
+    [ServerRpc]
+    public void UpdateWeaponPosServerRpc(ulong weaponId, Vector3 setPos)
+    {
+        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(weaponId, out NetworkObject weaponNetworkObject);
+        weaponNetworkObject.transform.position = setPos;
+    }
+    
+    
     public void tryShoot()
     {
         if (!EquipedWeapon || Dizziness)
@@ -56,22 +66,25 @@ public class PlayerWeapon : NetworkBehaviour
     public void ThrowWeapon()
     {
         EquipedWeapon.Rb.simulated = true;
-        EquipedWeapon.Rb.linearVelocity= transform.TransformDirection(Vector3.forward) * EquipedWeapon.lance;
         
         ulong weaponId = EquipedWeapon.GetComponent<NetworkObject>().NetworkObjectId;
-        OnThrowWeaponServerRpc(weaponId);
+        OnThrowWeaponServerRpc(weaponId, EquipedWeapon.transform.right);
         UnEquipWeapon();
     }
 
     [ServerRpc]
-    private void OnThrowWeaponServerRpc(ulong weaponObjectId)
+    private void OnThrowWeaponServerRpc(ulong weaponObjectId, Vector2 direction)
     {
         NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(weaponObjectId, out NetworkObject weaponNetworkObject);
-        var weaponComponent = weaponNetworkObject.GetComponent<BaseWeapon>();
-        weaponComponent.IsThrowed.Value = true;
-        weaponComponent.CanBePickUp.Value = true;
         weaponNetworkObject.TrySetParent((Transform)null);
         weaponNetworkObject.RemoveOwnership();
+        
+        var weaponComponent = weaponNetworkObject.GetComponent<BaseWeapon>();
+        weaponComponent.IsThrowed.Value = true;
+        
+        weaponComponent.Rb.simulated = true;
+        weaponComponent.Rb.AddForce(direction.normalized * weaponComponent.ThrowForce, ForceMode2D.Impulse);
+        weaponComponent.Rb.AddTorque(weaponComponent.ThrowTorque, ForceMode2D.Impulse);
     }
 
     private void UnEquipWeapon()

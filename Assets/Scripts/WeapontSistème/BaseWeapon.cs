@@ -4,13 +4,14 @@ using UnityEngine;
 
 using Unity.Netcode;
 using Unity.VisualScripting;
+using WeaponSystem;
 
 
 public class BaseWeapon : NetworkBehaviour, IWeapon
 {
     [field:SerializeField] public float FireRate { get; set; }
     public NetworkVariable<float> FireRateTimer { get; set; } = new(0);
-    [field:SerializeField] public float Damage { get; set; }
+    [field:SerializeField] public int Damage { get; set; }
     [field:SerializeField] public int MaxAmmo { get; set; }
     [field:SerializeField] public NetworkVariable<int> Ammo { get; set; } = new(0);
     [field:SerializeField] public int SprayAmount { get; set; }
@@ -18,7 +19,14 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     [field:SerializeField] public float KnockbackForce { get; set; }
     [field:SerializeField] public bool CanBeThrowed { get; set; }
     [field:SerializeField] public NetworkVariable<bool> CanBePickUp { get; set; } = new(true);
-    
+    [field:SerializeField] public ShootType WeaponShootType { get; set;  }
+
+    [field:Header("throw")]
+    [field:SerializeField] public int DamageByThrow { get; set; }
+    [field:SerializeField] public float ThrowForce { get; set; }
+    [field:SerializeField] public float ThrowTorque { get; set; }
+    [field:SerializeField] public float ThrowKnockbackForce { get; set; }
+
     [field:Header("projectile")]
     [field:SerializeField] public GameObject ProjectilePrefab { get; set; }
     [field:SerializeField] public float ProjectileSpeed { get; set; }
@@ -54,16 +62,20 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         Initialize();
     }
 
-    public void OnCollisionEnter2D(Collision2D collision)
+    public void OnTriggerEnter2D(Collider2D other)
     {
         if (!IsServer)
         {
             return;
         }
         
-        if(IsThrowed.Value) 
+        if (IsThrowed.Value) 
         { 
             GetComponent<NetworkObject>().Despawn(true);
+            if (other.TryGetComponent(out HealthComponent healthComponent))
+            {
+                healthComponent.DamageServerRpc(DamageByThrow);
+            }
         }
     }
 
@@ -97,6 +109,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         else
         {
             IsThrowed.Value = false;
+            CanBePickUp.Value = true;
         }
     }
 
@@ -124,7 +137,14 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     public virtual void Shoot()
     {
         Vector2 direction = transform.right;
-        SpawnProjectileServerRpc(transform.position, direction);
+        switch (WeaponShootType)
+        {
+            case ShootType.Projectile:
+                SpawnProjectileServerRpc(transform.position, direction);
+                break;
+            case ShootType.Raycast:
+                break;
+        }
         OnShootServerRpc();
     }
     
@@ -142,5 +162,6 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         GameObject spawnedBullet = Instantiate(ProjectilePrefab, position, Quaternion.identity);
         spawnedBullet.GetComponent<NetworkObject>().Spawn();
         spawnedBullet.GetComponent<Projectile>().Direction = direction;
+        
     }
 }
