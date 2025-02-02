@@ -35,7 +35,7 @@ public class HealthComponent : NetworkBehaviour
         Armor.Value = Mathf.Clamp(Armor.Value + amount, 0, MaxArmor);
     }
     
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void DamageServerRpc(int damage)
     {
         if (Armor.Value > 0)
