@@ -4,6 +4,7 @@ using UnityEngine;
 
 using Unity.Netcode;
 using Unity.VisualScripting;
+using UnityEngine.Events;
 using WeaponSystem;
 
 
@@ -41,6 +42,8 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     public GameObject Visuals;
 
     public NetworkVariable<bool> IsThrowed = new(false);
+
+    public UnityEvent OnGrab { get; set; } = new();
 
     private void Awake()
     {

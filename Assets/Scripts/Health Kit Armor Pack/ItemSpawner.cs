@@ -9,6 +9,8 @@ public class ItemSpawner : NetworkBehaviour
     
     private GameObject _spawnedItem;
 
+    [SerializeField] private bool _reinstantiate = false;
+
     private void Initialize()
     {
         if (!IsServer) return;
@@ -29,6 +31,10 @@ public class ItemSpawner : NetworkBehaviour
     IEnumerator RespawnItems()
     {
         yield return new WaitForSeconds(_respawnTime);
+        if (!_spawnedItem || _reinstantiate)
+        {
+            SpawnItem();
+        }
         MakeItemVisibleClientRpc(_spawnedItem.GetComponent<NetworkObject>().NetworkObjectId);
         MakeItemVisibleServerRpc();
     }
@@ -55,6 +61,6 @@ public class ItemSpawner : NetworkBehaviour
             grabbable.OnGrab.AddListener(StartRespawn); 
         } 
         _spawnedItem.GetComponent<NetworkObject>().Spawn();
-        }
     }
+}
 
