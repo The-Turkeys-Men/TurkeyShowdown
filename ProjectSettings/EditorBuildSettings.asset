@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/DevScenes/Ethan Movement.unity
     guid: 0fba70d2e9517704186282d2b7f2ecc2
+  - enabled: 1
+    path: Assets/Scenes/DevScenes/Flo-Devroom/Flo-feat-Grid-Map.unity
+    guid: 374a6fcdf133b9644a5380d7a12a0880
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
