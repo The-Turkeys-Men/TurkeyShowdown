@@ -54,6 +54,7 @@ GameObject:
   - component: {fileID: 2332458254201433568}
   - component: {fileID: 8804397140222911317}
   - component: {fileID: 3577906075511020807}
+  - component: {fileID: 672106109479174921}
   m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
@@ -459,6 +460,21 @@ MonoBehaviour:
   OnDeath:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &672106109479174921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766801901717005780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd1c20c198121df45a3eed735792ee2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  TeamID:
+    m_InternalValue: -1
 --- !u!1 &2121137832922311993
 GameObject:
   m_ObjectHideFlags: 0
