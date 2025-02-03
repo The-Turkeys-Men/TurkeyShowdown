@@ -5,11 +5,11 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
 
-    public AudioSource _audioSourceMusic;
-    public AudioSource _audioSourceSFX;
+    public AudioSource AudioSourceMusic;
+    public AudioSource AudioSourceSFX;
 
-    public Sound[] _musicSounds;
-    public Sound[] _sfxSounds;
+    public Sound[] MusicSounds;
+    public Sound[] SfxSounds;
 
     private void Awake()
     {
@@ -26,7 +26,7 @@ public class AudioManager : MonoBehaviour
 
     private void PlaySound( Sound[] soundList, string name,Vector3 pos)
     {
-        Sound sound = Array.Find(soundList, s => s._name == name);
+        Sound sound = Array.Find(soundList, s => s.Name == name);
     
         if (sound == null)
         {
@@ -38,9 +38,9 @@ public class AudioManager : MonoBehaviour
             tempAudio.transform.position=pos;
             AudioSource audioSource= tempAudio.AddComponent<AudioSource>();
             audioSource.spatialBlend=1f;
-            audioSource.clip = sound._clip;
+            audioSource.clip = sound.Clip;
             audioSource.Play();
-            Destroy(tempAudio,sound._clip.length);
+            Destroy(tempAudio,sound.Clip.length);
             Debug.Log(audioSource.clip.name);
         }
             
@@ -58,26 +58,26 @@ public class AudioManager : MonoBehaviour
 
     public void StopMusic()
     {
-        StopSound(_audioSourceMusic);
+        StopSound(AudioSourceMusic);
     }
 
     public void StopSFX()
     {
-        StopSound(_audioSourceSFX);
+        StopSound(AudioSourceSFX);
     }
 
     public void PlayMusic(string name,Vector3 pos)
     {
-        PlaySound( _musicSounds, name,pos);
+        PlaySound( MusicSounds, name,pos);
     }
 
     public void PlaySFX(string name,Vector3 pos)
     {
-        PlaySound( _sfxSounds, name, pos);
+        PlaySound( SfxSounds, name, pos);
     }
 
     public bool IsSoundInList(Sound[] soundList, string name)
     {
-        return Array.Exists(soundList, s => s._name == name);
+        return Array.Exists(soundList, s => s.Name == name);
     }
 }
