@@ -17,4 +17,9 @@ public class NetworkManagerHUD : MonoBehaviour
     {
         NetworkManager.Singleton.StartClient();
     }
+
+    public void Disconnect()
+    {
+        NetworkManager.Singleton.Shutdown();
+    }
 }

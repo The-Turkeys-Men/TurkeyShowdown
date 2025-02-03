@@ -2,7 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 using WeaponSystem;
 
-public interface IWeapon 
+public interface IWeapon : IGrabbable
 {
     
     public float FireRate{get;}//cadance 

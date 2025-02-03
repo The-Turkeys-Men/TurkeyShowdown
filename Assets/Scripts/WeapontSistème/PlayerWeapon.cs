@@ -109,7 +109,8 @@ public class PlayerWeapon : NetworkBehaviour
         float distance = float.MaxValue;
         foreach (Collider2D weaponCollider in weaponColliders) 
         {
-            if (weaponCollider.GetComponent<BaseWeapon>().CanBePickUp.Value == false)
+            BaseWeapon weaponComponent = weaponCollider.GetComponent<BaseWeapon>();
+            if (weaponComponent.CanBePickUp.Value == false)
             {
                 continue;
             }
@@ -145,6 +146,7 @@ public class PlayerWeapon : NetworkBehaviour
         var baseWeapon = weaponNetworkObject.GetComponent<BaseWeapon>();
         baseWeapon.CanBePickUp.Value = false;
         baseWeapon.HideServerRpc();
+        baseWeapon.GetComponent<IGrabbable>().OnGrab.Invoke();
     }
 
     [ServerRpc]
