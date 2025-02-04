@@ -34,7 +34,10 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     [field:SerializeField] public float MaxDistance { get; set; }
 
     public Transform ShootPoint { get; set; }
-
+    
+    [Header("Trainée feedback")]
+    public Material TrailMaterial;
+    
     [Header("Components")]
     public Rigidbody2D Rb ;
     public GameObject Visuals;
@@ -153,13 +156,22 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
             case ShootType.Raycast:
                 RaycastHit2D raycastResult = Physics2D.Raycast(ShootPoint.position, direction, MaxDistance,
                     (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("World")));
-                
+
                 if (raycastResult && raycastResult.collider.TryGetComponent(out HealthComponent healthComponent))
                 {
                     healthComponent.DamageServerRpc(Damage, NetworkObjectId);
                 }
                 
-                Traine(raycastResult,direction);
+                Vector2 endPoint;
+                if(raycastResult==true)
+                {
+                    endPoint = raycastResult.point;
+                }
+                else
+                {
+                    endPoint = (Vector2)ShootPoint.position + direction * MaxDistance;
+                }
+                SpawnBulletTrailServerRpc(endPoint);
                 
                 break;
         }
@@ -168,26 +180,24 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         Rigidbody2D playerRigidbody = transform.parent.GetComponentInParent<Rigidbody2D>();
         playerRigidbody.AddForce(-direction * RecoilForce, ForceMode2D.Impulse);
     }
-    void Traine(RaycastHit2D raycastResult,Vector2 direction )
+    
+    [ServerRpc]
+    private void SpawnBulletTrailServerRpc(Vector2 endPoint)
     {
-        Vector2 endPoint;
-        if(raycastResult==true)
-        {
-            endPoint = raycastResult.point;
-        }
-        else
-        {
-            endPoint = (Vector2)ShootPoint.position + direction * MaxDistance;
-        }
-
+        SpawnBulletTrailClientRpc(endPoint);
+    }
+    
+    [ClientRpc]
+    private void SpawnBulletTrailClientRpc(Vector2 endPoint)
+    {
         GameObject tempTrainé=new GameObject("tempTrainé");
         DespawnTraine despawnTraine = tempTrainé.AddComponent<DespawnTraine>();
         tempTrainé.transform.position=Vector3.zero;
         LineRenderer lineRenderer = tempTrainé.AddComponent<LineRenderer>();
+        lineRenderer.material = new(TrailMaterial);
         lineRenderer.material.color=Color.black;
         lineRenderer.SetPosition(0, ShootPoint.position);
         lineRenderer.SetPosition(1, endPoint);
-        
     }
     
     [ServerRpc]

@@ -133,6 +133,7 @@ MonoBehaviour:
   <ProjectileSpeed>k__BackingField: 0
   <MaxLifetime>k__BackingField: 0
   <MaxDistance>k__BackingField: 1
+  TrailMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   Rb: {fileID: 4640402740232878089}
   Visuals: {fileID: 7812902076482580572}
   IsThrowed:
