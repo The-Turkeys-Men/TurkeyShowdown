@@ -13,6 +13,6 @@ public class TimerText : MonoBehaviour
 
     private void Update()
     {
-        _timerText.text = _gameModeManager.TimeLeft.ToString("F0");
+        _timerText.text = $"{Mathf.FloorToInt(_gameModeManager.TimeLeft / 60)}:{(_gameModeManager.TimeLeft % 60).ToString("00")}";
     }
 }

@@ -1,9 +1,20 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerInput : MonoBehaviour
 {
     [SerializeField] private PlayerController playerController;
+
+    private bool _isShootPressed;
+    
+    private void Update()
+    {
+        if (_isShootPressed)
+        {
+            playerController.OnShoot();
+        }
+    }
 
     #region Movement
 
@@ -36,7 +47,13 @@ public class PlayerInput : MonoBehaviour
     {
         if (context.started)
         {
+            _isShootPressed = true;
             playerController.OnShoot();
+        }
+
+        if (context.canceled)
+        {
+            _isShootPressed = false;
         }
     }
 
