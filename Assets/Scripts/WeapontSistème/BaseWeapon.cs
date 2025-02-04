@@ -6,6 +6,7 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine.Events;
 using WeaponSystem;
+using UnityEditor.SceneManagement;
 
 
 public class BaseWeapon : NetworkBehaviour, IWeapon
@@ -161,14 +162,46 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 {
                     healthComponent.DamageServerRpc(Damage, NetworkObjectId);
                 }
-
-                //code for visual feedback
+            
+                    
+                Traine(raycastResult,direction);
+                
                 break;
         }
         OnShootServerRpc();
         Rigidbody2D playerRigidbody = transform.parent.GetComponentInParent<Rigidbody2D>();
         playerRigidbody.AddForce(-direction * RecoilForce, ForceMode2D.Impulse);
     }
+    void Traine(RaycastHit2D raycastResult,Vector2 direction )
+    {
+        Vector2 endPoint;
+        if(raycastResult==true)
+        {
+            endPoint = raycastResult.point;
+        }
+        else
+        {
+            endPoint = direction*MaxDistance;
+        }
+
+        GameObject tempTrainé=new GameObject("tempTrainé");
+        DesponeTraine desponeTraine = tempTrainé.AddComponent<DesponeTraine>();
+        tempTrainé.transform.position=Vector3.zero;
+        LineRenderer lineRenderer = tempTrainé.AddComponent<LineRenderer>();
+        lineRenderer.material.color=Color.black;
+        lineRenderer.SetPosition(0, transform.position);
+        lineRenderer.SetPosition(1, endPoint);
+        
+    }
+    
+    
+    
+        
+        
+        
+    
+            
+    
     
     [ServerRpc]
     protected virtual void OnShootServerRpc()
