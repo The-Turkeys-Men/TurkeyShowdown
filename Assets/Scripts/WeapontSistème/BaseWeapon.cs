@@ -166,6 +166,8 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 break;
         }
         OnShootServerRpc();
+        Rigidbody2D playerRigidbody = transform.parent.GetComponentInParent<Rigidbody2D>();
+        playerRigidbody.AddForce(-direction * RecoilForce, ForceMode2D.Impulse);
     }
     
     [ServerRpc]
