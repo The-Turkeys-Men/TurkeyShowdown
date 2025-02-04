@@ -147,6 +147,7 @@ public class PlayerWeapon : NetworkBehaviour
         baseWeapon.CanBePickUp.Value = false;
         baseWeapon.HideServerRpc();
         baseWeapon.GetComponent<IGrabbable>().OnGrab.Invoke();
+        baseWeapon.LastOwner = playerNetworkObject.gameObject;
     }
 
     [ServerRpc]
