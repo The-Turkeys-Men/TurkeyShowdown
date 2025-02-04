@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: b8019fa99c00e404b95b11fb6d587f3c
+guid: fae4a7092e33cd94b8f9599b1ec5137c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3986858761855120579
-    second: vignetteBlanc_0
+      213: -2636247911655199480
+    second: bras_dindon_batte0001_0
+  - first:
+      213: -9040287110459600090
+    second: bras_dindon_batte0001_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +116,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: vignetteBlanc_0
+      name: bras_dindon_batte0001_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 835
-        height: 470
+        x: 148
+        y: 148
+        width: 78
+        height: 169
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +131,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3c4370eabea245730800000000000000
-      internalID: 3986858761855120579
+      spriteID: 80d2de5ed7a2a6bd0800000000000000
+      internalID: -2636247911655199480
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bras_dindon_batte0001_1
+      rect:
+        serializedVersion: 2
+        x: 290
+        y: 141
+        width: 148
+        height: 292
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 623538145c27a8280800000000000000
+      internalID: -9040287110459600090
       vertices: []
       indices: 
       edges: []
@@ -147,8 +172,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      vignetteBlanc_0: 3986858761855120579
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
