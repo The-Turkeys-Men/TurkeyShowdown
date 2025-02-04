@@ -38,12 +38,15 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
 
     public Transform ShootPoint { get; set; }
 
+    [Header("Components")]
     public Rigidbody2D Rb ;
     public GameObject Visuals;
 
     public NetworkVariable<bool> IsThrowed = new(false);
 
     public UnityEvent OnGrab { get; set; } = new();
+    
+    public GameObject LastOwner { get; set; }
 
     private void Awake()
     {
@@ -79,7 +82,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
             GetComponent<NetworkObject>().Despawn(true);
             if (other.TryGetComponent(out HealthComponent healthComponent))
             {
-                healthComponent.DamageServerRpc(DamageByThrow);
+                healthComponent.DamageServerRpc(DamageByThrow, LastOwner.GetComponent<NetworkObject>().NetworkObjectId);
             }
         }
     }
@@ -148,12 +151,13 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 SpawnProjectileServerRpc(ShootPoint.position, direction);
                 break;
             case ShootType.Raycast:
-                RaycastHit2D raycastResult = Physics2D.Raycast(ShootPoint.position, direction, MaxDistance, 
-                    1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("World"));
+                RaycastHit2D raycastResult = Physics2D.Raycast(ShootPoint.position, direction, MaxDistance,
+                    (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("World")));
                 
+                Debug.Log(raycastResult.collider.name);
                 if (raycastResult.collider.TryGetComponent(out HealthComponent healthComponent))
                 {
-                    healthComponent.DamageServerRpc(Damage);
+                    healthComponent.DamageServerRpc(Damage, NetworkObjectId);
                 }
 
                 //code for visual feedback

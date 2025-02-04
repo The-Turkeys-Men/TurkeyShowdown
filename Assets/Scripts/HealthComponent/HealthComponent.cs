@@ -3,6 +3,7 @@ using Extensions;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
+using WeaponSystem;
 
 public class HealthComponent : NetworkBehaviour
 {
@@ -36,8 +37,17 @@ public class HealthComponent : NetworkBehaviour
     }
     
     [ServerRpc(RequireOwnership = false)]
-    public void DamageServerRpc(int damage)
+    public void DamageServerRpc(int damage, ulong senderId)
     {
+        GameObject senderObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[senderId].gameObject;
+        if (senderObject.TryGetComponent(out TeamComponent senderTeamComponent) && TryGetComponent(out TeamComponent receiverTeamComponent))
+        {
+            if (senderTeamComponent.TeamID == receiverTeamComponent.TeamID)
+            {
+                return;
+            }
+        }
+        
         if (Armor.Value > 0)
         {
             Armor.Value -= damage;

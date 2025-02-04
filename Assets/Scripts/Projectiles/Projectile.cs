@@ -1,9 +1,11 @@
 using System;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Projectile : NetworkBehaviour
 {
+    [HideInInspector] public GameObject SenderObject;
     private Rigidbody2D _rigidbody;
     
     public float Speed;
@@ -39,9 +41,17 @@ public class Projectile : NetworkBehaviour
             return;
         }
 
+        if (SenderObject.TryGetComponent(out TeamComponent senderTeamComponent) && other.TryGetComponent(out TeamComponent otherTeamComponent))
+        {
+            if (senderTeamComponent.TeamID == otherTeamComponent.TeamID)
+            {
+                return;
+            }
+        }
+        
         if (other.transform.TryGetComponent(out HealthComponent healthComponent))
         {
-            healthComponent.DamageServerRpc(Damage);
+            healthComponent.DamageServerRpc(Damage, SenderObject.GetComponent<NetworkObject>().NetworkObjectId);
         }
         
         NetworkObject.Despawn(true);
