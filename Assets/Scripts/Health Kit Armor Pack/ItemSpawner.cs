@@ -1,10 +1,12 @@
 using System.Collections;
+using System.Collections.Generic;
+using Extensions;
 using Unity.Netcode;
 using UnityEngine;
 
 public class ItemSpawner : NetworkBehaviour
 {
-    [SerializeField] private GameObject _Item;
+    [SerializeField] private List<GameObject> _Item;
     [SerializeField] private int _respawnTime = 30;
     
     private GameObject _spawnedItem;
@@ -30,6 +32,10 @@ public class ItemSpawner : NetworkBehaviour
 
     IEnumerator RespawnItems()
     {
+        if (_spawnedItem && _spawnedItem.TryGetComponent(out IGrabbable grabbable))
+        {
+             grabbable.OnGrab.RemoveListener(StartRespawn);
+        }
         yield return new WaitForSeconds(_respawnTime);
         if (!_spawnedItem || _reinstantiate)
         {
@@ -55,7 +61,7 @@ public class ItemSpawner : NetworkBehaviour
     
     private void SpawnItem()
     {
-        _spawnedItem = Instantiate(_Item, transform.position, Quaternion.identity);
+        _spawnedItem = Instantiate(_Item.PickRandom(), transform.position, Quaternion.identity);
         if (_spawnedItem.TryGetComponent(out IGrabbable grabbable))
         { 
             grabbable.OnGrab.AddListener(StartRespawn); 
