@@ -19,16 +19,8 @@ public class FixCamera : MonoBehaviour
     }
     private void MoveCamera()
     {
-        if (_followTransform.position.x < _maxX && _followTransform.position.x > _minX)
-        {
-           newCameraPositionX = _followTransform.position.x;
-        }
-
-        if (_followTransform.position.y < _maxY && _followTransform.position.y > _minY)
-        {
-            newCameraPositionY = _followTransform.position.y;
-        }
-
+        newCameraPositionX = Mathf.Clamp(_followTransform.position.x, _minX, _maxX);
+        newCameraPositionY = Mathf.Clamp(_followTransform.position.y, _minY, _maxY);
         _transform.position = new Vector3(newCameraPositionX, newCameraPositionY, _transform.position.z);
     }
 }

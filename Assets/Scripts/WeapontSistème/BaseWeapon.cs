@@ -79,9 +79,16 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         {
             return;
         }
+
+        if (!IsThrowed.Value)
+        {
+            return;
+        }
+
+        LastOwner.TryGetComponent(out TeamComponent lastOwnerTeam);
         
-        if (IsThrowed.Value && other.TryGetComponent(out TeamComponent otherTeam) && LastOwner.TryGetComponent(out TeamComponent lastOwnerTeam) && otherTeam.TeamID.Value != lastOwnerTeam.TeamID.Value)
-        { 
+        if (!other.TryGetComponent(out TeamComponent otherTeam) || otherTeam.TeamID.Value != lastOwnerTeam.TeamID.Value)
+        {
             _isDespawning = true;
             GetComponent<NetworkObject>().Despawn(true);
             if (other.TryGetComponent(out HealthComponent healthComponent))

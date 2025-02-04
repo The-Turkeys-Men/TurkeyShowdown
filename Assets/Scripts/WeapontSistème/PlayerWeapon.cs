@@ -27,7 +27,6 @@ public class PlayerWeapon : NetworkBehaviour
         {
             EquipedWeapon.transform.position = WeaponHolder.position;
             EquipedWeapon.transform.rotation = WeaponHolder.rotation;
-            UpdateWeaponPosServerRpc(EquipedWeapon.GetComponent<NetworkObject>().NetworkObjectId, WeaponHolder.position);
         }
     }
 
@@ -68,6 +67,7 @@ public class PlayerWeapon : NetworkBehaviour
         EquipedWeapon.Rb.simulated = true;
         
         ulong weaponId = EquipedWeapon.GetComponent<NetworkObject>().NetworkObjectId;
+        UpdateWeaponPosServerRpc(weaponId, WeaponHolder.position);
         OnThrowWeaponServerRpc(weaponId, EquipedWeapon.transform.right);
         UnEquipWeapon();
     }
