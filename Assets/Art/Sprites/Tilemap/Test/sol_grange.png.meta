@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: b8019fa99c00e404b95b11fb6d587f3c
+guid: c3e4269e717c18149a3edcb2dd926419
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3986858761855120579
-    second: vignetteBlanc_0
+      213: 3617673484745325162
+    second: sol_grange_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: vignetteBlanc_0
+      name: sol_grange_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 835
-        height: 470
+        width: 512
+        height: 512
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3c4370eabea245730800000000000000
-      internalID: 3986858761855120579
+      spriteID: a6a389bfdde843230800000000000000
+      internalID: 3617673484745325162
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      vignetteBlanc_0: 3986858761855120579
+      sol_grange_0: 3617673484745325162
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

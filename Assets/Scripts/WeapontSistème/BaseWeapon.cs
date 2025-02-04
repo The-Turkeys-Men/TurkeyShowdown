@@ -49,6 +49,8 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     
     public GameObject LastOwner { get; set; }
 
+    private bool _isDespawning = false;
+
     private void Awake()
     {
         Rb = GetComponent<Rigidbody2D>();
@@ -73,13 +75,14 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
 
     public void OnTriggerEnter2D(Collider2D other)
     {
-        if (!IsServer)
+        if (!IsServer || _isDespawning)
         {
             return;
         }
         
         if (IsThrowed.Value) 
         { 
+            _isDespawning = true;
             GetComponent<NetworkObject>().Despawn(true);
             if (other.TryGetComponent(out HealthComponent healthComponent))
             {
@@ -155,7 +158,6 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 RaycastHit2D raycastResult = Physics2D.Raycast(ShootPoint.position, direction, MaxDistance,
                     (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("World")));
                 
-                
                 if (raycastResult && raycastResult.collider.TryGetComponent(out HealthComponent healthComponent))
                 {
                     healthComponent.DamageServerRpc(Damage, NetworkObjectId);
@@ -167,6 +169,8 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 break;
         }
         OnShootServerRpc();
+        Rigidbody2D playerRigidbody = transform.parent.GetComponentInParent<Rigidbody2D>();
+        playerRigidbody.AddForce(-direction * RecoilForce, ForceMode2D.Impulse);
     }
     void Traine(RaycastHit2D raycastResult,Vector2 direction )
     {

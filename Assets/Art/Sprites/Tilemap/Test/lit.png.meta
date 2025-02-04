@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: b8019fa99c00e404b95b11fb6d587f3c
+guid: e1145215d3004724da7578b0ffa1936c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3986858761855120579
-    second: vignetteBlanc_0
+      213: 6437495403006339692
+    second: lit_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: vignetteBlanc_0
+      name: lit_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 835
-        height: 470
+        x: 88
+        y: 19
+        width: 854
+        height: 488
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3c4370eabea245730800000000000000
-      internalID: 3986858761855120579
+      spriteID: c6a276336f3965950800000000000000
+      internalID: 6437495403006339692
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      vignetteBlanc_0: 3986858761855120579
+      lit_0: 6437495403006339692
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

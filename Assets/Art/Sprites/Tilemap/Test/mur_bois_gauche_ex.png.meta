@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: b8019fa99c00e404b95b11fb6d587f3c
+guid: 3e68e2f6adf6b564399c25f83bc5c1e7
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3986858761855120579
-    second: vignetteBlanc_0
+      213: -5375644908362990377
+    second: mur_bois_gauche_ex_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: vignetteBlanc_0
+      name: mur_bois_gauche_ex_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 835
-        height: 470
+        width: 512
+        height: 512
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3c4370eabea245730800000000000000
-      internalID: 3986858761855120579
+      spriteID: 7dcf26eef6fd565b0800000000000000
+      internalID: -5375644908362990377
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      vignetteBlanc_0: 3986858761855120579
+      mur_bois_gauche_ex_0: -5375644908362990377
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

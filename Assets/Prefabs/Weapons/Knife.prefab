@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 3582760613725419461}
   - component: {fileID: 4884415600338553132}
   m_Layer: 7
-  m_Name: TestGun
+  m_Name: Knife
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 168517235
+  GlobalObjectIdHash: 4103391793
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -113,9 +113,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  <FireRate>k__BackingField: 0.1
-  <Damage>k__BackingField: 10
-  <MaxAmmo>k__BackingField: 32
+  <FireRate>k__BackingField: 0.2
+  <Damage>k__BackingField: 25
+  <MaxAmmo>k__BackingField: 9999999
   <Ammo>k__BackingField:
     m_InternalValue: 0
   <SprayAmount>k__BackingField: 0
@@ -132,7 +132,7 @@ MonoBehaviour:
   <ProjectilePrefab>k__BackingField: {fileID: 0}
   <ProjectileSpeed>k__BackingField: 0
   <MaxLifetime>k__BackingField: 0
-  <MaxDistance>k__BackingField: 15
+  <MaxDistance>k__BackingField: 1.5
   Rb: {fileID: 4640402740232878089}
   Visuals: {fileID: 7812902076482580572}
   IsThrowed:
@@ -308,7 +308,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7874505037903779608}
@@ -357,12 +357,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
-  m_Color: {r: 0.9046602, g: 1, b: 0.50377357, a: 1}
+  m_Sprite: {fileID: 2634828794379451360, guid: c4837677fd1c42643ab5423befbecca3, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.13085938, y: 0.32617188}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
