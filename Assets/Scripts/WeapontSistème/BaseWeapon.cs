@@ -177,7 +177,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         }
         else
         {
-            endPoint = direction*MaxDistance;
+            endPoint = (Vector2)ShootPoint.position + direction * MaxDistance;
         }
 
         GameObject tempTrainé=new GameObject("tempTrainé");
@@ -185,7 +185,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         tempTrainé.transform.position=Vector3.zero;
         LineRenderer lineRenderer = tempTrainé.AddComponent<LineRenderer>();
         lineRenderer.material.color=Color.black;
-        lineRenderer.SetPosition(0, transform.position);
+        lineRenderer.SetPosition(0, ShootPoint.position);
         lineRenderer.SetPosition(1, endPoint);
         
     }

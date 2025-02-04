@@ -48,7 +48,7 @@ public class PlayerSpawner : NetworkBehaviour
     IEnumerator SpawnTimer(GameObject player)
     {
         yield return new WaitForSeconds(_respawnTime);
-        player.GetComponent<HealthComponent>().Health.Value = player.GetComponent<HealthComponent>().BaseHealth;
+        player.GetComponent<HealthComponent>().SetHealthServerRpc(player.GetComponent<HealthComponent>().BaseHealth);
         player.transform.position = _playerSpawnPoint[Random.Range(0, _playerSpawnPoint.Length)].position;
         player.SetActive(true);
         

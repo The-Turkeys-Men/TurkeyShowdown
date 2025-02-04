@@ -6,15 +6,15 @@ using UnityEngine.UI;
 
 public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 {
-    [SerializeField] private float maxGameTime = 300f;
+    [SerializeField] private int maxGameTime = 300;
     [SerializeField] private int scoreToWin = 10;
     [SerializeField] private float disconnectDelay = 30f;
 
-    public float TimeLeft { get; set; }
-    public float MaxGameTime { get; set; }
+    public NetworkVariable<int> TimeLeft { get; set; } = new();
+    public int MaxGameTime { get; set; }
     public int ScoreToWin { get; set; }
 
-    public NetworkVariable<Dictionary<ulong, int>> PlayerScores { get; set; } = new NetworkVariable<Dictionary<ulong, int>>(new Dictionary<ulong, int>());
+    public NetworkVariable<Dictionary<ulong, int>> PlayerScores { get; set; } = new(new Dictionary<ulong, int>());
 
     private bool isGameActive = false;
     private bool isServerReady = true; // Flag to track if the server is ready to accept new connections
@@ -24,11 +24,13 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
     private const ulong NoWinner = ulong.MaxValue; // Default value to represent no winner
 
-    private void Awake()
+    private float _timeLeftTimer = 1;
+
+    private void Initialize()
     {
         MaxGameTime = maxGameTime;
         ScoreToWin = scoreToWin;
-        TimeLeft = maxGameTime;
+        TimeLeft.Value = maxGameTime;
 
         if (scorePanel != null)
         {
@@ -46,6 +48,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     {
         if (IsServer)
         {
+            Initialize();
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
             PlayerScores.Value = new Dictionary<ulong, int>();
@@ -101,14 +104,14 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     private void StartGame()
     {
         isGameActive = true;
-        TimeLeft = MaxGameTime;
+        TimeLeft.Value = MaxGameTime;
     }
 
     private void ResetServer()
     {
         isGameActive = false;
         isServerReady = true; // Server is ready to accept new connections again
-        TimeLeft = MaxGameTime;
+        TimeLeft.Value = MaxGameTime;
         PlayerScores.Value.Clear();
         PlayerScores.SetDirty(true);
 
@@ -120,10 +123,17 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     {
         if (!isGameActive) return;
 
-        TimeLeft -= Time.deltaTime;
-        if (TimeLeft <= 0)
+        _timeLeftTimer -= Time.deltaTime;
+        if (_timeLeftTimer <= 0)
         {
-            TimeLeft = 0;
+            TimeLeft.Value--;
+            TimeLeft.SetDirty(true);
+            _timeLeftTimer = 1;
+        }
+        
+        if (TimeLeft.Value <= 0)
+        {
+            TimeLeft.Value = 0;
             OnLose();
         }
     }
@@ -213,13 +223,6 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
         if (!isGameActive) return;
 
-        // Allow the client to increase their score by pressing K
-        if (IsClient && NetworkManager.Singleton.IsClient && Input.GetKeyDown(KeyCode.K))
-        {
-            Debug.Log("Client pressed K. Sending request to the server...");
-            AddKillForSelfServerRpc();
-            Debug.Log("Request sent to the server.");
-        }
     }
 
     [ServerRpc(RequireOwnership = false)]

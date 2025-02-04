@@ -37,6 +37,12 @@ public class HealthComponent : NetworkBehaviour
     }
     
     [ServerRpc(RequireOwnership = false)]
+    public void SetHealthServerRpc(int health)
+    {
+        Health.Value = health;
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
     public void DamageServerRpc(int damage, ulong senderId)
     {
         GameObject senderObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[senderId].gameObject;
