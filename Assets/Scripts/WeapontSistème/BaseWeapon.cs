@@ -49,7 +49,8 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     public GameObject LastOwner { get; set; }
 
     private bool _isDespawning = false;
-
+    private float _throwSpeedThreshold = 0.2f;
+    
     private void Awake()
     {
         Rb = GetComponent<Rigidbody2D>();
@@ -79,7 +80,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
             return;
         }
         
-        if (IsThrowed.Value) 
+        if (IsThrowed.Value && other.TryGetComponent(out TeamComponent otherTeam) && LastOwner.TryGetComponent(out TeamComponent lastOwnerTeam) && otherTeam.TeamID.Value != lastOwnerTeam.TeamID.Value)
         { 
             _isDespawning = true;
             GetComponent<NetworkObject>().Despawn(true);
@@ -108,7 +109,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
             return;
         }
 
-        if (!Mathf.Approximately(Rb.linearVelocity.magnitude, 0))
+        if (Rb.linearVelocity.magnitude > _throwSpeedThreshold)
         {
             return;
         }
@@ -154,9 +155,12 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 SpawnProjectileServerRpc(ShootPoint.position, direction);
                 break;
             case ShootType.Raycast:
-                RaycastHit2D raycastResult = Physics2D.Raycast(ShootPoint.position, direction, MaxDistance,
+                var teamComponent = LastOwner.GetComponent<TeamComponent>();
+                int teamIDValue = (teamComponent)? teamComponent.TeamID.Value : -1;
+                
+                RaycastHit2D raycastResult = RaycastUtils.RaycastFirstEnnemy(teamIDValue, ShootPoint.position, direction, MaxDistance, 
                     (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("World")));
-
+                
                 if (raycastResult && raycastResult.collider.TryGetComponent(out HealthComponent healthComponent))
                 {
                     healthComponent.DamageServerRpc(Damage, NetworkObjectId);
