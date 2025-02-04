@@ -54,6 +54,8 @@ GameObject:
   - component: {fileID: 2332458254201433568}
   - component: {fileID: 8804397140222911317}
   - component: {fileID: 3577906075511020807}
+  - component: {fileID: 5400339142076950449}
+  m_Layer: 0
   - component: {fileID: 672106109479174921}
   m_Layer: 9
   m_Name: Player
@@ -897,7 +899,7 @@ LineRenderer:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7613369828998784728}
+  m_GameObject: {fileID: 1766801901717005780}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -1185,7 +1187,6 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!1001 &5320219369220180167
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -1193,6 +1194,7 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4942938090148323569}
     m_Modifications:
+
     - target: {fileID: 1513506020252728277, guid: 764b342f154ae8244824846e3e6c285c, type: 3}
       propertyPath: m_Camera
       value: 
@@ -1285,6 +1287,7 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
+
   m_SourcePrefab: {fileID: 100100000, guid: 764b342f154ae8244824846e3e6c285c, type: 3}
 --- !u!224 &2831944593927912345 stripped
 RectTransform:
