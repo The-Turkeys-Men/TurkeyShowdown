@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      sol_grange_0: 3617673484745325162
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

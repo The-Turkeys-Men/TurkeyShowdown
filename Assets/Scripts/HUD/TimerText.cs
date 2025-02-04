@@ -13,6 +13,6 @@ public class TimerText : MonoBehaviour
 
     private void Update()
     {
-        _timerText.text = _gameModeManager.TimeLeft.ToString("F2");
+        _timerText.text = _gameModeManager.TimeLeft.ToString("F0");
     }
 }
