@@ -4,9 +4,8 @@ using UnityEngine;
 public class CharacterCustomization : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer[] _previewRenderers;
-    [SerializeField] private receivingJSON _receivingJSON;
-    [SerializeField] private JSONSender _jsonSender;
     [SerializeField] private TextMeshProUGUI DebugText;
+    
     public string NewColor = "default";
     
     public void OnColorButtonPressed(string colorName)
@@ -48,12 +47,9 @@ public class CharacterCustomization : MonoBehaviour
         Previsualisation(newColor);
     }
 
-    public async void SaveColor()
+    public void SaveColor()
     {
-        Debug.Log(NewColor);
-        //Task<PlayerJSON> playerJson = _receivingJSON.FetchJSONValue();
-        //await playerJson;
-        PlayerJSON playerJson = new PlayerJSON()
+        /*PlayerJSON playerJson = new PlayerJSON()
         {
             Id = 2,
             Pseudo = "Wighthood",   // Replace with dynamical data
@@ -64,11 +60,10 @@ public class CharacterCustomization : MonoBehaviour
             Skins = new Skin[] // Replace with dynamical data
             { },
             color = "default",
-        };
-        
-        PlayerDataManager.Instance.playerData = playerJson;
-        PlayerDataManager.Instance.playerData.color =NewColor;
-        StartCoroutine(_jsonSender.SendJsonToServer(JsonUtility.ToJson(PlayerDataManager.Instance.playerData)));
+        };*/
+        PlayerDataManager.Datainstance.receivingJSON();
+        PlayerDataManager.Datainstance.playerData.color =NewColor;
+       PlayerDataManager.Datainstance.sendJSON();
     }
     
     private void Previsualisation(Color newColor)

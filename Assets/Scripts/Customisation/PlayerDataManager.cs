@@ -1,23 +1,56 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Unity.Netcode;
+using UnityEditor;
 using UnityEngine;
 
-public class PlayerDataManager : MonoBehaviour
+public class PlayerDataManager : NetworkBehaviour
 {
     public PlayerJSON playerData;
+    public NetworkVariable<Dictionary<ulong, string>> ColorData = new();
     
-    private static PlayerDataManager instance = null;
-    public static PlayerDataManager Instance => instance;
-
+    public static PlayerDataManager Datainstance;
+    
+    public receivingJSON _receivingJSON;
+    public JSONSender _jsonSender;
+    
     private void Awake()
     {
-        if (instance != null && instance != this)
+        if (Datainstance == null)
         {
-            Destroy(gameObject);
-            return;
+            Datainstance = this;
+            DontDestroyOnLoad(this);
+            NetworkManager.Singleton.OnClientConnectedCallback += RefreshAllPlayers;
         }
         else
         {
-            instance = this;
+            Destroy(gameObject);
         }
-        DontDestroyOnLoad(gameObject);
+    }
+    
+    public void RefreshAllPlayers(ulong _clientID)
+    {
+        var Players = NetworkManager.Singleton.ConnectedClients.Keys;
+        foreach (var Player in Players)
+        {
+            NetworkManager.ConnectedClients[Player].PlayerObject.GetComponent<ColorChanger>().ChangeColor(ColorData.Value[Player]);
+        }
+    }
+    
+    public void AddColorData(ulong playerID, string color)
+    {
+        ColorData.Value.Add(playerID, color);
+    }
+    
+    public async void receivingJSON()
+    {
+        Task<PlayerJSON> playerJson = _receivingJSON.FetchJSONValue();
+        await playerJson;
+        playerData = playerJson.Result;
+    }
+
+    public void sendJSON()
+    {
+        StartCoroutine(_jsonSender.SendJsonToServer(JsonUtility.ToJson(playerData)));
     }
 }
