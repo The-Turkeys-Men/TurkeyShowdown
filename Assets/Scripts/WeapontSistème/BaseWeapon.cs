@@ -151,9 +151,10 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 SpawnProjectileServerRpc(ShootPoint.position, direction);
                 break;
             case ShootType.Raycast:
-                RaycastHit2D raycastResult = Physics2D.Raycast(ShootPoint.position, direction, MaxDistance, 
-                    1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("World"));
+                RaycastHit2D raycastResult = Physics2D.Raycast(ShootPoint.position, direction, MaxDistance,
+                    (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("World")));
                 
+                Debug.Log(raycastResult.collider.name);
                 if (raycastResult.collider.TryGetComponent(out HealthComponent healthComponent))
                 {
                     healthComponent.DamageServerRpc(Damage, NetworkObjectId);
