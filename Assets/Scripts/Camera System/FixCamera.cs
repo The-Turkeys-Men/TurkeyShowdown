@@ -2,15 +2,16 @@ using UnityEngine;
 
 public class FixCamera : MonoBehaviour
 {
-     [SerializeField]private Camera Camera;
-
+    private Transform _transform;
+    [SerializeField] private Transform _followTransform;
+    
     [SerializeField]private int _maxX, _maxY,_minX, _minY;
     private float newCameraPositionX ;
     private float newCameraPositionY ;
    
     void Awake()
     {
-        Camera = GetComponent<Camera>();
+        _transform = GetComponent<Transform>();
     }
     void Update()
     {
@@ -18,21 +19,16 @@ public class FixCamera : MonoBehaviour
     }
     private void MoveCamera()
     {
-        if (Camera != null)
+        if (_followTransform.position.x < _maxX && _followTransform.position.x > _minX)
         {
-            if (transform.position.x < _maxX && transform.position.x > _minX)
-            {
-               newCameraPositionX=transform.position.x;
-            }
-
-            if (transform.position.y < _maxY && transform.position.y > _minY)
-            {
-                newCameraPositionY=transform.position.y;
-            }
-            Camera.transform.position=new Vector3(newCameraPositionX,newCameraPositionY,Camera.transform.position.z);
-
-
-            
+           newCameraPositionX = _followTransform.position.x;
         }
+
+        if (_followTransform.position.y < _maxY && _followTransform.position.y > _minY)
+        {
+            newCameraPositionY = _followTransform.position.y;
+        }
+
+        _transform.position = new Vector3(newCameraPositionX, newCameraPositionY, _transform.position.z);
     }
 }
