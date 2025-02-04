@@ -1,12 +1,8 @@
-using System;
-using Unity.Mathematics;
 using UnityEngine;
 
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine.Events;
 using WeaponSystem;
-using UnityEditor.SceneManagement;
 
 
 public class BaseWeapon : NetworkBehaviour, IWeapon
@@ -50,10 +46,16 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     public GameObject LastOwner { get; set; }
 
     private bool _isDespawning = false;
+    
+    private float _fireRateTimer;
 
     private void Awake()
     {
         Rb = GetComponent<Rigidbody2D>();
+        FireRateTimer.OnValueChanged += (previous, current) =>
+        {
+            _fireRateTimer = current;
+        };
     }
 
     private void Initialize()
@@ -133,7 +135,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         {
             case > 0:
             {
-                if(FireRateTimer.Value <= 0)
+                if(_fireRateTimer <= 0)
                 {
                     Shoot();
                 }
@@ -162,12 +164,12 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 {
                     healthComponent.DamageServerRpc(Damage, NetworkObjectId);
                 }
-            
-                    
+                
                 Traine(raycastResult,direction);
                 
                 break;
         }
+        _fireRateTimer = FireRate;
         OnShootServerRpc();
         Rigidbody2D playerRigidbody = transform.parent.GetComponentInParent<Rigidbody2D>();
         playerRigidbody.AddForce(-direction * RecoilForce, ForceMode2D.Impulse);
@@ -185,7 +187,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         }
 
         GameObject tempTrainé=new GameObject("tempTrainé");
-        DesponeTraine desponeTraine = tempTrainé.AddComponent<DesponeTraine>();
+        DespawnTraine despawnTraine = tempTrainé.AddComponent<DespawnTraine>();
         tempTrainé.transform.position=Vector3.zero;
         LineRenderer lineRenderer = tempTrainé.AddComponent<LineRenderer>();
         lineRenderer.material.color=Color.black;
