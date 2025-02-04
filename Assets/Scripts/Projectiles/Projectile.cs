@@ -1,9 +1,11 @@
 using System;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Projectile : NetworkBehaviour
 {
+    [HideInInspector] public GameObject SenderObject;
     private Rigidbody2D _rigidbody;
     
     public float Speed;
@@ -15,6 +17,7 @@ public class Projectile : NetworkBehaviour
     public float ExplosionRange;
     
     private float _currentLifeTime;
+    [HideInInspector] public Vector2 Direction;
     
     private void Initialize()
     {
@@ -31,16 +34,24 @@ public class Projectile : NetworkBehaviour
         Initialize();
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (!IsServer)
         {
             return;
         }
-        
-        if (other.rigidbody.TryGetComponent(out HealthComponent healthComponent))
+
+        if (SenderObject.TryGetComponent(out TeamComponent senderTeamComponent) && other.TryGetComponent(out TeamComponent otherTeamComponent))
         {
-            healthComponent.DamageServerRpc(Damage);
+            if (senderTeamComponent.TeamID == otherTeamComponent.TeamID)
+            {
+                return;
+            }
+        }
+        
+        if (other.transform.TryGetComponent(out HealthComponent healthComponent))
+        {
+            healthComponent.DamageServerRpc(Damage, SenderObject.GetComponent<NetworkObject>().NetworkObjectId);
         }
         
         NetworkObject.Despawn(true);
@@ -52,6 +63,8 @@ public class Projectile : NetworkBehaviour
         {
             return;
         }
+        
+        _rigidbody.linearVelocity = Direction * Speed;
         
         _currentLifeTime += Time.deltaTime;
         if (_currentLifeTime >= MaxLifeTime)

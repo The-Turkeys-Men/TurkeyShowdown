@@ -1725,15 +1725,43 @@ Tilemap:
   m_Enabled: 1
   m_Tiles: {}
   m_AnimatedTiles: {}
-  m_TileAssetArray: []
-  m_TileSpriteArray: []
-  m_TileMatrixArray: []
-  m_TileColorArray: []
+  m_TileAssetArray:
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  m_TileSpriteArray:
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  m_TileMatrixArray:
+  - m_RefCount: 0
+    m_Data:
+      e00: 3.0602738e-29
+      e01: 0
+      e02: 1e-45
+      e03: 2.791732e+10
+      e10: 5.86e-43
+      e11: 0
+      e12: 0
+      e13: 5.86e-43
+      e20: 1.397975e+9
+      e21: 2.791732e+10
+      e22: 2.1353378e+29
+      e23: -1.615055e-28
+      e30: 4.5915e-41
+      e31: 5.86e-43
+      e32: 5.89e-43
+      e33: 5.86e-43
+  m_TileColorArray:
+  - m_RefCount: 0
+    m_Data: {r: -1.6150502e-28, g: -1.6150502e-28, b: -1.6150502e-28, a: -1.6150502e-28}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Origin: {x: 0, y: 0, z: 0}
-  m_Size: {x: 0, y: 0, z: 1}
+  m_Origin: {x: 0, y: -5, z: 0}
+  m_Size: {x: 10, y: 5, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:
@@ -3337,12 +3365,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  playerPrefab: {fileID: 1766801901717005780, guid: c34eda09e521d3a47944ba3aa4844e05, type: 3}
-  playerSpawnPoint:
-  - {fileID: 239977804}
-  - {fileID: 1349853097}
-  - {fileID: 1295144485}
-  - {fileID: 1356654684}
+  _playerPrefab: {fileID: 0}
+  _respawnTime: 5
+  _playerSpawnPoint: []
 --- !u!114 &2039807565
 MonoBehaviour:
   m_ObjectHideFlags: 0
