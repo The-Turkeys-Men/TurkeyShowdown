@@ -8,7 +8,7 @@ using WeaponSystem;
 public class BaseWeapon : NetworkBehaviour, IWeapon
 {
     [field:SerializeField] public float FireRate { get; set; }
-    public NetworkVariable<float> FireRateTimer { get; set; } = new(0);
+    public float FireRateTimer { get; set; }
     [field:SerializeField] public int Damage { get; set; }
     [field:SerializeField] public int MaxAmmo { get; set; }
     [field:SerializeField] public NetworkVariable<int> Ammo { get; set; } = new(0);
@@ -46,16 +46,10 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     public GameObject LastOwner { get; set; }
 
     private bool _isDespawning = false;
-    
-    private float _fireRateTimer;
 
     private void Awake()
     {
         Rb = GetComponent<Rigidbody2D>();
-        FireRateTimer.OnValueChanged += (previous, current) =>
-        {
-            _fireRateTimer = current;
-        };
     }
 
     private void Initialize()
@@ -96,14 +90,14 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     
     void Update()
     {
+        if (FireRateTimer > 0)
+        {
+            FireRateTimer -= Time.deltaTime;
+        }
+        
         if (!IsServer)
         {
             return;
-        }
-        
-        if (FireRateTimer.Value > 0)
-        {
-            FireRateTimer.Value -= Time.deltaTime;
         }
         
         if (!IsThrowed.Value)
@@ -135,7 +129,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         {
             case > 0:
             {
-                if(_fireRateTimer <= 0)
+                if(FireRateTimer <= 0)
                 {
                     Shoot();
                 }
@@ -169,7 +163,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 
                 break;
         }
-        _fireRateTimer = FireRate;
+        FireRateTimer = FireRate;
         OnShootServerRpc();
         Rigidbody2D playerRigidbody = transform.parent.GetComponentInParent<Rigidbody2D>();
         playerRigidbody.AddForce(-direction * RecoilForce, ForceMode2D.Impulse);
@@ -196,19 +190,10 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         
     }
     
-    
-    
-        
-        
-        
-    
-            
-    
-    
     [ServerRpc]
     protected virtual void OnShootServerRpc()
     {
-        FireRateTimer.Value = FireRate;
+        FireRateTimer = FireRate;
         Ammo.Value -= 1;
     }
 
@@ -219,29 +204,27 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         GameObject spawnedBullet = Instantiate(ProjectilePrefab, position, Quaternion.identity);
         spawnedBullet.GetComponent<NetworkObject>().Spawn();
         spawnedBullet.GetComponent<Projectile>().Direction = direction;
-        
     }
 
-
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void HideServerRpc()
     {
         HideClientRpc();
     }
     
-    [ClientRpc]
+    [ClientRpc(RequireOwnership = false)]
     private void HideClientRpc()
     {
         Visuals.SetActive(false);
     }
     
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void ShowServerRpc()
     {
         ShowClientRpc();
     }
     
-    [ClientRpc]
+    [ClientRpc(RequireOwnership = false)]
     private void ShowClientRpc()
     {
         Visuals.SetActive(true);

@@ -6,7 +6,7 @@ public interface IWeapon : IGrabbable
 {
     
     public float FireRate{get;}//cadance 
-    public NetworkVariable<float> FireRateTimer{get;}
+    public float FireRateTimer{get;}
     public int Damage{get;}
     public int MaxAmmo{get;}// munition max
     public int SprayAmount{get;}
