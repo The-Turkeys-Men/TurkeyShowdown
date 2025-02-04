@@ -233,7 +233,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  MaxWalkSpeed: 5
+  MaxWalkSpeed: 4
   Acceleration: 7
   Friction: 0
 --- !u!114 &3260235163975166542
