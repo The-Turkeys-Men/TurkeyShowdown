@@ -15,6 +15,8 @@ public class HealthComponent : NetworkBehaviour
     public int MaxArmor;
 
     public UnityEvent<ulong> OnDeath;
+    
+    [SerializeField] private bool _isPlayer = false;
 
     private void OnDeathServerRpcAttribute()
     {
@@ -76,6 +78,11 @@ public class HealthComponent : NetworkBehaviour
         {
             OnDeathServerRpcAttribute();
             OnDeathClientRpcAttribute();
+            if (_isPlayer)
+            {
+                //todo: optimize this
+                FindAnyObjectByType<DeathMatchManager>().OnPlayerKill(senderId);
+            }
         }
     }
 }
