@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 1e49cdc434772514f85cfdc420cdef61
+guid: ea87035ef6eb8d041876aa53dc0f0424
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4755245133936818684
-    second: sol2_0
+      213: -2224851797444323128
+    second: carlage_cuisine_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,7 +126,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: sol2_0
+      name: carlage_cuisine_0
       rect:
         serializedVersion: 2
         x: 0
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cf9753441460ef140800000000000000
-      internalID: 4755245133936818684
+      spriteID: 8c81177f31dbf11e0800000000000000
+      internalID: -2224851797444323128
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      sol2_0: 4755245133936818684
+      carlage_cuisine_0: -2224851797444323128
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

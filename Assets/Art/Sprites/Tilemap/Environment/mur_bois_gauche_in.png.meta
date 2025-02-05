@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 1e49cdc434772514f85cfdc420cdef61
+guid: 2949d4a927101d142b2f91f4957d723e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4755245133936818684
-    second: sol2_0
+      213: -6611710148732482973
+    second: mur_bois_gauche_in_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,7 +126,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: sol2_0
+      name: mur_bois_gauche_in_0
       rect:
         serializedVersion: 2
         x: 0
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cf9753441460ef140800000000000000
-      internalID: 4755245133936818684
+      spriteID: 36a84fa66ac7e34a0800000000000000
+      internalID: -6611710148732482973
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      sol2_0: 4755245133936818684
+      mur_bois_gauche_in_0: -6611710148732482973
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
