@@ -45,6 +45,11 @@ public class HealthComponent : NetworkBehaviour
     [Rpc(SendTo.Server, RequireOwnership = false)]
     public void DamageServerRpc(int damage, ulong senderId)
     {
+        Damage(damage, senderId);
+    }
+
+    public void Damage(int damage, ulong senderId)
+    {
         GameObject senderObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[senderId].gameObject;
         if (senderObject.TryGetComponent(out TeamComponent senderTeamComponent) && TryGetComponent(out TeamComponent receiverTeamComponent))
         {

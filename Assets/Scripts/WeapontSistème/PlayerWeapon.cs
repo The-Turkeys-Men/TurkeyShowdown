@@ -1,10 +1,6 @@
-using System;
 using System.Collections.Generic;
-using NUnit.Framework.Internal;
 using Unity.Netcode;
-using Unity.Netcode.Components;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class PlayerWeapon : NetworkBehaviour 
 {
@@ -149,6 +145,18 @@ public class PlayerWeapon : NetworkBehaviour
         baseWeapon.HideClientRpc();
         baseWeapon.GetComponent<IGrabbable>().OnGrab.Invoke();
         baseWeapon.LastOwner = playerNetworkObject.gameObject;
+        
+        OnEquipWeaponClientRpc(playerObjectId, weaponObjectId);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void OnEquipWeaponClientRpc( ulong playerObjectId, ulong weaponObjectId)
+    {
+        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out NetworkObject playerNetworkObject);
+        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(weaponObjectId, out NetworkObject weaponNetworkObject);
+        
+        var baseWeapon = weaponNetworkObject.GetComponent<BaseWeapon>();
+        baseWeapon.ShootPoint = playerNetworkObject.GetComponent<PlayerWeapon>().WeaponHolder;
     }
 
     [Rpc(SendTo.Server)]

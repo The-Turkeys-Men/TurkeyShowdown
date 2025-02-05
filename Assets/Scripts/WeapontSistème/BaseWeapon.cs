@@ -92,9 +92,15 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         {
             _isDespawning = true;
             GetComponent<NetworkObject>().Despawn(true);
+            DebuggerConsole.Instance.LogClientRpc("Weapon throw touched " + other.gameObject.name);
             if (other.TryGetComponent(out HealthComponent healthComponent))
             {
-                healthComponent.DamageServerRpc(DamageByThrow, LastOwner.GetComponent<NetworkObject>().NetworkObjectId);
+                healthComponent.Damage(DamageByThrow, LastOwner.GetComponent<NetworkObject>().NetworkObjectId);
+            }
+
+            if (other.attachedRigidbody)
+            {
+                other.attachedRigidbody.AddForce(Rb.linearVelocity.normalized * KnockbackForce, ForceMode2D.Impulse);
             }
         }
     }
