@@ -1,3 +1,4 @@
+using Debugger;
 using UnityEngine;
 
 using Unity.Netcode;
@@ -230,13 +231,15 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     [ServerRpc(RequireOwnership = false)]
     public void HideServerRpc()
     {
+        DebuggerConsole.Instance.LogServerRpc("hide weapon on server");
         HideClientRpc();
     }
     
     [ClientRpc(RequireOwnership = false)]
-    private void HideClientRpc()
+    public void HideClientRpc()
     {
         Visuals.SetActive(false);
+        DebuggerConsole.Instance.Log("hide weapon on client");
     }
     
     [ServerRpc(RequireOwnership = false)]
@@ -246,8 +249,9 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     }
     
     [ClientRpc(RequireOwnership = false)]
-    private void ShowClientRpc()
+    public void ShowClientRpc()
     {
         Visuals.SetActive(true);
+        DebuggerConsole.Instance.Log("hide weapon on client");
     }
 }
