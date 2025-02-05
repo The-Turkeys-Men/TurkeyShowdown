@@ -101,23 +101,11 @@ public class PlayerSpawner : NetworkBehaviour
             OnDeathClientRpc(playerObjectId);
             OnDeathServerRpc(playerObjectId);
         });
-            
-        ActivateCameraClientRpc(NewPlayer.GetComponent<NetworkObject>().NetworkObjectId, RpcTarget.Single(clientId, RpcTargetUse.Temp));
-        OnSpawnPlayerClientRpc(clientId, NewPlayer.GetNetworkObjectId());
-    }
 
-    [Rpc(SendTo.ClientsAndHost)]
-    private void OnSpawnPlayerClientRpc(ulong clientId, ulong playerObjectId)
-    {
-        
-        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject);
-        if (clientId == playerObject.OwnerClientId)
-        {
-            return;
-        }
-        Destroy(playerObject.GetComponent<UnityEngine.InputSystem.PlayerInput>());
+        ActivateCameraClientRpc(NewPlayer.GetComponent<NetworkObject>().NetworkObjectId,
+            RpcTarget.Single(clientId, RpcTargetUse.Temp));
     }
-
+    
     [Rpc(SendTo.ClientsAndHost, AllowTargetOverride = true)]
     private void ActivateCameraClientRpc(ulong playerId, RpcParams rpcParams = default)
     {
