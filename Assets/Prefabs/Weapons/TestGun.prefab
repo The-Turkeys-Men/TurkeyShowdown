@@ -113,9 +113,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  <FireRate>k__BackingField: 0.25
-  <Damage>k__BackingField: 5
-  <MaxAmmo>k__BackingField: 25
+  <FireRate>k__BackingField: 0.1
+  <Damage>k__BackingField: 10
+  <MaxAmmo>k__BackingField: 32
   <Ammo>k__BackingField:
     m_InternalValue: 0
   <SprayAmount>k__BackingField: 0
@@ -124,15 +124,16 @@ MonoBehaviour:
   <CanBeThrowed>k__BackingField: 1
   <CanBePickUp>k__BackingField:
     m_InternalValue: 0
-  <WeaponShootType>k__BackingField: 1
+  <WeaponShootType>k__BackingField: 0
   <DamageByThrow>k__BackingField: 3
   <ThrowForce>k__BackingField: 10
   <ThrowTorque>k__BackingField: 3
   <ThrowKnockbackForce>k__BackingField: 3
-  <ProjectilePrefab>k__BackingField: {fileID: 4681002946919390382, guid: 4e8e8bcc47f846a42bc85c84955fa931, type: 3}
-  <ProjectileSpeed>k__BackingField: 2
-  <MaxLifetime>k__BackingField: 3
-  <MaxDistance>k__BackingField: 0
+  <ProjectilePrefab>k__BackingField: {fileID: 0}
+  <ProjectileSpeed>k__BackingField: 0
+  <MaxLifetime>k__BackingField: 0
+  <MaxDistance>k__BackingField: 15
+  TrailMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   Rb: {fileID: 4640402740232878089}
   Visuals: {fileID: 7812902076482580572}
   IsThrowed:

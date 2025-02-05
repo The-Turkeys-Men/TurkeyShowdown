@@ -16,10 +16,10 @@ public class ContourDamage : MonoBehaviour
 
     void Update()
     {
-        Dega();
+        Damage();
          
     }
-    void Dega()
+    void Damage()
     {
         if(Input.GetKey(KeyCode.D))
         {
@@ -28,9 +28,9 @@ public class ContourDamage : MonoBehaviour
             
             _panelImage.color = currentColor;
         }
-        DeDamaag();
+        UnDamage();
     }
-    void DeDamaag()
+    void UnDamage()
     {
         if (currentColor.a!=0)
         {

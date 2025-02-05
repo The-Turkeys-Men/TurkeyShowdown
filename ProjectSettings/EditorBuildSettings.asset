@@ -5,18 +5,21 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 0
+    path: Assets/Scenes/DevScenes/Do-Devroom/Dorian_Spawner.unity
+    guid: 9afeeb324c5e85a4e863a62c6e689ef6
   - enabled: 1
     path: Assets/Scenes/MainScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/DevScenes/Ethan Movement.unity
     guid: 0fba70d2e9517704186282d2b7f2ecc2
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/DevScenes/Ethan TeamSys.unity
-    guid: 3b23bd86ba0c0954498c47cab5ee5f74
-  - enabled: 1
-    path: Assets/Scenes/DevScenes/Ethan LeaderBoard_HUD.unity
-    guid: 1a9d05a1dfc8ff54a95754361e1436c3
+    guid: ed07a316db4c6bf48814c52642ceb3f1
+  - enabled: 0
+    path: Assets/Scenes/DevScenes/TestTrailArm.unity
+    guid: 90baf2c72c600324f955a2e23dfcb75b
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
