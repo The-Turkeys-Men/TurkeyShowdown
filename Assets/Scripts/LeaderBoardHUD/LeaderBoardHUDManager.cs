@@ -1,12 +1,15 @@
 using System;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using TMPro;
 using Unity.Collections;
 
-public class LeaderBoardHUD : NetworkBehaviour
+public class LeaderBoardHUDManager : NetworkBehaviour
 {
-    public TextMeshProUGUI FirstPlaceText;
+    public static LeaderBoardHUDManager Instance;
+    
+    public List<TextMeshProUGUI> LeaderBoardTexts = new();
     public TextMeshProUGUI CurrentPlaceText;
 
     private struct PlayerScore : INetworkSerializable, IEquatable<PlayerScore>
@@ -27,10 +30,29 @@ public class LeaderBoardHUD : NetworkBehaviour
         public override int GetHashCode() => HashCode.Combine(ClientId, Score);
     }
 
-    private readonly NetworkList<PlayerScore> _playerScores = new NetworkList<PlayerScore>();
+    private readonly NetworkList<PlayerScore> _playerScores = new();
     private int _playerCounter = 0;
     private const int POINTS_TO_ADD = 100;
     private const int POINTS_TO_REMOVE = 50;
+
+    public void SetPanel(LeaderBoardHUDPanel panel)
+    {
+        LeaderBoardTexts = panel.LeaderBoardTexts;
+        CurrentPlaceText = panel.CurrentPlaceText;
+        UpdateLeaderboardUI();
+    }
+    
+    private void Awake()
+    {
+        if (!Instance)
+        {
+            Instance = this;
+        }
+        else
+        {
+            DestroyImmediate(gameObject);
+        }
+    }
 
     public override void OnNetworkSpawn()
     {
@@ -39,7 +61,7 @@ public class LeaderBoardHUD : NetworkBehaviour
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         }
         _playerScores.OnListChanged += OnScoresChanged;
-        UpdateLeaderboardUI();
+        //UpdateLeaderboardUI();
     }
 
     private void OnClientConnected(ulong clientId)
@@ -53,28 +75,6 @@ public class LeaderBoardHUD : NetworkBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (IsServer)
-        {
-            if (Input.GetKeyDown(KeyCode.U))
-            {
-                Debug.Log("[Server] Adding points to the first player");
-                IncrementScoreForFirstPlayer();
-            }
-            else if (Input.GetKeyDown(KeyCode.I))
-            {
-                Debug.Log("[Server] Removing points from the first player");
-                DecrementScoreForFirstPlayer();
-            }
-            else if (Input.GetKeyDown(KeyCode.R))
-            {
-                Debug.Log("[Server] Resetting leaderboard");
-                ResetLeaderboard();
-            }
-        }
-    }
-
     private void OnScoresChanged(NetworkListEvent<PlayerScore> changeEvent)
     {
         UpdateLeaderboardUI();
@@ -82,6 +82,11 @@ public class LeaderBoardHUD : NetworkBehaviour
 
     private void UpdateLeaderboardUI()
     {
+        if (!CurrentPlaceText || LeaderBoardTexts.Count == 0)
+        {
+            return;
+        }
+        
         PlayerScore[] sortedScores = new PlayerScore[_playerScores.Count];
         for (int i = 0; i < _playerScores.Count; i++)
             sortedScores[i] = _playerScores[i];
@@ -97,9 +102,14 @@ public class LeaderBoardHUD : NetworkBehaviour
             }
         }
 
-        if (sortedScores.Length > 0)
+        
+        for (int i = 0; i < sortedScores.Length; i++)
         {
-            FirstPlaceText.text = $"#1 {sortedScores[0].PlayerName} - {sortedScores[0].Score}";
+            if (i >= LeaderBoardTexts.Count)
+            {
+                break;
+            }
+            LeaderBoardTexts[i].text = $"#{i + 1} {sortedScores[i].PlayerName} - {sortedScores[i].Score}";
         }
     }
 
