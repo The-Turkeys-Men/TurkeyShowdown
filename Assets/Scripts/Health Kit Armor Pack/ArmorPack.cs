@@ -12,6 +12,7 @@ public class ArmorPack : NetworkBehaviour, IGrabbable
         if (!other.TryGetComponent<HealthComponent>(out var component)) return;
         
         if (!IsServer) return;
+        gameObject.SetActive(false);
         component.ArmorUp(_armorAmount);
         HidePackClientRpc();
         DebuggerConsole.Instance.LogClientRpc("ArmorPack grab on server");

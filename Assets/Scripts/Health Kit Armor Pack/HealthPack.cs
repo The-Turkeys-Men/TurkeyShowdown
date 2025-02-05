@@ -12,6 +12,7 @@ public class HealthPack : NetworkBehaviour, IGrabbable
         if (!other.TryGetComponent<HealthComponent>(out var component)) return;
         
         if (!IsServer) return;
+        gameObject.SetActive(false);
         HidePackClientRpc();
         component.Heal(_healAmount);
         DebuggerConsole.Instance.LogClientRpc("HealthPack grab on server");
