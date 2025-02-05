@@ -28,7 +28,7 @@ public class PlayerSpawner : NetworkBehaviour
             return;
         }
         
-        playerObject.gameObject.SetActive(false);
+        //playerObject.gameObject.SetActive(false);
         StartCoroutine(SpawnTimer(playerObject.gameObject));
     }
     
@@ -41,16 +41,18 @@ public class PlayerSpawner : NetworkBehaviour
             return;
         }
         
-        playerObject.gameObject.SetActive(false);
+        //playerObject.gameObject.SetActive(false);
         StartCoroutine(SpawnTimer(playerObject.gameObject));
     }
     
     IEnumerator SpawnTimer(GameObject player)
     {
         yield return new WaitForSeconds(_respawnTime);
-        player.GetComponent<HealthComponent>().SetHealthServerRpc(player.GetComponent<HealthComponent>().BaseHealth);
+        var healthComponent = player.GetComponent<HealthComponent>();
+        healthComponent.SetHealthServerRpc(healthComponent.BaseHealth);
         player.transform.position = _playerSpawnPoint[Random.Range(0, _playerSpawnPoint.Length)].position;
         player.SetActive(true);
+        healthComponent.OnRespawn.Invoke();
         
         OnFinishRespawnClientRpc(player.GetNetworkObjectId());
     }
@@ -68,6 +70,10 @@ public class PlayerSpawner : NetworkBehaviour
         networkTransform.Interpolate = false;
         playerObject.transform.position = _playerSpawnPoint[Random.Range(0, _playerSpawnPoint.Length)].position;
         playerObject.gameObject.SetActive(true);
+        
+        var healthComponent = playerObject.GetComponent<HealthComponent>();
+        healthComponent.OnRespawn.Invoke();
+        
         StartCoroutine(ReactivateInterpolation(networkTransform));
     }
 
@@ -97,6 +103,19 @@ public class PlayerSpawner : NetworkBehaviour
         });
             
         ActivateCameraClientRpc(NewPlayer.GetComponent<NetworkObject>().NetworkObjectId, RpcTarget.Single(clientId, RpcTargetUse.Temp));
+        OnSpawnPlayerClientRpc(clientId, NewPlayer.GetNetworkObjectId());
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void OnSpawnPlayerClientRpc(ulong clientId, ulong playerObjectId)
+    {
+        
+        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject);
+        if (clientId == playerObject.OwnerClientId)
+        {
+            return;
+        }
+        Destroy(playerObject.GetComponent<UnityEngine.InputSystem.PlayerInput>());
     }
 
     [Rpc(SendTo.ClientsAndHost, AllowTargetOverride = true)]
