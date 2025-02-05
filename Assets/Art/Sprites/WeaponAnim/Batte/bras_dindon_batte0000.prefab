@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6695082418815517820}
   - component: {fileID: 384420366576351006}
-  - component: {fileID: 8314323246952912709}
+  - component: {fileID: 4249022847321488337}
   m_Layer: 0
   m_Name: bras_dindon_batte0000
   m_TagString: Untagged
@@ -88,7 +88,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &8314323246952912709
+--- !u!95 &4249022847321488337
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0

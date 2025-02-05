@@ -156,6 +156,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     public virtual void Shoot()
     {
         Vector2 direction = transform.right;
+        
         switch (WeaponShootType)
         {
             case ShootType.Projectile:
