@@ -24,13 +24,13 @@ public class PlayerController : NetworkBehaviour
         UpdateRotationServerRpc(angle);
     }
     
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     private void UpdateRotationServerRpc(float angle)
     {
         UpdateRotationClientRpc(angle);
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     private void UpdateRotationClientRpc(float angle)
     {
         _rotationPivot.rotation = Quaternion.Euler(new Vector3(0, 0, angle));

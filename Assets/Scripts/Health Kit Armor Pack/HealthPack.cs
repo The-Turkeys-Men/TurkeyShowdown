@@ -18,7 +18,7 @@ public class HealthPack : NetworkBehaviour, IGrabbable
         OnGrab.Invoke();
     }
     
-    [ClientRpc(RequireOwnership = false)]
+    [Rpc(SendTo.ClientsAndHost)]
     private void HidePackClientRpc()
     {
         gameObject.SetActive(false);

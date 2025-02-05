@@ -36,7 +36,7 @@ namespace Network
             targetPosition = transform.position;
         }
 
-        [ClientRpc]
+        [Rpc(SendTo.ClientsAndHost)]
         private void UpdatePositionClientRpc(Vector3 newPosition)
         {
             targetPosition = newPosition;

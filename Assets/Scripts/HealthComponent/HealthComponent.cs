@@ -36,13 +36,13 @@ public class HealthComponent : NetworkBehaviour
         Armor.Value = Mathf.Clamp(Armor.Value + amount, 0, MaxArmor);
     }
     
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, RequireOwnership = false)]
     public void SetHealthServerRpc(int health)
     {
         Health.Value = health;
     }
     
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, RequireOwnership = false)]
     public void DamageServerRpc(int damage, ulong senderId)
     {
         GameObject senderObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[senderId].gameObject;

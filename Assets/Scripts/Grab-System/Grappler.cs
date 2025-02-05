@@ -98,13 +98,13 @@ public class Grappler : NetworkBehaviour
         UpdateGrabVisualEffectServerRpc();
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, RequireOwnership = false)]
     private void SwitchGrabVisualEffectServerRpc(Vector2 hitPoint, bool activated)
     {
         SwitchGrabVisualEffectClientRpc(hitPoint, activated);
     }
     
-    [ClientRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     private void SwitchGrabVisualEffectClientRpc(Vector2 hitPoint, bool activated)
     {
         SwitchGrabVisualEffect(hitPoint, activated);
@@ -116,13 +116,13 @@ public class Grappler : NetworkBehaviour
         _grappleVisual.SetPosition(0, hitPoint);
     }
     
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     private void UpdateGrabVisualEffectServerRpc()
     {
         UpdateGrabVisualEffectClientRpc();
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     private void UpdateGrabVisualEffectClientRpc()
     {
         _grappleVisual.SetPosition(1, _startGrabPoint.position);

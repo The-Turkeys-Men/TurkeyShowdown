@@ -30,7 +30,7 @@ public class PlayerWeapon : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     public void UpdateWeaponPosServerRpc(ulong weaponId, Vector3 setPos)
     {
         NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(weaponId, out NetworkObject weaponNetworkObject);
@@ -72,7 +72,7 @@ public class PlayerWeapon : NetworkBehaviour
         UnEquipWeapon();
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, RequireOwnership = false)]
     private void OnThrowWeaponServerRpc(ulong weaponObjectId, Vector2 direction)
     {
         NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(weaponObjectId, out NetworkObject weaponNetworkObject);
@@ -137,7 +137,7 @@ public class PlayerWeapon : NetworkBehaviour
         EquipedWeapon.transform.position = transform.position + Vector3.up;
     }
     
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, RequireOwnership = false)]
     private void OnEquipWeaponServerRpc(ulong clientId, ulong playerObjectId, ulong weaponObjectId)
     {
         NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out NetworkObject playerNetworkObject);
@@ -151,7 +151,7 @@ public class PlayerWeapon : NetworkBehaviour
         baseWeapon.LastOwner = playerNetworkObject.gameObject;
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     private void AskForOwnershipServerRpc(ulong clientId, ulong networkObjectId)
     {
         NetworkObject networkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[networkObjectId];

@@ -193,13 +193,13 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         playerRigidbody.AddForce(-direction * RecoilForce, ForceMode2D.Impulse);
     }
     
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     private void SpawnBulletTrailServerRpc(Vector2 endPoint)
     {
         SpawnBulletTrailClientRpc(endPoint);
     }
     
-    [ClientRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     private void SpawnBulletTrailClientRpc(Vector2 endPoint)
     {
         GameObject tempTrainé=new GameObject("tempTrainé");
@@ -212,14 +212,14 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         lineRenderer.SetPosition(1, endPoint);
     }
     
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     protected virtual void OnShootServerRpc()
     {
         FireRateTimer = FireRate;
         Ammo.Value -= 1;
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     private void SpawnProjectileServerRpc(Vector2 position, Vector2 direction)
     {
         direction.Normalize();
@@ -228,27 +228,27 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         spawnedBullet.GetComponent<Projectile>().Direction = direction;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, RequireOwnership = false)]
     public void HideServerRpc()
     {
         DebuggerConsole.Instance.LogServerRpc("hide weapon on server");
         HideClientRpc();
     }
     
-    [ClientRpc(RequireOwnership = false)]
+    [Rpc(SendTo.ClientsAndHost)]
     public void HideClientRpc()
     {
         Visuals.SetActive(false);
         DebuggerConsole.Instance.Log("hide weapon on client");
     }
     
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, RequireOwnership = false)]
     public void ShowServerRpc()
     {
         ShowClientRpc();
     }
     
-    [ClientRpc(RequireOwnership = false)]
+    [Rpc(SendTo.ClientsAndHost)]
     public void ShowClientRpc()
     {
         Visuals.SetActive(true);

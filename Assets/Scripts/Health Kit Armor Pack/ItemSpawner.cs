@@ -45,14 +45,14 @@ public class ItemSpawner : NetworkBehaviour
         MakeItemVisibleServerRpc();
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     private void MakeItemVisibleClientRpc(ulong ItemID)
     {
         NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(ItemID, out var item);
         item.gameObject.SetActive(true);
     }
     
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     private void MakeItemVisibleServerRpc()
     {
         _spawnedItem.SetActive(true);

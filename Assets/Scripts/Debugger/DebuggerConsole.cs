@@ -26,13 +26,13 @@ namespace Debugger
             _debugText.text = message + "\n" + _debugText.text;
         }
 
-        [ServerRpc(RequireOwnership = false)]
+        [Rpc(SendTo.Server, RequireOwnership = false)]
         public void LogServerRpc(string message)
         {
             LogClientRpc(message);
         }
         
-        [ClientRpc(RequireOwnership = false)]
+        [Rpc(SendTo.ClientsAndHost)]
         public void LogClientRpc(string message)
         {
             Log(message);

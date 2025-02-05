@@ -225,7 +225,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    /*[Rpc(SendTo.Server, RequireOwnership = false)]
     private void AddKillForSelfServerRpc(ServerRpcParams rpcParams = default)
     {
         if (!IsServer)
@@ -252,7 +252,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
         {
             Debug.LogWarning($"Client {clientId} does not exist in the scores dictionary.");
         }
-    }
+    }*/
 
     private void UpdateScoreDisplay(ulong winnerId)
     {
@@ -294,7 +294,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
         if (disconnectButton != null) disconnectButton.gameObject.SetActive(false);
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     private void ShowScorePanelClientRpc(ulong winnerId)
     {
         if (scorePanel != null)
@@ -308,7 +308,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
         }
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     private void HideScorePanelClientRpc()
     {
         if (scorePanel != null)
