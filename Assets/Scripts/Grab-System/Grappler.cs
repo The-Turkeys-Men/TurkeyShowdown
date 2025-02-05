@@ -127,11 +127,6 @@ public class Grappler : NetworkBehaviour
         UpdateGrabVisualEffectServerRpc();
         
         _curentGrabTete.transform.eulerAngles = Vector3.forward * _wallAngle;
-        
-        Debug.Log(_wallNormal);
-        
-
-        
     }
 
     [Rpc(SendTo.Server, RequireOwnership = false)]

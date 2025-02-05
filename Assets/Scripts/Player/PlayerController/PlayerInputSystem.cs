@@ -27,15 +27,16 @@ public class PlayerInputSystem : NetworkBehaviour
         playerInput.notificationBehavior = PlayerNotifications.InvokeCSharpEvents;
         playerInput.onActionTriggered += ctx =>
         {
+            //DebuggerConsole.Instance.Log(ctx.action.name);
             switch (ctx.action.name)
             {
                 case "Move":
                     OnMove(ctx);
                     break;
-                case "Grapple":
+                case "GrapplingHook":
                     OnGrapple(ctx);
                     break;
-                case "Shoot":
+                case "Attack":
                     OnShoot(ctx);
                     break;
                 case "Throw":
