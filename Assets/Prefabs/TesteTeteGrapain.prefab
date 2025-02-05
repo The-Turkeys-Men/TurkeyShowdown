@@ -57,7 +57,7 @@ GameObject:
   - component: {fileID: 3198498259834177743}
   - component: {fileID: 672106109479174921}
   m_Layer: 0
-  m_Name: Player
+  m_Name: TesteTeteGrapain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -92,7 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3611966755
+  GlobalObjectIdHash: 3553280726
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -299,14 +299,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  _tete: {fileID: 0}
-  _teteGrapain: {fileID: 0}
+  _tete: {fileID: 2565440813658752024}
+  _teteGrapain: {fileID: 6222178837806966316, guid: db48ae94392d9534e95f8ce8c3156063, type: 3}
   _startGrabPoint: {fileID: 4942938090148323569}
   _grappleVisual: {fileID: 3198498259834177743}
   _startWidth: 0.25
   _endWidth: 0.25
   _grappleRange: 6
-  _neckStartPoint: {fileID: 0}
+  _neckStartPoint: {fileID: 5755859728648678295}
 --- !u!114 &8804397140222911317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -520,7 +520,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 1
+        value: 0.0037784576
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -881,6 +881,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &3531527942665442201
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5755859728648678295}
+  m_Layer: 0
+  m_Name: NeckStartPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5755859728648678295
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3531527942665442201}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.09, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1796071640438729429}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5470436635983560005
 GameObject:
   m_ObjectHideFlags: 0
@@ -1258,11 +1289,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6992164962038778247, guid: 763a4da13d9bb9d44a7ee7079d0b9383, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5755859728648678295}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 763a4da13d9bb9d44a7ee7079d0b9383, type: 3}
 --- !u!4 &1796071640438729429 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6992164962038778247, guid: 763a4da13d9bb9d44a7ee7079d0b9383, type: 3}
+  m_PrefabInstance: {fileID: 8783643633002865490}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2565440813658752024 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6521075419899930442, guid: 763a4da13d9bb9d44a7ee7079d0b9383, type: 3}
   m_PrefabInstance: {fileID: 8783643633002865490}
   m_PrefabAsset: {fileID: 0}
