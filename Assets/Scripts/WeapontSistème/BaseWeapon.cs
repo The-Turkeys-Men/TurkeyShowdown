@@ -1,3 +1,4 @@
+using Debugger;
 using UnityEngine;
 
 using Unity.Netcode;
@@ -91,9 +92,15 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         {
             _isDespawning = true;
             GetComponent<NetworkObject>().Despawn(true);
+            DebuggerConsole.Instance.LogClientRpc("Weapon throw touched " + other.gameObject.name);
             if (other.TryGetComponent(out HealthComponent healthComponent))
             {
-                healthComponent.DamageServerRpc(DamageByThrow, LastOwner.GetComponent<NetworkObject>().NetworkObjectId);
+                healthComponent.Damage(DamageByThrow, LastOwner.GetComponent<NetworkObject>().NetworkObjectId);
+            }
+
+            if (other.attachedRigidbody)
+            {
+                other.attachedRigidbody.AddForce(Rb.linearVelocity.normalized * KnockbackForce, ForceMode2D.Impulse);
             }
         }
     }
@@ -192,13 +199,13 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         playerRigidbody.AddForce(-direction * RecoilForce, ForceMode2D.Impulse);
     }
     
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     private void SpawnBulletTrailServerRpc(Vector2 endPoint)
     {
         SpawnBulletTrailClientRpc(endPoint);
     }
     
-    [ClientRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     private void SpawnBulletTrailClientRpc(Vector2 endPoint)
     {
         GameObject tempTrainé=new GameObject("tempTrainé");
@@ -211,14 +218,14 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         lineRenderer.SetPosition(1, endPoint);
     }
     
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     protected virtual void OnShootServerRpc()
     {
         FireRateTimer = FireRate;
         Ammo.Value -= 1;
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     private void SpawnProjectileServerRpc(Vector2 position, Vector2 direction)
     {
         direction.Normalize();
@@ -227,27 +234,30 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         spawnedBullet.GetComponent<Projectile>().Direction = direction;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, RequireOwnership = false)]
     public void HideServerRpc()
     {
+        DebuggerConsole.Instance.LogServerRpc("hide weapon on server");
         HideClientRpc();
     }
     
-    [ClientRpc(RequireOwnership = false)]
-    private void HideClientRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    public void HideClientRpc()
     {
         Visuals.SetActive(false);
+        DebuggerConsole.Instance.Log("hide weapon on client");
     }
     
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, RequireOwnership = false)]
     public void ShowServerRpc()
     {
         ShowClientRpc();
     }
     
-    [ClientRpc(RequireOwnership = false)]
-    private void ShowClientRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    public void ShowClientRpc()
     {
         Visuals.SetActive(true);
+        DebuggerConsole.Instance.Log("hide weapon on client");
     }
 }
