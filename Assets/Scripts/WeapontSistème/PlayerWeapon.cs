@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -11,6 +12,19 @@ public class PlayerWeapon : NetworkBehaviour
     public Transform WeaponHolder;
     
     public bool Dizziness;
+
+    private void Awake()
+    {
+        GetComponent<HealthComponent>().OnDeath.AddListener(OnDeath);
+    }
+
+    private void OnDeath(ulong arg0)
+    {
+        if (EquipedWeapon)
+        {
+            ThrowWeapon();
+        }
+    }
 
     void Update()
     {
