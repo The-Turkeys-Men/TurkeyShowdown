@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using NUnit.Framework.Internal;
 using Unity.Netcode;
-using Unity.Netcode.Components;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class PlayerWeapon : NetworkBehaviour 
 {
@@ -15,6 +12,19 @@ public class PlayerWeapon : NetworkBehaviour
     public Transform WeaponHolder;
     
     public bool Dizziness;
+
+    private void Awake()
+    {
+        GetComponent<HealthComponent>().OnDeath.AddListener(OnDeath);
+    }
+
+    private void OnDeath(ulong arg0)
+    {
+        if (EquipedWeapon && EquipedWeapon.CanBeThrowed)
+        {
+            ThrowWeapon();
+        }
+    }
 
     void Update()
     {
@@ -30,7 +40,7 @@ public class PlayerWeapon : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     public void UpdateWeaponPosServerRpc(ulong weaponId, Vector3 setPos)
     {
         NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(weaponId, out NetworkObject weaponNetworkObject);
@@ -72,7 +82,7 @@ public class PlayerWeapon : NetworkBehaviour
         UnEquipWeapon();
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server, RequireOwnership = false)]
     private void OnThrowWeaponServerRpc(ulong weaponObjectId, Vector2 direction)
     {
         NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(weaponObjectId, out NetworkObject weaponNetworkObject);
@@ -85,20 +95,7 @@ public class PlayerWeapon : NetworkBehaviour
         weaponComponent.Rb.simulated = true;
         weaponComponent.Rb.AddForce(direction.normalized * weaponComponent.ThrowForce, ForceMode2D.Impulse);
         weaponComponent.Rb.AddTorque(weaponComponent.ThrowTorque, ForceMode2D.Impulse);
-        weaponComponent.ShowServerRpc();
-    }
-
-    private void UnEquipWeapon()
-    {
-        if (WeaponInventory.Contains(EquipedWeapon))
-        {
-            WeaponInventory.Remove(EquipedWeapon);
-        }
-        EquipedWeapon = null;
-        if (WeaponInventory.Count > 0)
-        {
-            EquipedWeapon = WeaponInventory[0];
-        }
+        weaponComponent.ShowClientRpc();
     }
     
     public void TryEquipWeapon()
@@ -128,15 +125,36 @@ public class PlayerWeapon : NetworkBehaviour
             return;
         }
 
-        EquipedWeapon = closestWeapon.GetComponent<BaseWeapon>();
+        EquipWeapon(closestWeapon.GetComponent<BaseWeapon>());
+    }
+
+    public void EquipWeapon(BaseWeapon weapon)
+    {
+        EquipedWeapon = weapon;
+        EquipedWeapon.LastOwner = gameObject;
         EquipedWeapon.ShootPoint = WeaponHolder;
         OnEquipWeaponServerRpc(OwnerClientId, GetComponent<NetworkObject>().NetworkObjectId, EquipedWeapon.GetComponent<NetworkObject>().NetworkObjectId);
         AskForOwnershipServerRpc(OwnerClientId, EquipedWeapon.GetComponent<NetworkObject>().NetworkObjectId);
         EquipedWeapon.GetComponent<Rigidbody2D>().simulated = false;
         EquipedWeapon.transform.position = transform.position + Vector3.up;
+        
+        WeaponInventory.Add(EquipedWeapon);
+    }
+
+    private void UnEquipWeapon()
+    {
+        if (WeaponInventory.Contains(EquipedWeapon))
+        {
+            WeaponInventory.Remove(EquipedWeapon);
+        }
+        EquipedWeapon = null;
+        if (WeaponInventory.Count > 0)
+        {
+            EquipedWeapon = WeaponInventory[0];
+        }
     }
     
-    [ServerRpc]
+    [Rpc(SendTo.Server, RequireOwnership = false)]
     private void OnEquipWeaponServerRpc(ulong clientId, ulong playerObjectId, ulong weaponObjectId)
     {
         NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out NetworkObject playerNetworkObject);
@@ -145,12 +163,24 @@ public class PlayerWeapon : NetworkBehaviour
         weaponNetworkObject.TrySetParent(playerNetworkObject);
         var baseWeapon = weaponNetworkObject.GetComponent<BaseWeapon>();
         baseWeapon.CanBePickUp.Value = false;
-        baseWeapon.HideServerRpc();
+        baseWeapon.HideClientRpc();
         baseWeapon.GetComponent<IGrabbable>().OnGrab.Invoke();
         baseWeapon.LastOwner = playerNetworkObject.gameObject;
+        
+        OnEquipWeaponClientRpc(playerObjectId, weaponObjectId);
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.ClientsAndHost)]
+    private void OnEquipWeaponClientRpc( ulong playerObjectId, ulong weaponObjectId)
+    {
+        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out NetworkObject playerNetworkObject);
+        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(weaponObjectId, out NetworkObject weaponNetworkObject);
+        
+        var baseWeapon = weaponNetworkObject.GetComponent<BaseWeapon>();
+        baseWeapon.ShootPoint = playerNetworkObject.GetComponent<PlayerWeapon>().WeaponHolder;
+    }
+
+    [Rpc(SendTo.Server)]
     private void AskForOwnershipServerRpc(ulong clientId, ulong networkObjectId)
     {
         NetworkObject networkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[networkObjectId];

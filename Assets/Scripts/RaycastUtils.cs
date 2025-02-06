@@ -11,6 +11,11 @@ public static class RaycastUtils
         {
             if (hit.collider.TryGetComponent(out HealthComponent healthComponent))
             {
+                if (healthComponent.IsDead)
+                {
+                    continue;
+                }
+                
                 if (healthComponent.TryGetComponent(out TeamComponent teamComponent) &&
                     teamComponent.TeamID.Value == teamID)
                 {

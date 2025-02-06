@@ -9,8 +9,11 @@ public class ColorChanger : NetworkBehaviour
     {
         base.OnNetworkSpawn();
 
-        PlayerDataManager.Datainstance.receivingJSON();
-        PlayerDataManager.Datainstance.AddColorData(OwnerClientId,PlayerDataManager.Datainstance.playerData.color);
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            PlayerDataManager.Datainstance.receivingJSON();
+            PlayerDataManager.Datainstance.AddColorData(OwnerClientId,PlayerDataManager.Datainstance.playerData.color);
+        }
     }
 
     public void ChangeColor(string color)

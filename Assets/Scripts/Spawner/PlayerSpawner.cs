@@ -11,6 +11,8 @@ public class PlayerSpawner : NetworkBehaviour
     [SerializeField] private Transform[] _playerSpawnPoint;
     
     private GameObject NewPlayer;
+
+    [SerializeField] private BaseWeapon _spawnWeapon;
     
     private void Start()
     {
@@ -19,7 +21,7 @@ public class PlayerSpawner : NetworkBehaviour
 
     #region Respawn
 
-    [ClientRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     private void OnDeathClientRpc(ulong playerObjectId)
     {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject))
@@ -28,11 +30,11 @@ public class PlayerSpawner : NetworkBehaviour
             return;
         }
         
-        playerObject.gameObject.SetActive(false);
+        //playerObject.gameObject.SetActive(false);
         StartCoroutine(SpawnTimer(playerObject.gameObject));
     }
     
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     private void OnDeathServerRpc(ulong playerObjectId)
     {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject))
@@ -41,21 +43,35 @@ public class PlayerSpawner : NetworkBehaviour
             return;
         }
         
-        playerObject.gameObject.SetActive(false);
+        //playerObject.gameObject.SetActive(false);
         StartCoroutine(SpawnTimer(playerObject.gameObject));
     }
     
     IEnumerator SpawnTimer(GameObject player)
     {
         yield return new WaitForSeconds(_respawnTime);
-        player.GetComponent<HealthComponent>().SetHealthServerRpc(player.GetComponent<HealthComponent>().BaseHealth);
+        RespawnPlayer(player);
+    }
+
+    private void RespawnPlayer(GameObject player)
+    {
+        var healthComponent = player.GetComponent<HealthComponent>();
+        healthComponent.SetHealthServerRpc(healthComponent.BaseHealth);
         player.transform.position = _playerSpawnPoint[Random.Range(0, _playerSpawnPoint.Length)].position;
         player.SetActive(true);
+        healthComponent.OnRespawn.Invoke();
+        
+        /*if (_spawnWeapon)
+        {
+            BaseWeapon newWeapon = Instantiate(_spawnWeapon, NewPlayer.transform.position, Quaternion.identity);
+            newWeapon.GetComponent<NetworkObject>().Spawn();
+            NewPlayer.GetComponent<PlayerWeapon>().EquipWeapon(newWeapon);
+        }*/
         
         OnFinishRespawnClientRpc(player.GetNetworkObjectId());
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     private void OnFinishRespawnClientRpc(ulong playerObjectId)
     {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject))
@@ -68,6 +84,10 @@ public class PlayerSpawner : NetworkBehaviour
         networkTransform.Interpolate = false;
         playerObject.transform.position = _playerSpawnPoint[Random.Range(0, _playerSpawnPoint.Length)].position;
         playerObject.gameObject.SetActive(true);
+        
+        var healthComponent = playerObject.GetComponent<HealthComponent>();
+        healthComponent.OnRespawn.Invoke();
+        
         StartCoroutine(ReactivateInterpolation(networkTransform));
     }
 
@@ -95,22 +115,33 @@ public class PlayerSpawner : NetworkBehaviour
             OnDeathClientRpc(playerObjectId);
             OnDeathServerRpc(playerObjectId);
         });
-            
-        ClientRpcParams clientRpcParams = new()
-        {
-            Send = new()
-            {
-                TargetClientIds = new[] { clientId }
-            }
-        };
-        ActivateCameraClientRpc(NewPlayer.GetComponent<NetworkObject>().NetworkObjectId,clientRpcParams);
-    }
 
-    [ClientRpc]
-    private void ActivateCameraClientRpc(ulong playerId, ClientRpcParams clientRpcParams = default)
+        if (_spawnWeapon)
+        {
+            BaseWeapon newWeapon = Instantiate(_spawnWeapon, NewPlayer.transform.position, Quaternion.identity);
+            newWeapon.GetComponent<NetworkObject>().Spawn();
+            NewPlayer.GetComponent<PlayerWeapon>().EquipWeapon(newWeapon);
+            MakeThePlayerEquipWeaponRpc(NewPlayer.GetNetworkObjectId(), newWeapon.NetworkObjectId, 
+                RpcTarget.Single(NewPlayer.GetComponent<NetworkObject>().OwnerClientId, RpcTargetUse.Temp));
+        }
+
+        ActivateCameraClientRpc(NewPlayer.GetComponent<NetworkObject>().NetworkObjectId,
+            RpcTarget.Single(clientId, RpcTargetUse.Temp));
+    }
+    
+    [Rpc(SendTo.ClientsAndHost, AllowTargetOverride = true)]
+    private void ActivateCameraClientRpc(ulong playerId, RpcParams rpcParams = default)
     {
         NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerId, out var playerObject);
         playerObject.GetComponentInChildren<Camera>(true).gameObject.SetActive(true);
         //playerObject.GetComponentInChildren<AudioListener>().enabled = true;
+    }
+
+    [Rpc(SendTo.SpecifiedInParams, AllowTargetOverride = true)]
+    private void MakeThePlayerEquipWeaponRpc(ulong playerObjectId, ulong weaponObjectId, RpcParams rpcParams)
+    {
+        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject);
+        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(weaponObjectId, out var weaponObject);
+        playerObject.GetComponent<PlayerWeapon>().EquipWeapon(weaponObject.GetComponent<BaseWeapon>());
     }
 }

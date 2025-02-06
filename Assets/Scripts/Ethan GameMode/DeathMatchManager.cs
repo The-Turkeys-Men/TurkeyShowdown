@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Debugger;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -6,6 +8,7 @@ using UnityEngine.UI;
 
 public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 {
+    private static DeathMatchManager _instance { get; set; }
     [SerializeField] private int maxGameTime = 300;
     [SerializeField] private int scoreToWin = 10;
     [SerializeField] private float disconnectDelay = 30f;
@@ -25,6 +28,23 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     private const ulong NoWinner = ulong.MaxValue; // Default value to represent no winner
 
     private float _timeLeftTimer = 1;
+
+    private void Awake()
+    {
+        if (!_instance)
+        {
+            _instance = this;
+        }
+        else
+        {
+            DestroyImmediate(this);
+        }
+    }
+    
+    public static IGameModeManager GetInstance()
+    {
+        return _instance;
+    }
 
     private void Initialize()
     {
@@ -144,6 +164,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
         if (PlayerScores.Value.ContainsKey(killerId))
         {
+            DebuggerConsole.Instance.LogClientRpc("Adding a kill for player " + killerId);
             PlayerScores.Value[killerId]++;
             PlayerScores.SetDirty(true);
 
@@ -225,7 +246,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    /*[Rpc(SendTo.Server, RequireOwnership = false)]
     private void AddKillForSelfServerRpc(ServerRpcParams rpcParams = default)
     {
         if (!IsServer)
@@ -252,7 +273,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
         {
             Debug.LogWarning($"Client {clientId} does not exist in the scores dictionary.");
         }
-    }
+    }*/
 
     private void UpdateScoreDisplay(ulong winnerId)
     {
@@ -294,7 +315,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
         if (disconnectButton != null) disconnectButton.gameObject.SetActive(false);
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     private void ShowScorePanelClientRpc(ulong winnerId)
     {
         if (scorePanel != null)
@@ -308,7 +329,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
         }
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.ClientsAndHost)]
     private void HideScorePanelClientRpc()
     {
         if (scorePanel != null)

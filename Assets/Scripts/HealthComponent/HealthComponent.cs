@@ -1,4 +1,5 @@
 using System;
+using Debugger;
 using Extensions;
 using Unity.Netcode;
 using UnityEngine;
@@ -14,14 +15,15 @@ public class HealthComponent : NetworkBehaviour
     public NetworkVariable<int> Armor;
     public int MaxArmor;
 
-    public UnityEvent<ulong> OnDeath;
-
-    private void OnDeathServerRpcAttribute()
-    {
-        OnDeath.Invoke(gameObject.GetNetworkObjectId());
-    }
+    public UnityEvent<ulong> OnDeath = new();
+    public UnityEvent OnRespawn = new();
+    
+    [SerializeField] private bool _isPlayer = false;
      
-    private void OnDeathClientRpcAttribute()
+    public bool IsDead => Health.Value <= 0;
+    
+    [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
+    private void OnDeathClientRpc()
     {
         OnDeath.Invoke(gameObject.GetNetworkObjectId());
     }
@@ -36,14 +38,19 @@ public class HealthComponent : NetworkBehaviour
         Armor.Value = Mathf.Clamp(Armor.Value + amount, 0, MaxArmor);
     }
     
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, RequireOwnership = false)]
     public void SetHealthServerRpc(int health)
     {
         Health.Value = health;
     }
     
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, RequireOwnership = false)]
     public void DamageServerRpc(int damage, ulong senderId)
+    {
+        Damage(damage, senderId);
+    }
+
+    public void Damage(int damage, ulong senderId)
     {
         GameObject senderObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[senderId].gameObject;
         if (senderObject.TryGetComponent(out TeamComponent senderTeamComponent) && TryGetComponent(out TeamComponent receiverTeamComponent))
@@ -69,8 +76,15 @@ public class HealthComponent : NetworkBehaviour
         }
         if (Health. Value <= 0)
         {
-            OnDeathServerRpcAttribute();
-            OnDeathClientRpcAttribute();
+            OnDeath.Invoke(NetworkObjectId);
+            OnDeathClientRpc();
+            if (_isPlayer)
+            {
+                //todo: optimize this
+                var killerId = senderObject.GetComponent<NetworkObject>().OwnerClientId;
+                FindAnyObjectByType<DeathMatchManager>().OnPlayerKill(killerId);
+                DebuggerConsole.Instance.LogClientRpc("Player killed by: " + senderObject.name);
+            }
         }
     }
 }
