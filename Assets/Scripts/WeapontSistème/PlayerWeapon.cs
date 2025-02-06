@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -11,6 +12,19 @@ public class PlayerWeapon : NetworkBehaviour
     public Transform WeaponHolder;
     
     public bool Dizziness;
+
+    private void Awake()
+    {
+        GetComponent<HealthComponent>().OnDeath.AddListener(OnDeath);
+    }
+
+    private void OnDeath(ulong arg0)
+    {
+        if (EquipedWeapon)
+        {
+            ThrowWeapon();
+        }
+    }
 
     void Update()
     {
@@ -83,19 +97,6 @@ public class PlayerWeapon : NetworkBehaviour
         weaponComponent.Rb.AddTorque(weaponComponent.ThrowTorque, ForceMode2D.Impulse);
         weaponComponent.ShowClientRpc();
     }
-
-    private void UnEquipWeapon()
-    {
-        if (WeaponInventory.Contains(EquipedWeapon))
-        {
-            WeaponInventory.Remove(EquipedWeapon);
-        }
-        EquipedWeapon = null;
-        if (WeaponInventory.Count > 0)
-        {
-            EquipedWeapon = WeaponInventory[0];
-        }
-    }
     
     public void TryEquipWeapon()
     {
@@ -124,13 +125,33 @@ public class PlayerWeapon : NetworkBehaviour
             return;
         }
 
-        EquipedWeapon = closestWeapon.GetComponent<BaseWeapon>();
+        EquipWeapon(closestWeapon.GetComponent<BaseWeapon>());
+    }
+
+    public void EquipWeapon(BaseWeapon weapon)
+    {
+        EquipedWeapon = weapon;
         EquipedWeapon.LastOwner = gameObject;
         EquipedWeapon.ShootPoint = WeaponHolder;
         OnEquipWeaponServerRpc(OwnerClientId, GetComponent<NetworkObject>().NetworkObjectId, EquipedWeapon.GetComponent<NetworkObject>().NetworkObjectId);
         AskForOwnershipServerRpc(OwnerClientId, EquipedWeapon.GetComponent<NetworkObject>().NetworkObjectId);
         EquipedWeapon.GetComponent<Rigidbody2D>().simulated = false;
         EquipedWeapon.transform.position = transform.position + Vector3.up;
+        
+        WeaponInventory.Add(EquipedWeapon);
+    }
+
+    private void UnEquipWeapon()
+    {
+        if (WeaponInventory.Contains(EquipedWeapon))
+        {
+            WeaponInventory.Remove(EquipedWeapon);
+        }
+        EquipedWeapon = null;
+        if (WeaponInventory.Count > 0)
+        {
+            EquipedWeapon = WeaponInventory[0];
+        }
     }
     
     [Rpc(SendTo.Server, RequireOwnership = false)]

@@ -79,7 +79,8 @@ public class HealthComponent : NetworkBehaviour
             if (_isPlayer)
             {
                 //todo: optimize this
-                FindAnyObjectByType<DeathMatchManager>().OnPlayerKill(senderId);
+                var killerId = senderObject.GetComponent<NetworkObject>().OwnerClientId;
+                FindAnyObjectByType<DeathMatchManager>().OnPlayerKill(killerId);
                 DebuggerConsole.Instance.LogClientRpc("Player killed by: " + senderObject.name);
             }
         }

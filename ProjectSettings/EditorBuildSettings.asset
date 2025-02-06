@@ -21,14 +21,11 @@ EditorBuildSettings:
     path: Assets/Scenes/DevScenes/TestTrailArm.unity
     guid: 90baf2c72c600324f955a2e23dfcb75b
   - enabled: 1
-    path: Assets/Scenes/DevScenes/TeteGrapin.unity
-    guid: 42179115dca51604fbe89e0c99c47e30
+    path: Assets/Scenes/DevScenes/Menus sons.unity
+    guid: 546bdc46c05e50341a40649ca745976a
   - enabled: 1
     path: Assets/Scenes/DevScenes/SlidAudio.unity
     guid: 81dfaa30a1511174daf81fb9b1cf8b3f
-  - enabled: 1
-    path: Assets/Scenes/DevScenes/NewCamera.unity
-    guid: 11c5e0e177cdbcb47a0d20ab0cd06a1f
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -124,6 +124,7 @@ public class Grappler : NetworkBehaviour
             _grappleDistance = Vector2.Distance(transform.position, _grappledPoint);
         }
         _grappleVisual.SetPosition(0, _startGrabPoint.position);
+        _grappleVisual.SetPosition(1, _neckStartPoint.position);
         UpdateGrabVisualEffectServerRpc();
         
         _curentGrabTete.transform.eulerAngles = Vector3.forward * _wallAngle;
@@ -161,18 +162,14 @@ public class Grappler : NetworkBehaviour
         _grappleVisual.SetPosition(0, _startGrabPoint.position);
         _grappleVisual.SetPosition(1, _neckStartPoint.position);
         _tete.SetActive(false);
-        _grappleVisual.endWidth=0.08f;
-        _grappleVisual.startWidth=0.05f;
-        
-        
-
     }
 
     private void InitializeWidthLineRenderer()
     {
         var curve = new AnimationCurve();
+        curve.AddKey(0, _startWidth);
         curve.AddKey(1, _startWidth);
-        curve.AddKey(0, _endWidth);
+        curve.AddKey(2, _endWidth);
         _grappleVisual.widthCurve = curve;
     }
 }

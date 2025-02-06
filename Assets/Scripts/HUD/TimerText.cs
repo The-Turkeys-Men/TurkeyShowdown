@@ -6,10 +6,9 @@ public class TimerText : MonoBehaviour
     private IGameModeManager _gameModeManager;
     [SerializeField] private TextMeshProUGUI _timerText;
 
-    private void Awake()
+    private void Start()
     {
-        //todo: optimize this
-        _gameModeManager = FindAnyObjectByType<DeathMatchManager>();
+        _gameModeManager = DeathMatchManager.GetInstance();
     }
 
     private void Update()

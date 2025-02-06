@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Debugger;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -6,6 +8,7 @@ using UnityEngine.UI;
 
 public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 {
+    private static DeathMatchManager _instance { get; set; }
     [SerializeField] private int maxGameTime = 300;
     [SerializeField] private int scoreToWin = 10;
     [SerializeField] private float disconnectDelay = 30f;
@@ -25,6 +28,23 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     private const ulong NoWinner = ulong.MaxValue; // Default value to represent no winner
 
     private float _timeLeftTimer = 1;
+
+    private void Awake()
+    {
+        if (!_instance)
+        {
+            _instance = this;
+        }
+        else
+        {
+            DestroyImmediate(this);
+        }
+    }
+    
+    public static IGameModeManager GetInstance()
+    {
+        return _instance;
+    }
 
     private void Initialize()
     {
@@ -144,6 +164,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
         if (PlayerScores.Value.ContainsKey(killerId))
         {
+            DebuggerConsole.Instance.LogClientRpc("Adding a kill for player " + killerId);
             PlayerScores.Value[killerId]++;
             PlayerScores.SetDirty(true);
 

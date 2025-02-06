@@ -13,17 +13,10 @@ public class HealthPack : NetworkBehaviour, IGrabbable
         
         if (!IsServer) return;
         gameObject.SetActive(false);
-        HidePackClientRpc();
         component.Heal(_healAmount);
         DebuggerConsole.Instance.LogClientRpc("HealthPack grab on server");
         OnGrab.Invoke();
-    }
-    
-    [Rpc(SendTo.ClientsAndHost)]
-    private void HidePackClientRpc()
-    {
-        gameObject.SetActive(false);
-        DebuggerConsole.Instance.Log("HealthPack grab on client");
+        GetComponent<NetworkObject>().Despawn(true);
     }
 
     public UnityEvent OnGrab { get; set; } = new();

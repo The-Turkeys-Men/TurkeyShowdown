@@ -1,12 +1,15 @@
 using System;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
-
+    [SerializeField] protected AudioMixerGroup _audioMixerSFX;
+    [SerializeField] protected AudioMixerGroup _audioMixerMusic;
     public AudioSource AudioSourceMusic;
     public AudioSource AudioSourceSFX;
+   
 
     public Sound[] MusicSounds;
     public Sound[] SfxSounds;
@@ -24,7 +27,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void PlaySound( Sound[] soundList, string name,Vector3 pos)
+    private void PlaySound( Sound[] soundList, string name,Vector3 pos ,AudioMixerGroup Volume,float sonsLocale)
     {
         Sound sound = Array.Find(soundList, s => s.Name == name);
     
@@ -37,8 +40,9 @@ public class AudioManager : MonoBehaviour
             GameObject tempAudio=new GameObject("tempAudio");
             tempAudio.transform.position=pos;
             AudioSource audioSource= tempAudio.AddComponent<AudioSource>();
-            audioSource.spatialBlend=1f;
+            audioSource.spatialBlend=sonsLocale;
             audioSource.clip = sound.Clip;
+            audioSource.outputAudioMixerGroup=Volume;
             audioSource.Play();
             Destroy(tempAudio,sound.Clip.length);
             Debug.Log(audioSource.clip.name);
@@ -68,12 +72,16 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMusic(string name,Vector3 pos)
     {
-        PlaySound( MusicSounds, name,pos);
+        float sonsLocale=0f;
+        AudioMixerGroup Volume= _audioMixerMusic;
+        PlaySound( MusicSounds, name,pos,Volume,sonsLocale);
     }
 
     public void PlaySFX(string name,Vector3 pos)
     {
-        PlaySound( SfxSounds, name, pos);
+        float sonsLocale=1f;
+        AudioMixerGroup Volume=_audioMixerSFX;
+        PlaySound( SfxSounds, name, pos,Volume,sonsLocale);
     }
 
     public bool IsSoundInList(Sound[] soundList, string name)
