@@ -30,6 +30,9 @@ public interface IWeapon : IGrabbable
     public float MaxDistance{get;} 
     
     public Transform ShootPoint { get; }
+    //[Header("Melee")]
+    public Vector2 MeleeRange{get;}
+    public float WallHitBoost{get;}
 
     public void tryShoot();//verification
     public void Shoot();

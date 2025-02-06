@@ -61,12 +61,12 @@ public class PlayerSpawner : NetworkBehaviour
         player.SetActive(true);
         healthComponent.OnRespawn.Invoke();
         
-        if (_spawnWeapon)
+        /*if (_spawnWeapon)
         {
             BaseWeapon newWeapon = Instantiate(_spawnWeapon, NewPlayer.transform.position, Quaternion.identity);
             newWeapon.GetComponent<NetworkObject>().Spawn();
             NewPlayer.GetComponent<PlayerWeapon>().EquipWeapon(newWeapon);
-        }
+        }*/
         
         OnFinishRespawnClientRpc(player.GetNetworkObjectId());
     }
@@ -121,6 +121,8 @@ public class PlayerSpawner : NetworkBehaviour
             BaseWeapon newWeapon = Instantiate(_spawnWeapon, NewPlayer.transform.position, Quaternion.identity);
             newWeapon.GetComponent<NetworkObject>().Spawn();
             NewPlayer.GetComponent<PlayerWeapon>().EquipWeapon(newWeapon);
+            MakeThePlayerEquipWeaponRpc(NewPlayer.GetNetworkObjectId(), newWeapon.NetworkObjectId, 
+                RpcTarget.Single(NewPlayer.GetComponent<NetworkObject>().OwnerClientId, RpcTargetUse.Temp));
         }
 
         ActivateCameraClientRpc(NewPlayer.GetComponent<NetworkObject>().NetworkObjectId,
@@ -133,5 +135,13 @@ public class PlayerSpawner : NetworkBehaviour
         NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerId, out var playerObject);
         playerObject.GetComponentInChildren<Camera>(true).gameObject.SetActive(true);
         //playerObject.GetComponentInChildren<AudioListener>().enabled = true;
+    }
+
+    [Rpc(SendTo.SpecifiedInParams, AllowTargetOverride = true)]
+    private void MakeThePlayerEquipWeaponRpc(ulong playerObjectId, ulong weaponObjectId, RpcParams rpcParams)
+    {
+        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject);
+        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(weaponObjectId, out var weaponObject);
+        playerObject.GetComponent<PlayerWeapon>().EquipWeapon(weaponObject.GetComponent<BaseWeapon>());
     }
 }

@@ -20,6 +20,8 @@ public class HealthComponent : NetworkBehaviour
     
     [SerializeField] private bool _isPlayer = false;
      
+    public bool IsDead => Health.Value <= 0;
+    
     [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
     private void OnDeathClientRpc()
     {

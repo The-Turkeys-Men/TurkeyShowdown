@@ -1,4 +1,5 @@
 using System;
+using Debugger;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -6,11 +7,18 @@ namespace Health
 {
     public class PlayerDeathComponent : NetworkBehaviour
     {
+        private Rigidbody2D _rigidbody2D;
+        
+        private LayerMask _originalExcludeLayers;
+        
         private void Awake()
         {
             var healthComponent = GetComponent<HealthComponent>();
             healthComponent.OnDeath.AddListener(OnDeath);
             healthComponent.OnRespawn.AddListener(OnRespawn);
+            
+            _rigidbody2D = GetComponent<Rigidbody2D>();
+            _originalExcludeLayers = _rigidbody2D.excludeLayers;
         }
 
         private void OnRespawn()
@@ -18,23 +26,16 @@ namespace Health
             var playerController = GetComponent<PlayerController>();
             playerController.InputActivated = true;
             
-            var colliders = GetComponents<Collider2D>();
-            foreach (Collider2D collider in colliders)
-            {
-                collider.enabled = true;
-            }
+            _rigidbody2D.linearVelocity = Vector2.zero;
+            _rigidbody2D.excludeLayers = _originalExcludeLayers;
         }
 
         private void OnDeath(ulong arg0)
         {
             var playerController = GetComponent<PlayerController>();
             playerController.InputActivated = false;
-            
-            var colliders = GetComponents<Collider2D>();
-            foreach (Collider2D collider in colliders)
-            {
-                collider.enabled = false;
-            }
+
+            _rigidbody2D.excludeLayers = ~(1 << LayerMask.NameToLayer("World"));
         }
     }
 }

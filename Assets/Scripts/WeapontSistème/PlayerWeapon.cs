@@ -20,7 +20,7 @@ public class PlayerWeapon : NetworkBehaviour
 
     private void OnDeath(ulong arg0)
     {
-        if (EquipedWeapon)
+        if (EquipedWeapon && EquipedWeapon.CanBeThrowed)
         {
             ThrowWeapon();
         }
