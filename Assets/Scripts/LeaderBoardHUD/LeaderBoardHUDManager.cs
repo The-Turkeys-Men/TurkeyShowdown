@@ -36,7 +36,7 @@ public class LeaderBoardHUDManager : NetworkBehaviour
     {
         LeaderBoardTexts = panel.LeaderBoardTexts;
         CurrentPlaceText = panel.CurrentPlaceText;
-        UpdateLeaderboardUI();
+        Invoke(nameof(UpdateLeaderboardUI), 0.25f);
     }
     
     private void Awake()
