@@ -8,7 +8,7 @@ public class TimerText : MonoBehaviour
 
     private void Start()
     {
-        _gameModeManager = DeathMatchManager.Instance;
+        _gameModeManager = DeathMatchManager.GetInstance();
     }
 
     private void Update()

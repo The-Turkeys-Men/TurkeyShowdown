@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 {
-    public static IGameModeManager Instance { get; set; }
+    private static DeathMatchManager _instance { get; set; }
     [SerializeField] private int maxGameTime = 300;
     [SerializeField] private int scoreToWin = 10;
     [SerializeField] private float disconnectDelay = 30f;
@@ -31,14 +31,19 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
     private void Awake()
     {
-        if (Instance == null)
+        if (!_instance)
         {
-            Instance = this;
+            _instance = this;
         }
         else
         {
-            DestroyImmediate(gameObject);
+            DestroyImmediate(this);
         }
+    }
+    
+    public static IGameModeManager GetInstance()
+    {
+        return _instance;
     }
 
     private void Initialize()

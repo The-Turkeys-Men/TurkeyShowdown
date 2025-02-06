@@ -36,7 +36,7 @@ public class LeaderBoardHUDManager : NetworkBehaviour
     {
         LeaderBoardTexts = panel.LeaderBoardTexts;
         CurrentPlaceText = panel.CurrentPlaceText;
-        Invoke(nameof(UpdateLeaderboardUI), 0.25f);
+        UpdateLeaderboardUI();
     }
     
     private void Awake()
@@ -53,7 +53,7 @@ public class LeaderBoardHUDManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        DeathMatchManager.Instance.PlayerScores.OnValueChanged += OnScoresChanged;
+        DeathMatchManager.GetInstance().PlayerScores.OnValueChanged += OnScoresChanged;
         //UpdateLeaderboardUI();
     }
     
@@ -69,7 +69,7 @@ public class LeaderBoardHUDManager : NetworkBehaviour
             return;
         }
 
-        Dictionary<ulong, int> gmPlayerScores = DeathMatchManager.Instance.PlayerScores.Value;
+        Dictionary<ulong, int> gmPlayerScores = DeathMatchManager.GetInstance().PlayerScores.Value;
 
         PlayerScore[] sortedScores = new PlayerScore[gmPlayerScores.Count];
         for (int i = 0; i < gmPlayerScores.Count; i++)

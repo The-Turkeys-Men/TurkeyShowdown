@@ -1,9 +1,13 @@
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 
 public interface IGameModeManager
 {
-    public static IGameModeManager Instance { get; set;  }
+    public static IGameModeManager GetInstance()
+    {
+        return null;
+    }
     public NetworkVariable<int> TimeLeft { get; set; }
     public int MaxGameTime { get; set; }
     public int ScoreToWin { get; set; }
