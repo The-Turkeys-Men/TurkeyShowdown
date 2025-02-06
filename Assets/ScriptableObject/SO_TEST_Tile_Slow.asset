@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31c5cf411dcc1534e9f92c0e6f6fcb7e, type: 3}
+  m_Name: SO_TEST_Tile_Slow
+  m_EditorClassIdentifier: 
+  walkSpeed: 20
+  tiles:
+  - {fileID: 11400000, guid: aefbeb7209409b44e936bb1078fb9a5b, type: 2}
