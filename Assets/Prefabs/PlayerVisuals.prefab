@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7429472470110827643}
   - component: {fileID: 2090555236113876306}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plume3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6992164962038778247}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlayerVisuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113,8 +113,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.325, y: 0.325, z: 0.325}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3028681024877620833}
   - {fileID: 852620649392362188}
@@ -137,7 +137,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1119248463332829528}
   - component: {fileID: 8060524140601848390}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plume3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -224,7 +224,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5114580893267188723}
   - component: {fileID: 2684074182421997099}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plume6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -310,7 +310,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7954850672078311461}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Torse
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -348,7 +348,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8469691273537810814}
   - component: {fileID: 8147146782140348150}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plume5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -435,7 +435,8 @@ GameObject:
   m_Component:
   - component: {fileID: 852620649392362188}
   - component: {fileID: 7946018143714430005}
-  m_Layer: 0
+  - component: {fileID: 7538992164850497926}
+  m_Layer: 9
   m_Name: Bras
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -512,6 +513,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &7538992164850497926
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2677169554817718112}
+  m_Enabled: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8d0bf116df75a0d4b9eb6612447a8783, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2890970711056512033
 GameObject:
   m_ObjectHideFlags: 0
@@ -522,7 +545,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7142647021138369181}
   - component: {fileID: 7652414743231070290}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plume6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -609,7 +632,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4401437686796916195}
   - component: {fileID: 8282615027135157725}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: cou2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -696,7 +719,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3409912151321070032}
   - component: {fileID: 2086610554659745482}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: cou1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -783,7 +806,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6623946352365882204}
   - component: {fileID: 395316125642608921}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: cou3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -870,7 +893,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4596207836465957684}
   - component: {fileID: 2604431786888652731}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlumeBras
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -957,7 +980,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3334816942107873085}
   - component: {fileID: 5078423107885669634}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plume4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1044,7 +1067,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3028681024877620833}
   - component: {fileID: 259279035203201827}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: GrapplingLineRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1183,7 +1206,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6191353333829385900}
   - component: {fileID: 6575747630586137191}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plume1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1270,7 +1293,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5367258543125854098}
   - component: {fileID: 8376741930104977469}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plume2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1357,7 +1380,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5018501109948394295}
   - component: {fileID: 3333568921831842446}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Tete
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1444,7 +1467,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1458240607570211065}
   - component: {fileID: 7967613530687805976}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlumeBras (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1531,7 +1554,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1843419336432132119}
   - component: {fileID: 3997498909108814884}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plume2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1618,7 +1641,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7089673862831847351}
   - component: {fileID: 4803208372158316762}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plume4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1705,7 +1728,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1009187530729269668}
   - component: {fileID: 7782885754557136241}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plume1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1792,7 +1815,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5072163832134504542}
   - component: {fileID: 2024373394460384267}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ColorOverlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1845,7 +1868,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5744347575553835518}
   - component: {fileID: 6117567874982569838}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plume5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
