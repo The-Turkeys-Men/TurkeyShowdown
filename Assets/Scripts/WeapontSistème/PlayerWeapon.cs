@@ -97,19 +97,6 @@ public class PlayerWeapon : NetworkBehaviour
         weaponComponent.Rb.AddTorque(weaponComponent.ThrowTorque, ForceMode2D.Impulse);
         weaponComponent.ShowClientRpc();
     }
-
-    private void UnEquipWeapon()
-    {
-        if (WeaponInventory.Contains(EquipedWeapon))
-        {
-            WeaponInventory.Remove(EquipedWeapon);
-        }
-        EquipedWeapon = null;
-        if (WeaponInventory.Count > 0)
-        {
-            EquipedWeapon = WeaponInventory[0];
-        }
-    }
     
     public void TryEquipWeapon()
     {
@@ -150,8 +137,23 @@ public class PlayerWeapon : NetworkBehaviour
         AskForOwnershipServerRpc(OwnerClientId, EquipedWeapon.GetComponent<NetworkObject>().NetworkObjectId);
         EquipedWeapon.GetComponent<Rigidbody2D>().simulated = false;
         EquipedWeapon.transform.position = transform.position + Vector3.up;
+        
+        WeaponInventory.Add(EquipedWeapon);
     }
 
+    private void UnEquipWeapon()
+    {
+        if (WeaponInventory.Contains(EquipedWeapon))
+        {
+            WeaponInventory.Remove(EquipedWeapon);
+        }
+        EquipedWeapon = null;
+        if (WeaponInventory.Count > 0)
+        {
+            EquipedWeapon = WeaponInventory[0];
+        }
+    }
+    
     [Rpc(SendTo.Server, RequireOwnership = false)]
     private void OnEquipWeaponServerRpc(ulong clientId, ulong playerObjectId, ulong weaponObjectId)
     {
