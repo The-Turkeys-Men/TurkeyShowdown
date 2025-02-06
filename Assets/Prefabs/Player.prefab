@@ -275,8 +275,8 @@ MonoBehaviour:
   _teteGrapain: {fileID: 6222178837806966316, guid: db48ae94392d9534e95f8ce8c3156063, type: 3}
   _startGrabPoint: {fileID: 4942938090148323569}
   _grappleVisual: {fileID: 8826177516109547633}
-  _startWidth: 0.25
-  _endWidth: 0.25
+  _startWidth: 0.08
+  _endWidth: 0.08
   _grappleRange: 6
   _neckStartPoint: {fileID: 107553869481509861}
 --- !u!114 &3577906075511020807

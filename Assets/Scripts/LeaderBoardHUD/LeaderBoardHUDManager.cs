@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Debugger;
 using Unity.Netcode;
 using UnityEngine;
@@ -70,19 +71,18 @@ public class LeaderBoardHUDManager : NetworkBehaviour
 
         Dictionary<ulong, int> gmPlayerScores = DeathMatchManager.Instance.PlayerScores.Value;
 
-        int counter = 0;
         PlayerScore[] sortedScores = new PlayerScore[gmPlayerScores.Count];
-        foreach (var playerScore in gmPlayerScores)
+        for (int i = 0; i < gmPlayerScores.Count; i++)
         {
+            var playerScore = gmPlayerScores.ElementAt(i);
             PlayerScore updatedScore = new()
             {
                 ClientId = playerScore.Key,
-                PlayerName = $"Player_{counter+1}",
-                Score =  playerScore.Value,
+                PlayerName = $"Player_{i + 1}",
+                Score = playerScore.Value,
             };
             DebuggerConsole.Instance.Log($"Player {updatedScore.PlayerName} has {updatedScore.Score} points.");
-            sortedScores[counter] = updatedScore;
-            counter++;
+            sortedScores[i] = updatedScore;
         }
 
         Array.Sort(sortedScores, (a, b) => b.Score.CompareTo(a.Score));
