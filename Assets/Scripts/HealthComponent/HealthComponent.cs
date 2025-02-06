@@ -1,4 +1,5 @@
 using System;
+using Debugger;
 using Extensions;
 using Unity.Netcode;
 using UnityEngine;
@@ -14,14 +15,13 @@ public class HealthComponent : NetworkBehaviour
     public NetworkVariable<int> Armor;
     public int MaxArmor;
 
-    public UnityEvent<ulong> OnDeath;
-
-    private void OnDeathServerRpcAttribute()
-    {
-        OnDeath.Invoke(gameObject.GetNetworkObjectId());
-    }
+    public UnityEvent<ulong> OnDeath = new();
+    public UnityEvent OnRespawn = new();
+    
+    [SerializeField] private bool _isPlayer = false;
      
-    private void OnDeathClientRpcAttribute()
+    [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
+    private void OnDeathClientRpc()
     {
         OnDeath.Invoke(gameObject.GetNetworkObjectId());
     }
@@ -74,8 +74,14 @@ public class HealthComponent : NetworkBehaviour
         }
         if (Health. Value <= 0)
         {
-            OnDeathServerRpcAttribute();
-            OnDeathClientRpcAttribute();
+            OnDeath.Invoke(NetworkObjectId);
+            OnDeathClientRpc();
+            if (_isPlayer)
+            {
+                //todo: optimize this
+                FindAnyObjectByType<DeathMatchManager>().OnPlayerKill(senderId);
+                DebuggerConsole.Instance.LogClientRpc("Player killed by: " + senderObject.name);
+            }
         }
     }
 }

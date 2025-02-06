@@ -2,6 +2,7 @@ using System;
 using Debugger;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -12,9 +13,11 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField] private Transform _rotationPivot;
 
+    [FormerlySerializedAs("_inputActivated")] public bool InputActivated = true;
+
     private void Update()
     {
-        if (!IsOwner)
+        if (!IsOwner || !InputActivated)
         {
             return;
         }
@@ -40,7 +43,7 @@ public class PlayerController : NetworkBehaviour
 
     public void OnMove(Vector2 direction)
     {
-        if (!IsOwner)
+        if (!IsOwner || !InputActivated)
         {
             return;
         }
@@ -54,7 +57,7 @@ public class PlayerController : NetworkBehaviour
     
     public void OnGrapple()
     {
-        if (!IsOwner)
+        if (!IsOwner || !InputActivated)
         {
             return;
         }
@@ -66,7 +69,7 @@ public class PlayerController : NetworkBehaviour
 
     public void OnUnGrapple()
     {
-        if (!IsOwner)
+        if (!IsOwner || !InputActivated)
         {
             return;
         }
@@ -79,7 +82,7 @@ public class PlayerController : NetworkBehaviour
 
     public void OnShoot()
     {
-        if (!IsOwner)
+        if (!IsOwner || !InputActivated)
         {
             return;
         }
@@ -89,7 +92,7 @@ public class PlayerController : NetworkBehaviour
 
     public void OnThrowOrGrab()
     {
-        if (!IsOwner)
+        if (!IsOwner || !InputActivated)
         {
             return;
         }

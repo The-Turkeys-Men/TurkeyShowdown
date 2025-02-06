@@ -28,7 +28,7 @@ public class PlayerSpawner : NetworkBehaviour
             return;
         }
         
-        playerObject.gameObject.SetActive(false);
+        //playerObject.gameObject.SetActive(false);
         StartCoroutine(SpawnTimer(playerObject.gameObject));
     }
     
@@ -41,16 +41,18 @@ public class PlayerSpawner : NetworkBehaviour
             return;
         }
         
-        playerObject.gameObject.SetActive(false);
+        //playerObject.gameObject.SetActive(false);
         StartCoroutine(SpawnTimer(playerObject.gameObject));
     }
     
     IEnumerator SpawnTimer(GameObject player)
     {
         yield return new WaitForSeconds(_respawnTime);
-        player.GetComponent<HealthComponent>().SetHealthServerRpc(player.GetComponent<HealthComponent>().BaseHealth);
+        var healthComponent = player.GetComponent<HealthComponent>();
+        healthComponent.SetHealthServerRpc(healthComponent.BaseHealth);
         player.transform.position = _playerSpawnPoint[Random.Range(0, _playerSpawnPoint.Length)].position;
         player.SetActive(true);
+        healthComponent.OnRespawn.Invoke();
         
         OnFinishRespawnClientRpc(player.GetNetworkObjectId());
     }
@@ -68,6 +70,10 @@ public class PlayerSpawner : NetworkBehaviour
         networkTransform.Interpolate = false;
         playerObject.transform.position = _playerSpawnPoint[Random.Range(0, _playerSpawnPoint.Length)].position;
         playerObject.gameObject.SetActive(true);
+        
+        var healthComponent = playerObject.GetComponent<HealthComponent>();
+        healthComponent.OnRespawn.Invoke();
+        
         StartCoroutine(ReactivateInterpolation(networkTransform));
     }
 
@@ -95,10 +101,11 @@ public class PlayerSpawner : NetworkBehaviour
             OnDeathClientRpc(playerObjectId);
             OnDeathServerRpc(playerObjectId);
         });
-            
-        ActivateCameraClientRpc(NewPlayer.GetComponent<NetworkObject>().NetworkObjectId, RpcTarget.Single(clientId, RpcTargetUse.Temp));
-    }
 
+        ActivateCameraClientRpc(NewPlayer.GetComponent<NetworkObject>().NetworkObjectId,
+            RpcTarget.Single(clientId, RpcTargetUse.Temp));
+    }
+    
     [Rpc(SendTo.ClientsAndHost, AllowTargetOverride = true)]
     private void ActivateCameraClientRpc(ulong playerId, RpcParams rpcParams = default)
     {

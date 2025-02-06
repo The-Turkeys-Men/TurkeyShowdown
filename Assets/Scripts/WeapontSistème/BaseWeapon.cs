@@ -1,4 +1,5 @@
 using Debugger;
+using Extensions;
 using UnityEngine;
 
 using Unity.Netcode;
@@ -177,7 +178,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 
                 if (raycastResult && raycastResult.collider.TryGetComponent(out HealthComponent healthComponent))
                 {
-                    healthComponent.DamageServerRpc(Damage, NetworkObjectId);
+                    healthComponent.DamageServerRpc(Damage, LastOwner.GetNetworkObjectId());
                 }
                 
                 Vector2 endPoint;
@@ -231,7 +232,9 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         direction.Normalize();
         GameObject spawnedBullet = Instantiate(ProjectilePrefab, position, Quaternion.identity);
         spawnedBullet.GetComponent<NetworkObject>().Spawn();
-        spawnedBullet.GetComponent<Projectile>().Direction = direction;
+        var projectile = spawnedBullet.GetComponent<Projectile>();
+        projectile.Direction = direction;
+        projectile.SenderObject = LastOwner;
     }
 
     [Rpc(SendTo.Server, RequireOwnership = false)]

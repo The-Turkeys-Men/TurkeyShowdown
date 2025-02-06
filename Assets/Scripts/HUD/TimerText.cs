@@ -8,6 +8,7 @@ public class TimerText : MonoBehaviour
 
     private void Awake()
     {
+        //todo: optimize this
         _gameModeManager = FindAnyObjectByType<DeathMatchManager>();
     }
 
