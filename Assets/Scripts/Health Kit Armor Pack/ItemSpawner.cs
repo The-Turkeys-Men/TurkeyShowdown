@@ -11,7 +11,7 @@ public class ItemSpawner : NetworkBehaviour
     
     private GameObject _spawnedItem;
 
-    [SerializeField] private bool _reinstantiate = false;
+    [SerializeField] private bool _reinstantiate = true;
 
     private void Initialize()
     {
