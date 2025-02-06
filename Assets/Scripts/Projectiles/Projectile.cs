@@ -1,4 +1,5 @@
 using System;
+using Debugger;
 using Extensions;
 using Unity.Netcode;
 using UnityEngine;
@@ -14,8 +15,12 @@ public class Projectile : NetworkBehaviour
     public float MaxLifeTime;
     
     [Header("Explosive")]
-    public bool Explosive = false;
+    public bool IsExplosive = false;
+
+    public int ExplosionDamage;
     public float ExplosionRange;
+    public float ExplosionKnockback;
+    public float ExplosionSelfKnockback;
 
     public GameObject HitEffectPrefab;
     
@@ -57,6 +62,10 @@ public class Projectile : NetworkBehaviour
             healthComponent.DamageServerRpc(Damage, SenderObject.GetNetworkObjectId());
         }
         
+        if (IsExplosive)
+        {
+            Explode();
+        }
         SpawnHitEffectRpc(transform.position);
         NetworkObject.Despawn(true);
     }
@@ -80,7 +89,57 @@ public class Projectile : NetworkBehaviour
         _currentLifeTime += Time.deltaTime;
         if (_currentLifeTime >= MaxLifeTime)
         {
+            if (IsExplosive)
+            {
+                Explode();
+                SpawnHitEffectRpc(transform.position);
+            }
             NetworkObject.Despawn(true);
         }
+    }
+
+    private void Explode()
+    {
+        DebuggerConsole.Instance.LogClientRpc("Explode");
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, ExplosionRange);
+        foreach (Collider2D collider in colliders)
+        {
+            if (SenderObject.TryGetComponent(out TeamComponent senderTeamComponent) && collider.TryGetComponent(out TeamComponent otherTeamComponent))
+            {
+                if (senderTeamComponent.TeamID == otherTeamComponent.TeamID)
+                {
+                    Vector2 direction = (collider.transform.position - transform.position).normalized;
+                    var objectId = collider.gameObject.GetNetworkObjectId();
+                    if (objectId != ulong.MaxValue)
+                    {
+                        ApplyKnockbackRpc(objectId, direction * ExplosionSelfKnockback);
+                    }
+                    continue;
+                }
+            }
+            
+            if (collider.TryGetComponent(out HealthComponent healthComponent))
+            {
+                healthComponent.Damage(ExplosionDamage, SenderObject.GetNetworkObjectId());
+            }
+
+            if (collider.TryGetComponent(out Rigidbody2D rb))
+            {
+                Vector2 direction = (collider.transform.position - transform.position).normalized;
+                var objectId = collider.gameObject.GetNetworkObjectId();
+                if (objectId != ulong.MaxValue)
+                {
+                    ApplyKnockbackRpc(objectId, direction * ExplosionKnockback);
+                }
+            }
+        }
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void ApplyKnockbackRpc(ulong playerObjectId, Vector2 knockback)
+    {
+        DebuggerConsole.Instance.Log(playerObjectId.ToString());
+        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject);
+        playerObject.GetComponent<Rigidbody2D>().AddForce(knockback * ExplosionSelfKnockback, ForceMode2D.Impulse);
     }
 }

@@ -27,6 +27,11 @@ public interface IWeapon : IGrabbable
     public GameObject ProjectilePrefab{get;}
     public float ProjectileSpeed{get;}
     public float MaxLifetime{get;}
+    public bool IsExplosive { get; }
+    public int ExplosionDamage { get; }
+    public float ExplosionRange { get; }
+    public float ExplosionSelfKnockback { get; }
+    public float ExplosionKnockback { get; }
     //[Header("raycast")]
     public float MaxDistance{get;} 
     

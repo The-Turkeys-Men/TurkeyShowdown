@@ -32,7 +32,12 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     [field:SerializeField] public GameObject ProjectilePrefab { get; set; }
     [field:SerializeField] public float ProjectileSpeed { get; set; }
     [field:SerializeField] public float MaxLifetime { get; set; }
-    
+    [field:SerializeField] public bool IsExplosive { get; set; }
+    [field:SerializeField] public int ExplosionDamage { get; set; }
+    [field:SerializeField] public float ExplosionRange { get; set; }
+    [field:SerializeField] public float ExplosionSelfKnockback { get; set; }
+    [field:SerializeField] public float ExplosionKnockback { get; set; }
+
     [field:Header("raycast")]
     [field:SerializeField] public float MaxDistance { get; set; }
 
@@ -276,6 +281,12 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         var projectile = spawnedBullet.GetComponent<Projectile>();
         projectile.Direction = direction;
         projectile.SenderObject = LastOwner;
+        
+        projectile.IsExplosive = IsExplosive;
+        projectile.ExplosionSelfKnockback = ExplosionSelfKnockback;
+        projectile.ExplosionDamage = ExplosionDamage;
+        projectile.ExplosionRange = ExplosionRange;
+        projectile.ExplosionKnockback = ExplosionKnockback;
     }
 
     [Rpc(SendTo.Server, RequireOwnership = false)]
