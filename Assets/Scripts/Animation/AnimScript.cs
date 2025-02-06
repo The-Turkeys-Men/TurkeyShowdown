@@ -51,17 +51,4 @@ public class AnimScript : NetworkBehaviour
         if (_Animator == null) return;
         _Animator.SetTrigger("Attacking");
     }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            StartAnim();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            SetAnimatorServerRpc(0);
-        }
-    }
 }
