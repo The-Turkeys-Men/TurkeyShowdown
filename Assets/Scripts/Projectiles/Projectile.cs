@@ -16,6 +16,8 @@ public class Projectile : NetworkBehaviour
     [Header("Explosive")]
     public bool Explosive = false;
     public float ExplosionRange;
+
+    public GameObject HitEffectPrefab;
     
     private float _currentLifeTime;
     [HideInInspector] public Vector2 Direction;
@@ -55,9 +57,17 @@ public class Projectile : NetworkBehaviour
             healthComponent.DamageServerRpc(Damage, SenderObject.GetNetworkObjectId());
         }
         
+        SpawnHitEffectRpc(transform.position);
         NetworkObject.Despawn(true);
     }
 
+    [Rpc(SendTo.ClientsAndHost)]
+    private void SpawnHitEffectRpc(Vector2 position)
+    {
+        GameObject hitEffect = Instantiate(HitEffectPrefab, position, Quaternion.identity);
+    }
+    
+    
     private void Update()
     {
         if (!IsServer)
