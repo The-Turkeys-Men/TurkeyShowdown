@@ -304,7 +304,7 @@ MonoBehaviour:
   OnRespawn:
     m_PersistentCalls:
       m_Calls: []
-  _isPlayer: 0
+  _isPlayer: 1
 --- !u!114 &8629905100730461844
 MonoBehaviour:
   m_ObjectHideFlags: 0

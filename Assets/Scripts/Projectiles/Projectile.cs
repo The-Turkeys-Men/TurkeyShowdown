@@ -1,4 +1,5 @@
 using System;
+using Extensions;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -51,7 +52,7 @@ public class Projectile : NetworkBehaviour
         
         if (other.transform.TryGetComponent(out HealthComponent healthComponent))
         {
-            healthComponent.DamageServerRpc(Damage, SenderObject.GetComponent<NetworkObject>().NetworkObjectId);
+            healthComponent.DamageServerRpc(Damage, SenderObject.GetNetworkObjectId());
         }
         
         NetworkObject.Despawn(true);

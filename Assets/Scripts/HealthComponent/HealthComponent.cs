@@ -1,4 +1,5 @@
 using System;
+using Debugger;
 using Extensions;
 using Unity.Netcode;
 using UnityEngine;
@@ -79,6 +80,7 @@ public class HealthComponent : NetworkBehaviour
             {
                 //todo: optimize this
                 FindAnyObjectByType<DeathMatchManager>().OnPlayerKill(senderId);
+                DebuggerConsole.Instance.LogClientRpc("Player killed by: " + senderObject.name);
             }
         }
     }
