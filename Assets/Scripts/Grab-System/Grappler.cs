@@ -124,6 +124,7 @@ public class Grappler : NetworkBehaviour
             _grappleDistance = Vector2.Distance(transform.position, _grappledPoint);
         }
         _grappleVisual.SetPosition(0, _startGrabPoint.position);
+        _grappleVisual.SetPosition(1, _neckStartPoint.position);
         UpdateGrabVisualEffectServerRpc();
         
         _curentGrabTete.transform.eulerAngles = Vector3.forward * _wallAngle;
