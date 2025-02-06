@@ -13,8 +13,8 @@ public class KillFeedManager : MonoBehaviour
     public TextMeshProUGUI[] killedTexts;
     public Image[] weaponImages;
 
-    private int maxKillEntries = 3;
-    private float showDuration = 3f;
+    private int maxKillEntries = 3; // Nombre maximum d'entrées dans le killfeed
+    private float showDuration = 3f; // Durée d'affichage de chaque entrée
 
     private void Awake()
     {
@@ -55,21 +55,24 @@ public class KillFeedManager : MonoBehaviour
 
     public void AddKill(string killerName, string killedName, int weaponID)
     {
-        // Décale toutes les entrées existantes vers le bas
-        for (int i = 0; i < maxKillEntries - 1; i++)
+        // Si la liste est pleine, décale les entrées vers le haut
+        if (killFeedEntries[maxKillEntries - 1].activeSelf)
         {
-            killerTexts[i].text = killerTexts[i + 1].text;
-            killedTexts[i].text = killedTexts[i + 1].text;
-            weaponImages[i].sprite = weaponImages[i + 1].sprite;
-            killFeedEntries[i].SetActive(killFeedEntries[i + 1].activeSelf);
+            for (int i = 0; i < maxKillEntries - 1; i++)
+            {
+                killerTexts[i].text = killerTexts[i + 1].text;
+                killedTexts[i].text = killedTexts[i + 1].text;
+                weaponImages[i].sprite = weaponImages[i + 1].sprite;
+                killFeedEntries[i].SetActive(killFeedEntries[i + 1].activeSelf);
+            }
         }
 
-        // Ajoute la nouvelle entrée en haut
-        int topIndex = maxKillEntries - 1;
-        killerTexts[topIndex].text = killerName;
-        killedTexts[topIndex].text = killedName;
-        weaponImages[topIndex].sprite = WeaponDatabase.Instance.GetWeaponSprite(weaponID);
-        killFeedEntries[topIndex].SetActive(true);
+        // Ajoute la nouvelle entrée en bas
+        int bottomIndex = maxKillEntries - 1;
+        killerTexts[bottomIndex].text = killerName;
+        killedTexts[bottomIndex].text = killedName;
+        weaponImages[bottomIndex].sprite = WeaponDatabase.Instance.GetWeaponSprite(weaponID);
+        killFeedEntries[bottomIndex].SetActive(true);
 
         // Lance la suppression après un délai
         StartCoroutine(RemoveOldestKillAfterDelay());
@@ -78,8 +81,8 @@ public class KillFeedManager : MonoBehaviour
     private IEnumerator RemoveOldestKillAfterDelay()
     {
         yield return new WaitForSeconds(showDuration);
-        
-        // Décale les entrées restantes vers le haut
+
+        // Décale les entrées vers le haut
         for (int i = 0; i < maxKillEntries - 1; i++)
         {
             killerTexts[i].text = killerTexts[i + 1].text;
