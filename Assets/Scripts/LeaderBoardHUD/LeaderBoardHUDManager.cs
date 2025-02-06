@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Debugger;
 using Unity.Netcode;
 using UnityEngine;
 using TMPro;
@@ -59,10 +60,12 @@ public class LeaderBoardHUDManager : NetworkBehaviour
         if (IsServer)
         {
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+            return;
         }
-        _playerScores.OnListChanged += OnScoresChanged;
+        DeathMatchManager.Instance.PlayerScores.OnValueChanged += OnScoresChanged;
         //UpdateLeaderboardUI();
     }
+
 
     private void OnClientConnected(ulong clientId)
     {
@@ -74,8 +77,8 @@ public class LeaderBoardHUDManager : NetworkBehaviour
             Debug.Log($"[Server] New player connected: {playerName} ({clientId})");
         }
     }
-
-    private void OnScoresChanged(NetworkListEvent<PlayerScore> changeEvent)
+    
+    private void OnScoresChanged(Dictionary<ulong, int> previousvalue, Dictionary<ulong, int> newvalue)
     {
         UpdateLeaderboardUI();
     }
@@ -86,10 +89,23 @@ public class LeaderBoardHUDManager : NetworkBehaviour
         {
             return;
         }
-        
-        PlayerScore[] sortedScores = new PlayerScore[_playerScores.Count];
-        for (int i = 0; i < _playerScores.Count; i++)
-            sortedScores[i] = _playerScores[i];
+
+        Dictionary<ulong, int> gmPlayerScores = DeathMatchManager.Instance.PlayerScores.Value;
+
+        int counter = 0;
+        PlayerScore[] sortedScores = new PlayerScore[gmPlayerScores.Count];
+        foreach (var playerScore in gmPlayerScores)
+        {
+            PlayerScore updatedScore = new()
+            {
+                ClientId = playerScore.Key,
+                PlayerName = $"Player_{counter+1}",
+                Score =  playerScore.Value,
+            };
+            DebuggerConsole.Instance.Log($"Player {updatedScore.PlayerName} has {updatedScore.Score} points.");
+            sortedScores[counter] = updatedScore;
+            counter++;
+        }
 
         Array.Sort(sortedScores, (a, b) => b.Score.CompareTo(a.Score));
 

@@ -3,6 +3,7 @@ using Unity.Netcode;
 
 public interface IGameModeManager
 {
+    public static IGameModeManager Instance { get; set;  }
     public NetworkVariable<int> TimeLeft { get; set; }
     public int MaxGameTime { get; set; }
     public int ScoreToWin { get; set; }
