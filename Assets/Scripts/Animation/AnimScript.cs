@@ -49,12 +49,19 @@ public class AnimScript : NetworkBehaviour
     public void StartAnim()
     {
         if (_Animator == null) return;
-        _Animator.SetBool("Attacking", true);
+        _Animator.SetTrigger("Attacking");
     }
 
-    public void StopAnim()
+    private void Update()
     {
-        if (_Animator == null) return;
-        _Animator.SetBool("Attacking", false);
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            StartAnim();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            SetAnimatorServerRpc(0);
+        }
     }
 }
