@@ -4,6 +4,7 @@ using WeaponSystem;
 
 public interface IWeapon : IGrabbable
 {
+    public int WeaponId{get;}
     
     public float FireRate{get;}//cadance 
     public float FireRateTimer{get;}

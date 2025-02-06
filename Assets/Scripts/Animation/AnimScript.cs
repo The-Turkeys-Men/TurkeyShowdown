@@ -8,8 +8,7 @@ public class AnimScript : NetworkBehaviour
 {
     [SerializeField] private Animator _Animator;
     [SerializeField] private SpriteRenderer _Arm;
-    [SerializeField] private Sprite _NoArm;
-    [SerializeField] private Sprite[] Weapons;
+    //[SerializeField] private Sprite _NoArm;
 
     [Rpc(SendTo.Server)]
     public void SetAnimatorServerRpc(int animId)
@@ -43,7 +42,7 @@ public class AnimScript : NetworkBehaviour
     public void RemoveAnimator()
     {
         _Animator.SetInteger("index", -1);
-        _Arm.sprite = _NoArm;
+        //_Arm.sprite = _NoArm;
     }
     
     public void StartAnim()

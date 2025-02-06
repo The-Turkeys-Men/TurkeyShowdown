@@ -139,6 +139,7 @@ public class PlayerWeapon : NetworkBehaviour
         EquipedWeapon.transform.position = transform.position + Vector3.up;
         
         WeaponInventory.Add(EquipedWeapon);
+        GetComponent<AnimScript>().SetAnimatorServerRpc(EquipedWeapon.WeaponId); 
     }
 
     private void UnEquipWeapon()

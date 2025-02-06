@@ -11087,7 +11087,7 @@ MonoBehaviour:
   - {fileID: 1076352548}
   - {fileID: 1845511439}
   - {fileID: 2059245273}
-  _spawnWeapon: {fileID: 1681594491691932344, guid: 2abad833c9466ea46bdeb0feb71806fd, type: 3}
+  _spawnWeapon: {fileID: 1681594491691932344, guid: 69cf37ac3b553d847855075d85567b80, type: 3}
 --- !u!114 &1387595105
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -113,6 +113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  <WeaponId>k__BackingField: 0
   <FireRate>k__BackingField: 0.3
   <Damage>k__BackingField: 10
   <MaxAmmo>k__BackingField: 9999999

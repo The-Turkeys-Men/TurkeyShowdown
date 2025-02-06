@@ -9,6 +9,7 @@ using WeaponSystem;
 
 public class BaseWeapon : NetworkBehaviour, IWeapon
 {
+    [field:SerializeField] public int WeaponId { get; set; }
     [field:SerializeField] public float FireRate { get; set; }
     public float FireRateTimer { get; set; }
     [field:SerializeField] public int Damage { get; set; }
@@ -229,6 +230,8 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         OnShootServerRpc();
         Rigidbody2D playerRigidbody = transform.parent.GetComponentInParent<Rigidbody2D>();
         playerRigidbody.AddForce(-direction * RecoilForce, ForceMode2D.Impulse);
+        
+        LastOwner.GetComponent<AnimScript>().StartAnim();
     }
 
     [Rpc(SendTo.SpecifiedInParams, AllowTargetOverride = true)]
