@@ -36,6 +36,18 @@ namespace Health
             playerController.InputActivated = false;
 
             _rigidbody2D.excludeLayers = ~(1 << LayerMask.NameToLayer("World"));
+
+            if (!IsOwner)
+            {
+                return;
+            }
+            
+            GetComponent<Grappler>().TryReleaseGrab();
+            PlayerWeapon playerWeapon = GetComponent<PlayerWeapon>();
+            if (playerWeapon.EquipedWeapon && playerWeapon.EquipedWeapon.CanBeThrowed)
+            {
+                playerWeapon.ThrowWeapon();
+            }
         }
     }
 }

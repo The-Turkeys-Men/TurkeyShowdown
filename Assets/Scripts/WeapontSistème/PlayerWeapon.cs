@@ -13,19 +13,6 @@ public class PlayerWeapon : NetworkBehaviour
     
     public bool Dizziness;
 
-    private void Awake()
-    {
-        GetComponent<HealthComponent>().OnDeath.AddListener(OnDeath);
-    }
-
-    private void OnDeath(ulong arg0)
-    {
-        if (EquipedWeapon && EquipedWeapon.CanBeThrowed)
-        {
-            ThrowWeapon();
-        }
-    }
-
     void Update()
     {
         if (!IsOwner)
