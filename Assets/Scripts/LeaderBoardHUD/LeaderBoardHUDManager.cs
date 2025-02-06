@@ -31,11 +31,6 @@ public class LeaderBoardHUDManager : NetworkBehaviour
         public override int GetHashCode() => HashCode.Combine(ClientId, Score);
     }
 
-    private readonly NetworkList<PlayerScore> _playerScores = new();
-    private int _playerCounter = 0;
-    private const int POINTS_TO_ADD = 100;
-    private const int POINTS_TO_REMOVE = 50;
-
     public void SetPanel(LeaderBoardHUDPanel panel)
     {
         LeaderBoardTexts = panel.LeaderBoardTexts;
@@ -57,25 +52,8 @@ public class LeaderBoardHUDManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (IsServer)
-        {
-            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
-            return;
-        }
         DeathMatchManager.Instance.PlayerScores.OnValueChanged += OnScoresChanged;
         //UpdateLeaderboardUI();
-    }
-
-
-    private void OnClientConnected(ulong clientId)
-    {
-        if (IsServer)
-        {
-            _playerCounter++; 
-            string playerName = $"Player_{_playerCounter}";
-            _playerScores.Add(new PlayerScore { ClientId = clientId, PlayerName = playerName, Score = 0 });
-            Debug.Log($"[Server] New player connected: {playerName} ({clientId})");
-        }
     }
     
     private void OnScoresChanged(Dictionary<ulong, int> previousvalue, Dictionary<ulong, int> newvalue)
@@ -126,42 +104,6 @@ public class LeaderBoardHUDManager : NetworkBehaviour
                 break;
             }
             LeaderBoardTexts[i].text = $"#{i + 1} {sortedScores[i].PlayerName} - {sortedScores[i].Score}";
-        }
-    }
-
-    private void IncrementScoreForFirstPlayer()
-    {
-        if (_playerScores.Count > 0)
-        {
-            PlayerScore updatedScore = _playerScores[0];
-            updatedScore.Score += POINTS_TO_ADD;
-            _playerScores[0] = updatedScore;
-            Debug.Log($"[Server] {updatedScore.PlayerName} gains {POINTS_TO_ADD} points, total: {updatedScore.Score}");
-        }
-    }
-
-    private void DecrementScoreForFirstPlayer()
-    {
-        if (_playerScores.Count > 0)
-        {
-            PlayerScore updatedScore = _playerScores[0];
-            updatedScore.Score = Math.Max(0, updatedScore.Score - POINTS_TO_REMOVE);
-            _playerScores[0] = updatedScore;
-            Debug.Log($"[Server] {updatedScore.PlayerName} loses {POINTS_TO_REMOVE} points, total: {updatedScore.Score}");
-        }
-    }
-
-    private void ResetLeaderboard()
-    {
-        _playerScores.Clear();
-        _playerCounter = 0;
-        Debug.Log("[Server] Leaderboard reset.");
-        
-        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
-        {
-            _playerCounter++;
-            string playerName = $"Player_{_playerCounter}";
-            _playerScores.Add(new PlayerScore { ClientId = client.ClientId, PlayerName = playerName, Score = 0 });
         }
     }
 }

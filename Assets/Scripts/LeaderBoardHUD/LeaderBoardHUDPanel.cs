@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Debugger;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -8,9 +9,9 @@ public class LeaderBoardHUDPanel : NetworkBehaviour
 {
     public List<TextMeshProUGUI> LeaderBoardTexts = new();
     public TextMeshProUGUI CurrentPlaceText;
-    public override void OnNetworkSpawn()
+    
+    private void Start()
     {
-        base.OnNetworkSpawn();
         if (IsOwner)
         {
             LeaderBoardHUDManager.Instance.SetPanel(this);

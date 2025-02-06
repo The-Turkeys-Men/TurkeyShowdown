@@ -1798,7 +1798,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8604072754037209295}
-  - component: {fileID: 3012784580156607555}
   m_Layer: 9
   m_Name: LeaderBoardHUD
   m_TagString: Untagged
@@ -1826,21 +1825,6 @@ RectTransform:
   m_AnchoredPosition: {x: 10, y: -10}
   m_SizeDelta: {x: 480, y: 180}
   m_Pivot: {x: 0, y: 1}
---- !u!114 &3012784580156607555
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8210466451986666328}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0897bb3b81e53d0498a54e5c966ea2aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  LeaderBoardTexts:
-  - {fileID: 4344746340388903194}
-  CurrentPlaceText: {fileID: 2171894258135216692}
 --- !u!1 &9138411843454933213
 GameObject:
   m_ObjectHideFlags: 0
