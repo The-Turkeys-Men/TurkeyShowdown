@@ -55,19 +55,30 @@ public class KillFeedManager : MonoBehaviour
 
     public void AddKill(string killerName, string killedName, int weaponID)
     {
-        // Si la liste est pleine, décale les entrées vers le haut
-        if (killFeedEntries[maxKillEntries - 1].activeSelf)
+        // Si la liste n'est pas encore pleine, ajoute le kill dans la première entrée vide
+        for (int i = 0; i < maxKillEntries; i++)
         {
-            for (int i = 0; i < maxKillEntries - 1; i++)
+            if (!killFeedEntries[i].activeSelf)
             {
-                killerTexts[i].text = killerTexts[i + 1].text;
-                killedTexts[i].text = killedTexts[i + 1].text;
-                weaponImages[i].sprite = weaponImages[i + 1].sprite;
-                killFeedEntries[i].SetActive(killFeedEntries[i + 1].activeSelf);
+                killerTexts[i].text = killerName;
+                killedTexts[i].text = killedName;
+                weaponImages[i].sprite = WeaponDatabase.Instance.GetWeaponSprite(weaponID);
+                killFeedEntries[i].SetActive(true);
+                StartCoroutine(RemoveOldestKillAfterDelay());
+                return;
             }
         }
 
-        // Ajoute la nouvelle entrée en bas
+        // Si la liste est pleine, déplace les entrées et ajoute le nouveau kill
+        for (int i = 0; i < maxKillEntries - 1; i++)
+        {
+            killerTexts[i].text = killerTexts[i + 1].text;
+            killedTexts[i].text = killedTexts[i + 1].text;
+            weaponImages[i].sprite = weaponImages[i + 1].sprite;
+            killFeedEntries[i].SetActive(killFeedEntries[i + 1].activeSelf);
+        }
+
+        // Ajoute le nouveau kill à la dernière entrée
         int bottomIndex = maxKillEntries - 1;
         killerTexts[bottomIndex].text = killerName;
         killedTexts[bottomIndex].text = killedName;
