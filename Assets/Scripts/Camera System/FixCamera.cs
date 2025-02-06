@@ -6,7 +6,7 @@ public class FixCamera : MonoBehaviour
     [SerializeField] private Transform _followTransform;
      [SerializeField] private float _speed = 5;
     
-    private int _maxX, _maxY,_minX, _minY;
+    [SerializeField] private int _maxX, _maxY,_minX, _minY;
     private float _newCameraPositionX ;
     private float _newCameraPositionY ;
     public bool IsSemiLock;
@@ -31,7 +31,6 @@ public class FixCamera : MonoBehaviour
     private void MoveCamera()
     {
         _newCameraPositionX = Mathf.Clamp(_followTransform.position.x, _minX, _maxX);
-
         _newCameraPositionY = Mathf.Clamp(_followTransform.position.y, _minY, _maxY);
 
         _transform.position = new Vector3(_newCameraPositionX, _newCameraPositionY, _transform.position.z);
