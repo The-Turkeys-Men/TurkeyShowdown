@@ -138,7 +138,12 @@ public class PlayerWeapon : NetworkBehaviour
             return;
         }
 
-        EquipedWeapon = closestWeapon.GetComponent<BaseWeapon>();
+        EquipWeapon(closestWeapon.GetComponent<BaseWeapon>());
+    }
+
+    public void EquipWeapon(BaseWeapon weapon)
+    {
+        EquipedWeapon = weapon;
         EquipedWeapon.LastOwner = gameObject;
         EquipedWeapon.ShootPoint = WeaponHolder;
         OnEquipWeaponServerRpc(OwnerClientId, GetComponent<NetworkObject>().NetworkObjectId, EquipedWeapon.GetComponent<NetworkObject>().NetworkObjectId);
@@ -146,7 +151,7 @@ public class PlayerWeapon : NetworkBehaviour
         EquipedWeapon.GetComponent<Rigidbody2D>().simulated = false;
         EquipedWeapon.transform.position = transform.position + Vector3.up;
     }
-    
+
     [Rpc(SendTo.Server, RequireOwnership = false)]
     private void OnEquipWeaponServerRpc(ulong clientId, ulong playerObjectId, ulong weaponObjectId)
     {

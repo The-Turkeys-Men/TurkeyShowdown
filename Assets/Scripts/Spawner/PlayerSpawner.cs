@@ -11,6 +11,8 @@ public class PlayerSpawner : NetworkBehaviour
     [SerializeField] private Transform[] _playerSpawnPoint;
     
     private GameObject NewPlayer;
+
+    [SerializeField] private BaseWeapon _spawnWeapon;
     
     private void Start()
     {
@@ -48,11 +50,23 @@ public class PlayerSpawner : NetworkBehaviour
     IEnumerator SpawnTimer(GameObject player)
     {
         yield return new WaitForSeconds(_respawnTime);
+        RespawnPlayer(player);
+    }
+
+    private void RespawnPlayer(GameObject player)
+    {
         var healthComponent = player.GetComponent<HealthComponent>();
         healthComponent.SetHealthServerRpc(healthComponent.BaseHealth);
         player.transform.position = _playerSpawnPoint[Random.Range(0, _playerSpawnPoint.Length)].position;
         player.SetActive(true);
         healthComponent.OnRespawn.Invoke();
+        
+        if (_spawnWeapon)
+        {
+            BaseWeapon newWeapon = Instantiate(_spawnWeapon, NewPlayer.transform.position, Quaternion.identity);
+            newWeapon.GetComponent<NetworkObject>().Spawn();
+            NewPlayer.GetComponent<PlayerWeapon>().EquipWeapon(newWeapon);
+        }
         
         OnFinishRespawnClientRpc(player.GetNetworkObjectId());
     }
@@ -101,6 +115,13 @@ public class PlayerSpawner : NetworkBehaviour
             OnDeathClientRpc(playerObjectId);
             OnDeathServerRpc(playerObjectId);
         });
+
+        if (_spawnWeapon)
+        {
+            BaseWeapon newWeapon = Instantiate(_spawnWeapon, NewPlayer.transform.position, Quaternion.identity);
+            newWeapon.GetComponent<NetworkObject>().Spawn();
+            NewPlayer.GetComponent<PlayerWeapon>().EquipWeapon(newWeapon);
+        }
 
         ActivateCameraClientRpc(NewPlayer.GetComponent<NetworkObject>().NetworkObjectId,
             RpcTarget.Single(clientId, RpcTargetUse.Temp));
