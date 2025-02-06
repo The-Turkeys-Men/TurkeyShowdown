@@ -1,65 +1,51 @@
 using System;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class AnimScript : NetworkBehaviour
 {
     [SerializeField] private Animator _Animator;
-    [SerializeField] private OwnerNetworkAnimator _OwnerNetworkAnimator;
-    [SerializeField] private GameObject unArmed;
-    private Dictionary<int, Animator> _Animators = new Dictionary<int, Animator>();
+    [SerializeField] private SpriteRenderer _Arm;
+    [SerializeField] private Sprite _NoArm;
+    [SerializeField] private Sprite[] Weapons;
 
-    private void OnConnectedToServer()
+    [Rpc(SendTo.Server)]
+    public void SetAnimatorServerRpc(int animId)
     {
-        int i = 0;
-        foreach (Animator animator in GetComponentsInChildren<Animator>(includeInactive:true))
-        {
-            _Animators.Add(i++, animator);
-        }
+        SetAnimatorClientRpc(animId);
     }
     
-    [Rpc(SendTo.Everyone)]
-    public void setAnimatorRpc(int AnimID)
+    [Rpc(SendTo.ClientsAndHost)]
+    public void SetAnimatorClientRpc(int animId)
     {
-        if (!IsOwner) return;
-        unArmed.SetActive(false);
-        if (_Animator != null)
-        {
-            _Animator.gameObject.SetActive(false);
-        }
-        _Animator = _Animators.TryGetValue(AnimID, out Animator animator) ? animator : null;
-        _Animator.gameObject.SetActive(true);
-        _OwnerNetworkAnimator.Animator =_Animator;
+        setAnimator(animId);
+    }
+    
+    public void setAnimator(int AnimID)
+    {
+        _Animator.SetInteger("index", AnimID);
+    }
+
+    [Rpc(SendTo.Server)]
+    public void RemoveAnimatorServerRpc()
+    {
+        RemoveAnimatorClientRpc();
+    }
+    
+    [Rpc(SendTo.ClientsAndHost)]
+    public void RemoveAnimatorClientRpc()
+    {
+        RemoveAnimator();
     }
 
     public void RemoveAnimator()
     {
-        unArmed.SetActive(true);
-        _Animator.gameObject.SetActive(false);
-        _Animator = null;
-        _OwnerNetworkAnimator = null;
+        _Animator.SetInteger("index", -1);
+        _Arm.sprite = _NoArm;
     }
     
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            Debug.Log(_Animators.TryGetValue(0, out Animator animator) ? animator : null);
-            setAnimatorRpc(0);
-        }
-        
-        if (Input.GetKeyDown(KeyCode.Space)&& IsOwner)
-        {
-            StartAnim();
-        }
-
-        if (Input.GetKeyUp(KeyCode.Space) && IsOwner)
-        {
-            StopAnim();
-        }
-    }
-
     public void StartAnim()
     {
         if (_Animator == null) return;
