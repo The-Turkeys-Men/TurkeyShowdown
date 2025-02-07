@@ -11,6 +11,9 @@ namespace Health
         
         private LayerMask _originalExcludeLayers;
         
+        public Action OnDeathEvent;
+        public Action OnRespawnEvent;
+        
         private void Awake()
         {
             var healthComponent = GetComponent<HealthComponent>();
@@ -23,15 +26,20 @@ namespace Health
 
         private void OnRespawn()
         {
+            OnRespawnEvent?.Invoke();
+            
             var playerController = GetComponent<PlayerController>();
             playerController.InputActivated = true;
             
             _rigidbody2D.linearVelocity = Vector2.zero;
             _rigidbody2D.excludeLayers = _originalExcludeLayers;
+            
         }
 
         private void OnDeath(ulong arg0)
         {
+            OnDeathEvent?.Invoke();
+            
             var playerController = GetComponent<PlayerController>();
             playerController.InputActivated = false;
 
