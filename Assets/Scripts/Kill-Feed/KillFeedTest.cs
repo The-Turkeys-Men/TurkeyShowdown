@@ -1,39 +1,81 @@
+using Unity.Netcode;
 using UnityEngine;
 using System.Collections;
 
-public class KillFeedTest : MonoBehaviour
+public class KillFeedTest : NetworkBehaviour
 {
-    void Start()
+    private bool testStarted = false;
+
+    private void Start()
     {
-        if (KillFeedManager.Instance != null)
+        if (TryGetComponent(out NetworkObject netObj))
         {
-            Debug.Log("KillFeedManager est initialisé !");
-            StartCoroutine(AddKillsWithDelay());
+            Debug.Log($"✅ [Client/Server] NetworkObject trouvé sur {gameObject.name}, isSpawned = {netObj.IsSpawned}");
+            StartCoroutine(WaitAndSpawnRpc(netObj));
         }
         else
         {
-            Debug.LogError("KillFeedManager est NULL, vérifie qu'il est bien dans la scène !");
+            Debug.LogError($"❌ [Client/Server] NetworkObject MANQUANT sur {gameObject.name} !");
+        }
+
+        NetworkManager.Singleton.OnServerStarted += OnServerStarted;
+    }
+
+    private IEnumerator WaitAndSpawnRpc(NetworkObject netObj)
+    {
+        yield return new WaitForSeconds(1f);
+        
+        if (IsServer && !netObj.IsSpawned)
+        {
+            netObj.Spawn();
+            Debug.Log($"🚀 [Server] {gameObject.name} a été spawn !");
         }
     }
 
-    IEnumerator AddKillsWithDelay()
+    private void OnServerStarted()
     {
-        yield return new WaitForSeconds(1f);
-        KillFeedManager.Instance.AddKill("1", "Stéphane", 1);
+        Debug.Log("Serveur démarré !");
+        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+    }
 
+    private void OnClientConnected(ulong clientId)
+    {
+        Debug.Log($"Client connecté : {clientId}");
+
+        if (!testStarted)
+        {
+            testStarted = true;
+            StartCoroutine(AddKillsWithDelayRpc());
+        }
+    }
+
+    private IEnumerator AddKillsWithDelayRpc()
+    {
         yield return new WaitForSeconds(2f);
-        KillFeedManager.Instance.AddKill("2", "John", 0);
+        Debug.Log("🟡 [Client] Vérification : IsClient = " + IsClient + ", IsServer = " + IsServer);
+        Debug.Log("⏳ [Client] Tentative d'envoi d'un kill au serveur...");
+        ReportKillRpc("Ethan", "Bot", 1);
+    }
 
-        yield return new WaitForSeconds(0.5f);
-        KillFeedManager.Instance.AddKill("3", "JON2", 4);
+    [Rpc(SendTo.Server)]
+    private void ReportKillRpc(string killerName, string killedName, int weaponID)
+    {
+        Debug.Log($"🔴 [Server] ReportKillRpc reçu ! IsServer = {IsServer}, IsClient = {IsClient}");
+        ReportKillToClientsRpc(killerName, killedName, weaponID);
+    }
 
-        yield return new WaitForSeconds(0.5f);
-        KillFeedManager.Instance.AddKill("4", "Li", 2);
-        
-        yield return new WaitForSeconds(0.5f);
-        KillFeedManager.Instance.AddKill("5", "Li", 2);
-        
-        yield return new WaitForSeconds(1f);
-        KillFeedManager.Instance.AddKill("6", "MBAPE", 3);
+    [Rpc(SendTo.ClientsAndHost)]
+    private void ReportKillToClientsRpc(string killerName, string killedName, int weaponID)
+    {
+        Debug.Log($"🔵 [Client] ReportKillToClientsRpc reçu : {killerName} a tué {killedName} avec l'arme {weaponID}");
+    
+        if (KillFeedManager.Instance != null)
+        {
+            KillFeedManager.Instance.AddKill(killerName, killedName, weaponID);
+        }
+        else
+        {
+            Debug.LogError("❌ KillFeedManager.Instance est NULL sur le client !");
+        }
     }
 }

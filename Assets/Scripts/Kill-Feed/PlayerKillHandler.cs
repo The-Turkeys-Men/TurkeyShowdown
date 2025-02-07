@@ -11,16 +11,16 @@ public class PlayerKillHandler : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void ReportKillServerRpc(ulong killerID, ulong killedID, int weaponID)
+    public void ReportKillServerRpc(ulong killerId, ulong killedId, int weaponId)
     {
-        ReportKillClientRpc(killerID, killedID, weaponID);
+        ReportKillClientRpc(killerId, killedId, weaponId);
     }
 
     [ClientRpc]
-    private void ReportKillClientRpc(ulong killerID, ulong killedID, int weaponID)
+    private void ReportKillClientRpc(ulong killerId, ulong killedId, int weaponId)
     {
-        string killerName = $"Player {killerID}";
-        string killedName = $"Player {killedID}";
-        KillFeedManager.Instance.AddKill(killerName, killedName, weaponID);
+        string killerName = $"Player {killerId}";
+        string killedName = $"Player {killedId}";
+        KillFeedManager.Instance.AddKill(killerName, killedName, weaponId);
     }
 }

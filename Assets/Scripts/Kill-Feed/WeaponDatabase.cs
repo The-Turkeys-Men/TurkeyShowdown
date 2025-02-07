@@ -8,13 +8,13 @@ public class WeaponDatabase : MonoBehaviour
     [System.Serializable]
     public class WeaponData
     {
-        public int weaponID;
-        public Sprite weaponSprite;
+        public int WeaponId;
+        public Sprite WeaponSprite;
     }
 
-    public List<WeaponData> weaponsList = new List<WeaponData>();
+    public List<WeaponData> WeaponsList = new List<WeaponData>();
 
-    private Dictionary<int, Sprite> weaponDict = new Dictionary<int, Sprite>();
+    private Dictionary<int, Sprite> _weaponDict = new Dictionary<int, Sprite>();
 
     private void Awake()
     {
@@ -22,9 +22,9 @@ public class WeaponDatabase : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            foreach (var weapon in weaponsList)
+            foreach (var weapon in WeaponsList)
             {
-                weaponDict[weapon.weaponID] = weapon.weaponSprite;
+                _weaponDict[weapon.WeaponId] = weapon.WeaponSprite;
             }
         }
         else
@@ -33,8 +33,8 @@ public class WeaponDatabase : MonoBehaviour
         }
     }
 
-    public Sprite GetWeaponSprite(int weaponID)
+    public Sprite GetWeaponSprite(int weaponId)
     {
-        return weaponDict.TryGetValue(weaponID, out Sprite sprite) ? sprite : null;
+        return _weaponDict.TryGetValue(weaponId, out Sprite sprite) ? sprite : null;
     }
 }

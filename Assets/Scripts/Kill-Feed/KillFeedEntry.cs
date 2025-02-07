@@ -4,14 +4,21 @@ using UnityEngine.UI;
 
 public class KillFeedEntry : MonoBehaviour
 {
-    public TextMeshProUGUI killerText;
-    public TextMeshProUGUI killedText;
-    public Image weaponImage;
+    public TextMeshProUGUI KillerText { get; private set; }
+    public TextMeshProUGUI KilledText { get; private set; }
+    public Image WeaponImage { get; private set; }
 
-    public void Setup(string killerName, string killedName, int weaponID)
+    private void Awake()
     {
-        killerText.text = killerName;
-        killedText.text = killedName;
-        weaponImage.sprite = WeaponDatabase.Instance.GetWeaponSprite(weaponID);
+        KillerText = GetComponentInChildren<TextMeshProUGUI>();
+        KilledText = GetComponentInChildren<TextMeshProUGUI>();
+        WeaponImage = GetComponentInChildren<Image>();
+    }
+
+    public void Setup(string killerName, string killedName, int weaponId)
+    {
+        KillerText.text = killerName;
+        KilledText.text = killedName;
+        WeaponImage.sprite = WeaponDatabase.Instance.GetWeaponSprite(weaponId);
     }
 }

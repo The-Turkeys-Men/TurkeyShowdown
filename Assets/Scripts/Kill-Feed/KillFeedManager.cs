@@ -7,102 +7,97 @@ public class KillFeedManager : MonoBehaviour
 {
     public static KillFeedManager Instance { get; private set; }
 
-    public GameObject killFeedPanel;
-    public GameObject[] killFeedEntries;
-    public TextMeshProUGUI[] killerTexts;
-    public TextMeshProUGUI[] killedTexts;
-    public Image[] weaponImages;
+    public GameObject KillFeedPanel;
+    public GameObject[] KillFeedEntries;
+    public TextMeshProUGUI[] KillerTexts;
+    public TextMeshProUGUI[] KilledTexts;
+    public Image[] WeaponImages;
 
-    private int maxKillEntries = 3; // Nombre maximum d'entrées dans le killfeed
-    private float showDuration = 5f; // Durée d'affichage de chaque entrée
+    private int _maxKillEntries = 3; // Maximum number of kill feed entries
+    private float _showDuration = 5f; // Display duration of each entry
 
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+            Debug.Log("KillFeedManager instantiated!");
         }
         else
         {
-            Debug.LogError("Une instance de KillFeedManager existe déjà !");
+            Debug.LogError("An instance of KillFeedManager already exists!");
             Destroy(gameObject);
             return;
         }
 
-        if (killFeedPanel == null)
+        if (KillFeedPanel == null)
         {
-            Debug.LogError("Le panel 'killFeedPanel' n'est pas assigné !");
+            Debug.LogError("The 'KillFeedPanel' is not assigned!");
             return;
         }
 
-        int childCount = killFeedPanel.transform.childCount;
-        int entriesToInitialize = Mathf.Min(childCount, maxKillEntries);
+        int childCount = KillFeedPanel.transform.childCount;
+        int entriesToInitialize = Mathf.Min(childCount, _maxKillEntries);
 
-        killFeedEntries = new GameObject[entriesToInitialize];
-        killerTexts = new TextMeshProUGUI[entriesToInitialize];
-        killedTexts = new TextMeshProUGUI[entriesToInitialize];
-        weaponImages = new Image[entriesToInitialize];
+        KillFeedEntries = new GameObject[entriesToInitialize];
+        KillerTexts = new TextMeshProUGUI[entriesToInitialize];
+        KilledTexts = new TextMeshProUGUI[entriesToInitialize];
+        WeaponImages = new Image[entriesToInitialize];
 
         for (int i = 0; i < entriesToInitialize; i++)
         {
-            killFeedEntries[i] = killFeedPanel.transform.GetChild(i).gameObject;
-            killerTexts[i] = killFeedEntries[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-            killedTexts[i] = killFeedEntries[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-            weaponImages[i] = killFeedEntries[i].transform.GetChild(2).GetComponent<Image>();
-            killFeedEntries[i].SetActive(false);
+            KillFeedEntries[i] = KillFeedPanel.transform.GetChild(i).gameObject;
+            KillerTexts[i] = KillFeedEntries[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            KilledTexts[i] = KillFeedEntries[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+            WeaponImages[i] = KillFeedEntries[i].transform.GetChild(2).GetComponent<Image>();
+            KillFeedEntries[i].SetActive(false);
         }
     }
 
     public void AddKill(string killerName, string killedName, int weaponID)
     {
-        // Si la liste n'est pas encore pleine, ajoute le kill dans la première entrée vide
-        for (int i = 0; i < maxKillEntries; i++)
+        for (int i = 0; i < _maxKillEntries; i++)
         {
-            if (!killFeedEntries[i].activeSelf)
+            if (!KillFeedEntries[i].activeSelf)
             {
-                killerTexts[i].text = killerName;
-                killedTexts[i].text = killedName;
-                weaponImages[i].sprite = WeaponDatabase.Instance.GetWeaponSprite(weaponID);
-                killFeedEntries[i].SetActive(true);
+                KillerTexts[i].text = killerName;
+                KilledTexts[i].text = killedName;
+                WeaponImages[i].sprite = WeaponDatabase.Instance.GetWeaponSprite(weaponID);
+                KillFeedEntries[i].SetActive(true);
                 StartCoroutine(RemoveOldestKillAfterDelay());
                 return;
             }
         }
 
-        // Si la liste est pleine, déplace les entrées et ajoute le nouveau kill
-        for (int i = 0; i < maxKillEntries - 1; i++)
+        for (int i = 0; i < _maxKillEntries - 1; i++)
         {
-            killerTexts[i].text = killerTexts[i + 1].text;
-            killedTexts[i].text = killedTexts[i + 1].text;
-            weaponImages[i].sprite = weaponImages[i + 1].sprite;
-            killFeedEntries[i].SetActive(killFeedEntries[i + 1].activeSelf);
+            KillerTexts[i].text = KillerTexts[i + 1].text;
+            KilledTexts[i].text = KilledTexts[i + 1].text;
+            WeaponImages[i].sprite = WeaponImages[i + 1].sprite;
+            KillFeedEntries[i].SetActive(KillFeedEntries[i + 1].activeSelf);
         }
 
-        // Ajoute le nouveau kill à la dernière entrée
-        int bottomIndex = maxKillEntries - 1;
-        killerTexts[bottomIndex].text = killerName;
-        killedTexts[bottomIndex].text = killedName;
-        weaponImages[bottomIndex].sprite = WeaponDatabase.Instance.GetWeaponSprite(weaponID);
-        killFeedEntries[bottomIndex].SetActive(true);
+        int bottomIndex = _maxKillEntries - 1;
+        KillerTexts[bottomIndex].text = killerName;
+        KilledTexts[bottomIndex].text = killedName;
+        WeaponImages[bottomIndex].sprite = WeaponDatabase.Instance.GetWeaponSprite(weaponID);
+        KillFeedEntries[bottomIndex].SetActive(true);
 
-        // Lance la suppression après un délai
         StartCoroutine(RemoveOldestKillAfterDelay());
     }
 
     private IEnumerator RemoveOldestKillAfterDelay()
     {
-        yield return new WaitForSeconds(showDuration);
+        yield return new WaitForSeconds(_showDuration);
 
-        // Décale les entrées vers le haut
-        for (int i = 0; i < maxKillEntries - 1; i++)
+        for (int i = 0; i < _maxKillEntries - 1; i++)
         {
-            killerTexts[i].text = killerTexts[i + 1].text;
-            killedTexts[i].text = killedTexts[i + 1].text;
-            weaponImages[i].sprite = weaponImages[i + 1].sprite;
-            killFeedEntries[i].SetActive(killFeedEntries[i + 1].activeSelf);
+            KillerTexts[i].text = KillerTexts[i + 1].text;
+            KilledTexts[i].text = KilledTexts[i + 1].text;
+            WeaponImages[i].sprite = WeaponImages[i + 1].sprite;
+            KillFeedEntries[i].SetActive(KillFeedEntries[i + 1].activeSelf);
         }
 
-        // Désactive la dernière entrée
-        killFeedEntries[maxKillEntries - 1].SetActive(false);
+        KillFeedEntries[_maxKillEntries - 1].SetActive(false);
     }
 }
