@@ -1,5 +1,4 @@
 using System;
-using Debugger;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -7,6 +6,7 @@ namespace Health
 {
     public class PlayerDeathComponent : NetworkBehaviour
     {
+        [SerializeField] private RespawnButton respawnButton;
         private Rigidbody2D _rigidbody2D;
         
         private LayerMask _originalExcludeLayers;
@@ -28,6 +28,7 @@ namespace Health
         {
             OnRespawnEvent?.Invoke();
             
+            respawnButton.enabled = false;
             var playerController = GetComponent<PlayerController>();
             playerController.InputActivated = true;
             
@@ -39,7 +40,7 @@ namespace Health
         private void OnDeath(ulong arg0)
         {
             OnDeathEvent?.Invoke();
-            
+            respawnButton.enabled = true;
             var playerController = GetComponent<PlayerController>();
             playerController.InputActivated = false;
 

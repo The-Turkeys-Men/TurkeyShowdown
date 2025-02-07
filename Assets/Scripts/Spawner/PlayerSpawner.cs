@@ -3,20 +3,34 @@ using Extensions;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PlayerSpawner : NetworkBehaviour
 {
     [SerializeField] private GameObject _playerPrefab;
     [SerializeField] private int _respawnTime = 5;
     [SerializeField] private Transform[] _playerSpawnPoint;
-    
     private GameObject NewPlayer;
+    public static PlayerSpawner SpawnerInstance;
 
     [SerializeField] private BaseWeapon _spawnWeapon;
     
     private void Start()
     {
         NetworkManager.Singleton.OnClientConnectedCallback += SpawnPlayer;
+    }
+
+    private void Awake()
+    {
+        if (SpawnerInstance == null)
+        { 
+            SpawnerInstance = this; 
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     #region Respawn
@@ -53,7 +67,7 @@ public class PlayerSpawner : NetworkBehaviour
         RespawnPlayer(player);
     }
 
-    private void RespawnPlayer(GameObject player)
+    public void RespawnPlayer(GameObject player)
     {
         var healthComponent = player.GetComponent<HealthComponent>();
         healthComponent.SetHealthServerRpc(healthComponent.BaseHealth);
@@ -114,7 +128,9 @@ public class PlayerSpawner : NetworkBehaviour
         {
             OnDeathClientRpc(playerObjectId);
             OnDeathServerRpc(playerObjectId);
+
         });
+        
 
         if (_spawnWeapon)
         {
