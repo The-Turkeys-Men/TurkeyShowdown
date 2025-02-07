@@ -100,10 +100,15 @@ public class Projectile : NetworkBehaviour
 
     private void Explode()
     {
-        DebuggerConsole.Instance.LogClientRpc("Explode");
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, ExplosionRange);
         foreach (Collider2D collider in colliders)
         {
+            if (Physics2D.Linecast(transform.position, collider.transform.position,
+                    1 << LayerMask.NameToLayer("World")))
+            {
+                continue;
+            }
+            
             if (SenderObject.TryGetComponent(out TeamComponent senderTeamComponent) && collider.TryGetComponent(out TeamComponent otherTeamComponent))
             {
                 if (senderTeamComponent.TeamID == otherTeamComponent.TeamID)
@@ -138,7 +143,6 @@ public class Projectile : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void ApplyKnockbackRpc(ulong playerObjectId, Vector2 knockback)
     {
-        DebuggerConsole.Instance.Log(playerObjectId.ToString());
         NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject);
         playerObject.GetComponent<Rigidbody2D>().AddForce(knockback * ExplosionSelfKnockback, ForceMode2D.Impulse);
     }
