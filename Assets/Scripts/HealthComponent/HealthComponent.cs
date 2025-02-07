@@ -83,20 +83,17 @@ public class HealthComponent : NetworkBehaviour
         else
         {
             Health.Value -= damage;
-            particleSystemDamage.maxParticles=10;
-            particleSystemDamage.Play();
+            PlayDamageParticleClientRpc(10);
             AudioManager.Instance.PlaySFX("crisDinde",transform.position);
         }
         if (Health.Value <= 0)
         {
-            particleSystemDamage.maxParticles=30;
-            particleSystemDamage.Play();
+            PlayDamageParticleClientRpc(30);
             AudioManager.Instance.PlaySFX("mort",transform.position);
             OnDeath.Invoke(NetworkObjectId);
             OnDeathClientRpc();
             if (_isPlayer)
             {
-                //todo: optimize this
                 var killerId = senderObject.GetComponent<NetworkObject>().OwnerClientId;
                 ((DeathMatchManager)DeathMatchManager.GetInstance()).OnPlayerKill(killerId);
                 DebuggerConsole.Instance.LogClientRpc("Player killed by: " + senderObject.name);
@@ -104,6 +101,13 @@ public class HealthComponent : NetworkBehaviour
         }
         OnDamaged.Invoke();
         OnDamagedClientRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    public void PlayDamageParticleClientRpc(int amount)
+    {
+        particleSystemDamage.maxParticles=30;
+        particleSystemDamage.Play();
     }
     
     [Rpc(SendTo.ClientsAndHost)]

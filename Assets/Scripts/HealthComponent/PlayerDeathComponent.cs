@@ -15,6 +15,9 @@ namespace Health
         public Action OnDeathEvent;
         public Action OnRespawnEvent;
         
+        [SerializeField] private GameObject _deathSpriteRenderer;
+        [SerializeField] private GameObject _aliveVisuals;
+        
         private void Awake()
         {
             var healthComponent = GetComponent<HealthComponent>();
@@ -35,6 +38,8 @@ namespace Health
             _rigidbody2D.linearVelocity = Vector2.zero;
             _rigidbody2D.excludeLayers = _originalExcludeLayers;
             
+            ShowAliveVisuals();
+            ShowAliveVisualsServerRpc();
         }
 
         private void OnDeath(ulong killer)
@@ -62,6 +67,53 @@ namespace Health
             {
                 playerWeapon.ThrowWeapon();
             }
+            
+            ShowDeathVisuals();
+            ShowDeathVisualsServerRpc();
+        }
+        
+        [Rpc(SendTo.Server)]
+        private void ShowDeathVisualsServerRpc()
+        {
+            ShowDeathVisualsClientRpc();
+        }
+
+        [Rpc(SendTo.ClientsAndHost)]
+        private void ShowDeathVisualsClientRpc()
+        {
+            if (IsOwner)
+            {
+                return;
+            }
+            ShowDeathVisuals();
+        }
+
+        private void ShowDeathVisuals()
+        {
+            _deathSpriteRenderer.SetActive(true);
+            _aliveVisuals.SetActive(false);
+        }
+
+        [Rpc(SendTo.Server)]
+        private void ShowAliveVisualsServerRpc()
+        {
+            ShowAliveVisualsClientRpc();
+        }
+
+        [Rpc(SendTo.ClientsAndHost)]
+        private void ShowAliveVisualsClientRpc()
+        {
+            if (IsOwner)
+            {
+                return;
+            }
+            ShowAliveVisuals();
+        }
+
+        private void ShowAliveVisuals()
+        {
+            _deathSpriteRenderer.SetActive(false);
+            _aliveVisuals.SetActive(true);
         }
     }
 }
