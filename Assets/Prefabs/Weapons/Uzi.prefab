@@ -113,7 +113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  <FireRate>k__BackingField: 0.25
+  <FireRate>k__BackingField: 0.15
   <Damage>k__BackingField: 5
   <MaxAmmo>k__BackingField: 25
   <Ammo>k__BackingField:
@@ -138,6 +138,8 @@ MonoBehaviour:
   Visuals: {fileID: 7812902076482580572}
   IsThrowed:
     m_InternalValue: 0
+  _nomTir: choutUzi
+  _nomLancer: lancer
 --- !u!50 &4640402740232878089
 Rigidbody2D:
   serializedVersion: 5

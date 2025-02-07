@@ -75,7 +75,7 @@ public class PlayerWeapon : NetworkBehaviour
     public void ThrowWeapon()
     {
         EquipedWeapon.Rb.simulated = true;
-        
+        AudioManager.Instance.PlaySFX("lancer",transform.position);
         ulong weaponId = EquipedWeapon.GetComponent<NetworkObject>().NetworkObjectId;
         UpdateWeaponPosServerRpc(weaponId, WeaponHolder.position);
         OnThrowWeaponServerRpc(weaponId, EquipedWeapon.transform.right);

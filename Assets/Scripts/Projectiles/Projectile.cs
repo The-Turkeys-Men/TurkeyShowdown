@@ -56,6 +56,7 @@ public class Projectile : NetworkBehaviour
         }
         
         NetworkObject.Despawn(true);
+        AudioManager.Instance.PlaySFX("missilExplotion",transform.position);
     }
 
     private void Update()

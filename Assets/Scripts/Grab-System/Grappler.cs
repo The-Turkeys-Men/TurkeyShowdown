@@ -75,6 +75,7 @@ public class Grappler : NetworkBehaviour
             _hitGrapRotation = Quaternion.Euler(0f, 0f, _wallAngle);
             _curentGrabTete = Instantiate(_teteGrapain,_hitGrapPosition,_hitGrapRotation);
             _curentGrabTete.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+            AudioManager.Instance.PlaySFX("grapain",transform.position);
         }
 
     }

@@ -62,6 +62,7 @@ public class HealthComponent : NetworkBehaviour
         if (Armor.Value > 0)
         {
             Armor.Value -= damage;
+            AudioManager.Instance.PlaySFX("crisDinde",transform.position);
             if (Armor.Value <= 0)
             {
                 Health.Value += Armor.Value;
@@ -71,9 +72,11 @@ public class HealthComponent : NetworkBehaviour
         else
         {
             Health.Value -= damage;
+            AudioManager.Instance.PlaySFX("crisDinde",transform.position);
         }
-        if (Health. Value <= 0)
+        if (Health.Value <= 0)
         {
+            AudioManager.Instance.PlaySFX("mort",transform.position);
             OnDeath.Invoke(NetworkObjectId);
             OnDeathClientRpc();
             if (_isPlayer)

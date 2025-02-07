@@ -1382,29 +1382,29 @@ MonoBehaviour:
     Clip: {fileID: 8300000, guid: a51b366c2edc9a24d9adb986769b5c03, type: 3}
   - Name: coupBatte
     Clip: {fileID: 8300000, guid: 02e43989ba02b304cb12cf1a8e6d2fe5, type: 3}
-  - Name: Shild1
+  - Name: Shild
     Clip: {fileID: 8300000, guid: fd4256cc895f9c44583f495427bae69a, type: 3}
   - Name: coupCouteaux
-    Clip: {fileID: 8300000, guid: 02e43989ba02b304cb12cf1a8e6d2fe5, type: 3}
+    Clip: {fileID: 8300000, guid: 6ea55dca08036fe4daa7e1f10f134f99, type: 3}
   - Name: choutUzi
-    Clip: {fileID: 8300000, guid: aeb7c7ead8dbd1a4b9c277143cb2b95a, type: 3}
+    Clip: {fileID: 8300000, guid: faf5471e154797446881012928341c4e, type: 3}
   - Name: soin
     Clip: {fileID: 8300000, guid: 6a4a1e0f3976c8149880636230be3172, type: 3}
-  - Name: tirGlock2
+  - Name: tirGlock
     Clip: {fileID: 8300000, guid: 05d0adf264d564b489ae09fec65bb910, type: 3}
-  - Name: rechargeLanceMissil
-    Clip: {fileID: 8300000, guid: 90e6616c8ef78e34ebd807222a043c3c, type: 3}
+  - Name: tirLanceMissil
+    Clip: {fileID: 8300000, guid: b6e833548ffd5d04fa57d203e5e2209d, type: 3}
   - Name: missilExplotion
     Clip: {fileID: 8300000, guid: 54af97f993df1524bb8c45fee0532db1, type: 3}
   - Name: uziRecharge
     Clip: {fileID: 8300000, guid: bf61bd4e8a0d7534cb83c2b6980365b6, type: 3}
-  - Name: "lanc\xE9"
+  - Name: lancer
     Clip: {fileID: 8300000, guid: e9cb894d0baf0c94d90cb8695b77caef, type: 3}
   - Name: pauseMine
     Clip: {fileID: 8300000, guid: 38e6565fff6e2734799387f9ea87e1ee, type: 3}
   - Name: damegeDinde
     Clip: {fileID: 8300000, guid: 91deb1cd6c545ab48b836972152de9e1, type: 3}
-  - Name: MarcheMine
+  - Name: marcheMine
     Clip: {fileID: 8300000, guid: 7e85262bd8964314c9274b248d3b0e35, type: 3}
   - Name: hitBat
     Clip: {fileID: 8300000, guid: aa1ee34ea12ddec40bb9d1d0cd3d2fe6, type: 3}
@@ -1412,6 +1412,10 @@ MonoBehaviour:
     Clip: {fileID: 8300000, guid: cc3de98ad4d896542a467a81fce2ae64, type: 3}
   - Name: mineExplotion
     Clip: {fileID: 8300000, guid: 54af97f993df1524bb8c45fee0532db1, type: 3}
+  - Name: grapain
+    Clip: {fileID: 8300000, guid: 8fd2b78fbbd939f4493a1e4a05b79b68, type: 3}
+  - Name: bruisDePas
+    Clip: {fileID: 8300000, guid: 1f705a3099fc0674c88d2ad984cdaa9a, type: 3}
 --- !u!4 &351178624
 Transform:
   m_ObjectHideFlags: 0
@@ -2535,6 +2539,50 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &513559299
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 513559301}
+  - component: {fileID: 513559300}
+  m_Layer: 0
+  m_Name: PlayMusic
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &513559300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 513559299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a64d5c4f15602f449fc74c9e35d7e6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &513559301
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 513559299}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.596735, y: -3.4323192, z: -0.030503497}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &544619438
 GameObject:
   m_ObjectHideFlags: 0
@@ -11175,7 +11223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  _playerPrefab: {fileID: 1766801901717005780, guid: c34eda09e521d3a47944ba3aa4844e05, type: 3}
+  _playerPrefab: {fileID: 1766801901717005780, guid: a1809dd9eb5842d49a8c6b446eefb5e8, type: 3}
   _respawnTime: 5
   _playerSpawnPoint:
   - {fileID: 1563891726}
@@ -13130,3 +13178,4 @@ SceneRoots:
   - {fileID: 1387595106}
   - {fileID: 287822748}
   - {fileID: 351178624}
+  - {fileID: 513559301}

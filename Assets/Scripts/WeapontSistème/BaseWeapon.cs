@@ -54,7 +54,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     private float _throwSpeedThreshold = 0.2f;
 
     [SerializeField] private string _nomTir;
-     [SerializeField] private string _nomLancé;
+     [SerializeField] private string _nomLancer;
     
     private void Awake()
     {
@@ -159,6 +159,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 break;
             }
             case 0:
+                
                 Debug.Log("Out of Ammo");
                 break;
         }

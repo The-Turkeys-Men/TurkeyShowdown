@@ -30,7 +30,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void PlaySound( Sound[] soundList, string name,Vector3 pos ,AudioMixerGroup Volume,float sonsLocale,bool loop)
+    private void PlaySound( Sound[] soundList, string name,Vector3 pos ,AudioMixerGroup Volume,float sonsLocale,bool loop,float baseVolume )
     {
         Sound sound = Array.Find(soundList, s => s.Name == name);
     
@@ -45,11 +45,12 @@ public class AudioManager : MonoBehaviour
             AudioSource audioSource= tempAudio.AddComponent<AudioSource>();
             audioSource.spatialBlend=sonsLocale;
             audioSource.clip = sound.Clip;
+            audioSource.volume=baseVolume;
             audioSource.loop=loop;
             audioSource.outputAudioMixerGroup=Volume;
             audioSource.Play();
             Destroy(tempAudio,sound.Clip.length);
-            Debug.Log(audioSource.clip.name);
+          
         }
             
         
@@ -79,8 +80,9 @@ public class AudioManager : MonoBehaviour
         string name= nomMusic.PickRandom();
         float sonsLocale=0f;
         AudioMixerGroup Volume= _audioMixerMusic;
+        float baseVolume= 0.404f;
         bool loop=true;
-        PlaySound( MusicSounds, name,pos,Volume,sonsLocale,loop);
+        PlaySound( MusicSounds, name,pos,Volume,sonsLocale,loop,baseVolume);
     }
 
     public void PlaySFX(string name,Vector3 pos)
@@ -88,7 +90,8 @@ public class AudioManager : MonoBehaviour
         float sonsLocale=1f;
         bool loop=false;
         AudioMixerGroup Volume=_audioMixerSFX;
-        PlaySound( SfxSounds, name, pos,Volume,sonsLocale,loop);
+        float baseVolume= 2f;
+        PlaySound( SfxSounds, name, pos,Volume,sonsLocale,loop,baseVolume);
     }
 
     public bool IsSoundInList(Sound[] soundList, string name)
