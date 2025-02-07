@@ -62,6 +62,9 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
 
     private bool _isDespawning = false;
     private float _throwSpeedThreshold = 0.2f;
+
+    [SerializeField] private string _nomTir;
+     [SerializeField] private string _nomLancer;
     
     private void Awake()
     {
@@ -168,6 +171,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 break;
             }
             case 0:
+                
                 Debug.Log("Out of Ammo");
                 break;
         }
@@ -234,6 +238,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 
                 break;
         }
+        AudioManager.Instance.PlaySFX(_nomTir,transform.position);
         FireRateTimer = FireRate;
         OnShootServerRpc();
         Rigidbody2D playerRigidbody = transform.parent.GetComponentInParent<Rigidbody2D>();
@@ -261,9 +266,10 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         GameObject tempTrainé=new GameObject("tempTrainé");
         DespawnTraine despawnTraine = tempTrainé.AddComponent<DespawnTraine>();
         tempTrainé.transform.position=Vector3.zero;
+        despawnTraine.StartWidth = 0.15f;
         LineRenderer lineRenderer = tempTrainé.AddComponent<LineRenderer>();
         lineRenderer.material = new(TrailMaterial);
-        lineRenderer.material.color=Color.black;
+        lineRenderer.material.color= new Color(0, 0, 0, 0.5f);
         lineRenderer.SetPosition(0, ShootPoint.position);
         lineRenderer.SetPosition(1, endPoint);
     }

@@ -73,6 +73,7 @@ public class HealthComponent : NetworkBehaviour
             particleSystemDamage.maxParticles=10;
             particleSystemDamage.Play();
             Armor.Value -= damage;
+            AudioManager.Instance.PlaySFX("crisDinde",transform.position);
             if (Armor.Value <= 0)
             {
                 Health.Value += Armor.Value;
@@ -84,12 +85,13 @@ public class HealthComponent : NetworkBehaviour
             Health.Value -= damage;
             particleSystemDamage.maxParticles=10;
             particleSystemDamage.Play();
-
+            AudioManager.Instance.PlaySFX("crisDinde",transform.position);
         }
-        if (Health. Value <= 0)
+        if (Health.Value <= 0)
         {
             particleSystemDamage.maxParticles=30;
             particleSystemDamage.Play();
+            AudioManager.Instance.PlaySFX("mort",transform.position);
             OnDeath.Invoke(NetworkObjectId);
             OnDeathClientRpc();
             if (_isPlayer)

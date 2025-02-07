@@ -1,9 +1,11 @@
 using System.Collections;
+using Debugger;
 using UnityEngine;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine.UI;
 
-public class KillFeedManager : MonoBehaviour
+public class KillFeedManager : NetworkBehaviour
 {
     public static KillFeedManager Instance { get; private set; }
 
@@ -29,13 +31,11 @@ public class KillFeedManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+    }
 
-        if (KillFeedPanel == null)
-        {
-            Debug.LogError("The 'KillFeedPanel' is not assigned!");
-            return;
-        }
-
+    public void SetPanel(GameObject panel)
+    {
+        KillFeedPanel = panel;
         int childCount = KillFeedPanel.transform.childCount;
         int entriesToInitialize = Mathf.Min(childCount, _maxKillEntries);
 
@@ -54,8 +54,22 @@ public class KillFeedManager : MonoBehaviour
         }
     }
 
+    [Rpc(SendTo.Server, RequireOwnership = false)]
+    public void AddKillServerRpc(string killerName, string killedName, int weaponID)
+    {
+        AddKillClientRpc(killerName, killedName, weaponID);
+    }
+
+    [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
+    public void AddKillClientRpc(string killerName, string killedName, int weaponID)
+    {
+        AddKill(killerName, killedName, weaponID);
+    }
+    
     public void AddKill(string killerName, string killedName, int weaponID)
     {
+        
+        Debug.Log("Kill has been added to the " + KillFeedPanel.name);
         for (int i = 0; i < _maxKillEntries; i++)
         {
             if (!KillFeedEntries[i].activeSelf)

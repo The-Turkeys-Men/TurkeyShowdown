@@ -138,6 +138,8 @@ MonoBehaviour:
   Visuals: {fileID: 7812902076482580572}
   IsThrowed:
     m_InternalValue: 0
+  _nomTir: 
+  _nomLancer: pauseMine
 --- !u!50 &4640402740232878089
 Rigidbody2D:
   serializedVersion: 5

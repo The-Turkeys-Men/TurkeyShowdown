@@ -23,7 +23,7 @@ public class KillFeedTest : NetworkBehaviour
 
     private IEnumerator WaitAndSpawnRpc(NetworkObject netObj)
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(5f);
         
         if (IsServer && !netObj.IsSpawned)
         {
@@ -54,7 +54,7 @@ public class KillFeedTest : NetworkBehaviour
         yield return new WaitForSeconds(2f);
         Debug.Log("🟡 [Client] Vérification : IsClient = " + IsClient + ", IsServer = " + IsServer);
         Debug.Log("⏳ [Client] Tentative d'envoi d'un kill au serveur...");
-        ReportKillRpc("Ethan", "Bot", 1);
+        KillFeedManager.Instance.AddKillServerRpc("Ethan", "Bot", 1);
     }
 
     [Rpc(SendTo.Server)]
