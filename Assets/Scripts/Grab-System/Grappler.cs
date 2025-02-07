@@ -69,6 +69,8 @@ public class Grappler : NetworkBehaviour
         {
             _wallNormal = hitInfo.normal;
             _wallAngle = Mathf.Atan2(_wallNormal.x, -_wallNormal.y) * Mathf.Rad2Deg;
+
+            AudioManager.Instance.PlaySFX("grapain",transform.position);
             
             SpawnHead(hitInfo.point, _wallNormal, _wallAngle);
             SpawnHeadServerRpc(hitInfo.point, _wallNormal, _wallAngle);

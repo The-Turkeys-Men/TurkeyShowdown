@@ -146,6 +146,8 @@ MonoBehaviour:
   Visuals: {fileID: 7812902076482580572}
   IsThrowed:
     m_InternalValue: 0
+  _nomTir: coupCouteaux
+  _nomLancer: lancer
   ShouldHide:
     m_InternalValue: 0
 --- !u!50 &4640402740232878089

@@ -68,6 +68,7 @@ public class Projectile : NetworkBehaviour
         }
         SpawnHitEffectRpc(transform.position);
         NetworkObject.Despawn(true);
+        AudioManager.Instance.PlaySFX("missilExplotion",transform.position);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
