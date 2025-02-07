@@ -26,6 +26,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/DevScenes/SlidAudio.unity
     guid: 81dfaa30a1511174daf81fb9b1cf8b3f
+  - enabled: 1
+    path: Assets/Scenes/DevScenes/ScenesPartucul.unity
+    guid: df5d624b784c65141b11d1dc2ab3cc0f
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

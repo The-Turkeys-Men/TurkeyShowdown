@@ -18,6 +18,8 @@ public class HealthComponent : NetworkBehaviour
     [HideInInspector] public UnityEvent<ulong> OnDeath = new();
     [HideInInspector] public UnityEvent OnRespawn = new();
     [HideInInspector] public UnityEvent OnDamaged = new();
+    public ParticleSystem particleSystemDamage;
+    
     
     [SerializeField] private bool _isPlayer = false;
      
@@ -68,6 +70,8 @@ public class HealthComponent : NetworkBehaviour
         
         if (Armor.Value > 0)
         {
+            particleSystemDamage.maxParticles=10;
+            particleSystemDamage.Play();
             Armor.Value -= damage;
             if (Armor.Value <= 0)
             {
@@ -78,9 +82,14 @@ public class HealthComponent : NetworkBehaviour
         else
         {
             Health.Value -= damage;
+            particleSystemDamage.maxParticles=10;
+            particleSystemDamage.Play();
+
         }
         if (Health. Value <= 0)
         {
+            particleSystemDamage.maxParticles=30;
+            particleSystemDamage.Play();
             OnDeath.Invoke(NetworkObjectId);
             OnDeathClientRpc();
             if (_isPlayer)
