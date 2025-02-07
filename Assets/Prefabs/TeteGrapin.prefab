@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 1010285037881993117}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.438, z: 0}
+  m_LocalPosition: {x: 0, y: 0.288, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 358359e12360bc54eba2ed12b81404ea, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1ef1d28e76463af4784c3d34474bd324, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -174,6 +174,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &2038519588141518946
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4839951118214509877}
+  m_Layer: 0
+  m_Name: CouTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4839951118214509877
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038519588141518946}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.6, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2714563491234515340}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6222178837806966316
 GameObject:
   m_ObjectHideFlags: 0
@@ -184,8 +215,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2714563491234515340}
   - component: {fileID: 5994638727503477438}
+  - component: {fileID: 2524173513987486642}
   m_Layer: 0
-  m_Name: Tete (1)
+  m_Name: TeteGrapin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -207,6 +239,7 @@ Transform:
   - {fileID: 5806253037356356002}
   - {fileID: 8380920828882201162}
   - {fileID: 4829176016750360712}
+  - {fileID: 4839951118214509877}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5994638727503477438
@@ -264,6 +297,22 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2524173513987486642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6222178837806966316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d89397754f0174749bd6229d9f4e20ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BodyTransform: {fileID: 0}
+  NeckTransform: {fileID: 4839951118214509877}
+  MoveToWallDelta: 0.3
+  MoveToBodyDelta: 0.4
 --- !u!1 &6511010797179819250
 GameObject:
   m_ObjectHideFlags: 0

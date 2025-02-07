@@ -53,6 +53,10 @@ public class HealthComponent : NetworkBehaviour
 
     public void Damage(int damage, ulong senderId)
     {
+        if (IsDead)
+        {
+            return;
+        }
         GameObject senderObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[senderId].gameObject;
         if (senderObject.TryGetComponent(out TeamComponent senderTeamComponent) && TryGetComponent(out TeamComponent receiverTeamComponent))
         {
