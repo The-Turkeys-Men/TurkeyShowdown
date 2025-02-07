@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 31c5cf411dcc1534e9f92c0e6f6fcb7e, type: 3}
-  m_Name: SO_TEST_
+  m_Name: SO_DecelerationPlate
   m_EditorClassIdentifier: 
-  walkSpeed: 10
+  walkSpeed: 20
   tiles:
-  - {fileID: 11400000, guid: 25bd43ca3de61a946b4c0ead36a1de53, type: 2}
+  - {fileID: 11400000, guid: b0e3703e18892f5449e8ae257a114c23, type: 2}
