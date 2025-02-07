@@ -1,10 +1,15 @@
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 
 public interface IGameModeManager
 {
-    public float TimeLeft { get; set; }
-    public float MaxGameTime { get; set; }
+    public static IGameModeManager GetInstance()
+    {
+        return null;
+    }
+    public NetworkVariable<int> TimeLeft { get; set; }
+    public int MaxGameTime { get; set; }
     public int ScoreToWin { get; set; }
     public NetworkVariable<Dictionary<ulong, int>> PlayerScores { get; set; }
 

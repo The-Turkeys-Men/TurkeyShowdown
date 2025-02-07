@@ -15,16 +15,19 @@ public class NetworkManagerHUD : MonoBehaviour
     public void OnStartServer()
     {
         NetworkManager.Singleton.StartServer();
+        gameObject.SetActive(false);
     }
     
     public void OnStartHost()
     {
         NetworkManager.Singleton.StartHost();
+        gameObject.SetActive(false);
     }
     
     public void OnStartClient()
     {
         NetworkManager.Singleton.StartClient();
+        gameObject.SetActive(false);
     }
 
     public void Disconnect()

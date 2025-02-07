@@ -6,13 +6,13 @@ public class TimerText : MonoBehaviour
     private IGameModeManager _gameModeManager;
     [SerializeField] private TextMeshProUGUI _timerText;
 
-    private void Awake()
+    private void Start()
     {
-        _gameModeManager = FindAnyObjectByType<DeathMatchManager>();
+        _gameModeManager = DeathMatchManager.GetInstance();
     }
 
     private void Update()
     {
-        _timerText.text = $"{Mathf.FloorToInt(_gameModeManager.TimeLeft / 60)}:{(_gameModeManager.TimeLeft % 60).ToString("00")}";
+        _timerText.text = $"{_gameModeManager.TimeLeft.Value / 60:D2}:{_gameModeManager.TimeLeft.Value % 60:D2}";
     }
 }

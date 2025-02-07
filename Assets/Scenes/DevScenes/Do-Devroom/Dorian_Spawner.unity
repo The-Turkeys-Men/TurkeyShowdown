@@ -513,6 +513,7 @@ MonoBehaviour:
   - {fileID: 530728407}
   - {fileID: 2100489033}
   - {fileID: 676658963}
+  _spawnWeapon: {fileID: 0}
 --- !u!4 &378066988
 Transform:
   m_ObjectHideFlags: 0
@@ -1725,6 +1726,14 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 203534526
       objectReference: {fileID: 0}
+    - target: {fileID: 147986103077940357, guid: 3683a1f8ce8e72f4ab58b27993837002, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 3872859602
+      objectReference: {fileID: 0}
+    - target: {fileID: 7121170525199016510, guid: 3683a1f8ce8e72f4ab58b27993837002, type: 3}
+      propertyPath: '_Item.Array.data[0]'
+      value: 
+      objectReference: {fileID: 6552416042112889364, guid: 5c6eb49da5920e446b85e22758596a65, type: 3}
     - target: {fileID: 7731178556459953915, guid: 3683a1f8ce8e72f4ab58b27993837002, type: 3}
       propertyPath: m_Name
       value: ItemSpawner

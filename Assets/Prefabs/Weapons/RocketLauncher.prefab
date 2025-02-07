@@ -113,9 +113,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  <WeaponId>k__BackingField: 4
   <FireRate>k__BackingField: 1
   <Damage>k__BackingField: 30
-  <MaxAmmo>k__BackingField: 9999999
+  <MaxAmmo>k__BackingField: 2147483647
   <Ammo>k__BackingField:
     m_InternalValue: 0
   <SprayAmount>k__BackingField: 0
@@ -132,7 +133,15 @@ MonoBehaviour:
   <ProjectilePrefab>k__BackingField: {fileID: 4681002946919390382, guid: 4e8e8bcc47f846a42bc85c84955fa931, type: 3}
   <ProjectileSpeed>k__BackingField: 30
   <MaxLifetime>k__BackingField: 3
+  <IsExplosive>k__BackingField: 1
+  <ExplosionDamage>k__BackingField: 10
+  <ExplosionRange>k__BackingField: 2
+  <ExplosionSelfKnockback>k__BackingField: 2
+  <ExplosionKnockback>k__BackingField: 2
   <MaxDistance>k__BackingField: 0
+  <MeleeRange>k__BackingField: {x: 0, y: 0}
+  <WallHitBoost>k__BackingField: 0
+  TrailMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   Rb: {fileID: 4640402740232878089}
   Visuals: {fileID: 7812902076482580572}
   IsThrowed:

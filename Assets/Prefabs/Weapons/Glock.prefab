@@ -113,6 +113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  <WeaponId>k__BackingField: 2
   <FireRate>k__BackingField: 0.5
   <Damage>k__BackingField: 15
   <MaxAmmo>k__BackingField: 18
@@ -133,6 +134,9 @@ MonoBehaviour:
   <ProjectileSpeed>k__BackingField: 0
   <MaxLifetime>k__BackingField: 0
   <MaxDistance>k__BackingField: 15
+  <MeleeRange>k__BackingField: {x: 0, y: 0}
+  <WallHitBoost>k__BackingField: 0
+  TrailMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   Rb: {fileID: 4640402740232878089}
   Visuals: {fileID: 7812902076482580572}
   IsThrowed:
