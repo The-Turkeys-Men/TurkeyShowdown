@@ -103,14 +103,7 @@ public class Grappler : NetworkBehaviour
         _curentGrabHead.GoToPoint(_hitGrabPosition, wallAngle);
         _curentGrabHead.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
         _curentGrabHead.BodyTransform = _neckStartPoint;
-        _curentGrabHead.OnBackToBody += OnHeadBackOnBody;
     }
-
-    private void OnHeadBackOnBody()
-    {
-        Destroy(_curentGrabHead.gameObject);
-    }
-
 
     private void StartGrab(Vector2 hitPoint)
     {
@@ -150,7 +143,7 @@ public class Grappler : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     public void ReturnHeadClientRpc()
     {
-        if (!IsOwner)
+        if (IsOwner)
         {
             return;
         }

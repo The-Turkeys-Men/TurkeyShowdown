@@ -11,8 +11,6 @@ public class GrappleHead : MonoBehaviour
     public float MoveToWallDelta = 0.1f;
     public float MoveToBodyDelta = 0.4f;
     
-    public Action OnBackToBody;
-    
     private void Awake()
     {
         _transform = GetComponent<Transform>();
@@ -40,11 +38,11 @@ public class GrappleHead : MonoBehaviour
 
     private IEnumerator GoBackToBodyCoroutine()
     {
-        while (Vector2.Distance(_transform.position, BodyTransform.position) > 0.1f)
+        while (Vector2.Distance(_transform.position, BodyTransform.position) > MoveToBodyDelta)
         {
             _transform.position = Vector2.MoveTowards(_transform.position, BodyTransform.position, MoveToBodyDelta);
             yield return null;
         }
-        OnBackToBody?.Invoke();
+        Destroy(gameObject);
     }
 }

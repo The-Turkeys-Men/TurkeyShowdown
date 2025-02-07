@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1832981587553190350
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7515993586647273867}
+  - component: {fileID: 7181211267796294355}
+  - component: {fileID: 3148592453774308627}
+  - component: {fileID: 4102923561582008242}
+  m_Layer: 0
+  m_Name: KillFeedManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7515993586647273867
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832981587553190350}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7181211267796294355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832981587553190350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 692954730
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &3148592453774308627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832981587553190350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f985b7ad2f265741a4ea94d48b92504, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  KillFeedPanel: {fileID: 0}
+  KillFeedEntries: []
+  KillerTexts: []
+  KilledTexts: []
+  WeaponImages: []
+--- !u!114 &4102923561582008242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832981587553190350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d21c6dd225ae5ff4699dec4221f12994, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WeaponsList:
+  - WeaponId: 0
+    WeaponSprite: {fileID: -771259930425132168, guid: 0665fb4d6b60ea941ac2dc990f744f5e, type: 3}
+  - WeaponId: 1
+    WeaponSprite: {fileID: 4391509336626092322, guid: 78f3cc4ebb30bee46809680f5156a20c, type: 3}
+  - WeaponId: 2
+    WeaponSprite: {fileID: -9133371539208352534, guid: 65b7cf3ab66e93a48b775c8b8ce3203d, type: 3}
+  - WeaponId: 3
+    WeaponSprite: {fileID: 2634828794379451360, guid: c4837677fd1c42643ab5423befbecca3, type: 3}
+  - WeaponId: 4
+    WeaponSprite: {fileID: -5386982939078441929, guid: e1f40e528352a894092a5469cb739099, type: 3}
+  - WeaponId: 5
+    WeaponSprite: {fileID: 5469930955890011798, guid: 69f2f4a6586581f4aa22d12014a619d0, type: 3}

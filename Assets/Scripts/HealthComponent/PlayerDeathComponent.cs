@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Debugger;
 using Unity.Netcode;
 using UnityEngine;
@@ -36,9 +37,11 @@ namespace Health
             
         }
 
-        private void OnDeath(ulong arg0)
+        private void OnDeath(ulong killer)
         {
             OnDeathEvent?.Invoke();
+            
+            var killerObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[killer].gameObject;
             
             var playerController = GetComponent<PlayerController>();
             playerController.InputActivated = false;
@@ -49,6 +52,9 @@ namespace Health
             {
                 return;
             }
+            
+            KillFeedManager.Instance.AddKillServerRpc(killerObject.name, gameObject.name, 0);
+            DebuggerConsole.Instance.LogServerRpc(killerObject.name + " addkill");
             
             GetComponent<Grappler>().TryReleaseGrab();
             PlayerWeapon playerWeapon = GetComponent<PlayerWeapon>();

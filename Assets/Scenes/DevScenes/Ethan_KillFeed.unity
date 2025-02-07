@@ -1295,63 +1295,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 877831314}
   m_CullTransparentMesh: 1
---- !u!1 &880534152
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 880534154}
-  - component: {fileID: 880534153}
-  m_Layer: 0
-  m_Name: WeaponDataBase
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &880534153
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 880534152}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d21c6dd225ae5ff4699dec4221f12994, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  WeaponsList:
-  - WeaponId: 0
-    WeaponSprite: {fileID: -771259930425132168, guid: 0665fb4d6b60ea941ac2dc990f744f5e, type: 3}
-  - WeaponId: 1
-    WeaponSprite: {fileID: 4391509336626092322, guid: 78f3cc4ebb30bee46809680f5156a20c, type: 3}
-  - WeaponId: 2
-    WeaponSprite: {fileID: -9133371539208352534, guid: 65b7cf3ab66e93a48b775c8b8ce3203d, type: 3}
-  - WeaponId: 3
-    WeaponSprite: {fileID: 2634828794379451360, guid: c4837677fd1c42643ab5423befbecca3, type: 3}
-  - WeaponId: 4
-    WeaponSprite: {fileID: -5386982939078441929, guid: e1f40e528352a894092a5469cb739099, type: 3}
-  - WeaponId: 5
-    WeaponSprite: {fileID: 5469930955890011798, guid: 69f2f4a6586581f4aa22d12014a619d0, type: 3}
---- !u!4 &880534154
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 880534152}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.0284457, y: 3.846346, z: 0.07613388}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1099236154
 GameObject:
   m_ObjectHideFlags: 0
@@ -3185,6 +3128,7 @@ GameObject:
   - component: {fileID: 1875297434}
   - component: {fileID: 1875297435}
   - component: {fileID: 1875297436}
+  - component: {fileID: 1875297437}
   m_Layer: 0
   m_Name: KillFeedManager
   m_TagString: Untagged
@@ -3249,6 +3193,31 @@ MonoBehaviour:
   KillerTexts: []
   KilledTexts: []
   WeaponImages: []
+--- !u!114 &1875297437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875297433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d21c6dd225ae5ff4699dec4221f12994, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WeaponsList:
+  - WeaponId: 0
+    WeaponSprite: {fileID: -771259930425132168, guid: 0665fb4d6b60ea941ac2dc990f744f5e, type: 3}
+  - WeaponId: 1
+    WeaponSprite: {fileID: 4391509336626092322, guid: 78f3cc4ebb30bee46809680f5156a20c, type: 3}
+  - WeaponId: 2
+    WeaponSprite: {fileID: -9133371539208352534, guid: 65b7cf3ab66e93a48b775c8b8ce3203d, type: 3}
+  - WeaponId: 3
+    WeaponSprite: {fileID: 2634828794379451360, guid: c4837677fd1c42643ab5423befbecca3, type: 3}
+  - WeaponId: 4
+    WeaponSprite: {fileID: -5386982939078441929, guid: e1f40e528352a894092a5469cb739099, type: 3}
+  - WeaponId: 5
+    WeaponSprite: {fileID: 5469930955890011798, guid: 69f2f4a6586581f4aa22d12014a619d0, type: 3}
 --- !u!1 &2001243725
 GameObject:
   m_ObjectHideFlags: 0
@@ -3651,4 +3620,3 @@ SceneRoots:
   - {fileID: 506259286}
   - {fileID: 1875297434}
   - {fileID: 1709874766}
-  - {fileID: 880534154}
