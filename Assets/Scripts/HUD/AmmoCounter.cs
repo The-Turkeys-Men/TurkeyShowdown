@@ -19,7 +19,14 @@ namespace HUD
             if (_playerWeapon.EquipedWeapon)
             {
                 _ammoText.gameObject.SetActive(true);
-                _ammoText.text = _playerWeapon.EquipedWeapon.Ammo.Value.ToString();
+
+                var ammoValue = _playerWeapon.EquipedWeapon.Ammo.Value;
+                if (ammoValue > 1000)
+                {
+                    _ammoText.text = "∞";
+                    return;
+                }
+                _ammoText.text = ammoValue.ToString();
             }
             else
             {

@@ -116,7 +116,7 @@ MonoBehaviour:
   <WeaponId>k__BackingField: 0
   <FireRate>k__BackingField: 1
   <Damage>k__BackingField: 30
-  <MaxAmmo>k__BackingField: 9999999
+  <MaxAmmo>k__BackingField: 2147483647
   <Ammo>k__BackingField:
     m_InternalValue: 0
   <SprayAmount>k__BackingField: 0
