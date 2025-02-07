@@ -1,17 +1,17 @@
-using System;
-using Unity.Mathematics;
+using Debugger;
+using Extensions;
 using UnityEngine;
 
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine.Events;
 using WeaponSystem;
 
 
 public class BaseWeapon : NetworkBehaviour, IWeapon
 {
+    [field:SerializeField] public int WeaponId { get; set; }
     [field:SerializeField] public float FireRate { get; set; }
-    public NetworkVariable<float> FireRateTimer { get; set; } = new(0);
+    public float FireRateTimer { get; set; }
     [field:SerializeField] public int Damage { get; set; }
     [field:SerializeField] public int MaxAmmo { get; set; }
     [field:SerializeField] public NetworkVariable<int> Ammo { get; set; } = new(0);
@@ -32,24 +32,42 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     [field:SerializeField] public GameObject ProjectilePrefab { get; set; }
     [field:SerializeField] public float ProjectileSpeed { get; set; }
     [field:SerializeField] public float MaxLifetime { get; set; }
-    
+    [field:SerializeField] public bool IsExplosive { get; set; }
+    [field:SerializeField] public int ExplosionDamage { get; set; }
+    [field:SerializeField] public float ExplosionRange { get; set; }
+    [field:SerializeField] public float ExplosionSelfKnockback { get; set; }
+    [field:SerializeField] public float ExplosionKnockback { get; set; }
+
     [field:Header("raycast")]
     [field:SerializeField] public float MaxDistance { get; set; }
 
-    public Transform ShootPoint { get; set; }
-
+    [field:Header("Melee")]
+    [field:SerializeField] public Vector2 MeleeRange { get; set; }
+    [field:SerializeField] public float WallHitBoost { get; set; }
+    
+    [Header("Trainée feedback")]
+    public Material TrailMaterial;
+    
+    [Header("Components")]
     public Rigidbody2D Rb ;
     public GameObject Visuals;
+    public Transform ShootPoint { get; set; }
 
     public NetworkVariable<bool> IsThrowed = new(false);
+    public NetworkVariable<bool> ShouldHide = new(false);
 
     public UnityEvent OnGrab { get; set; } = new();
+    
+    public GameObject LastOwner { get; set; }
 
+    private bool _isDespawning = false;
+    private float _throwSpeedThreshold = 0.2f;
+    
     private void Awake()
     {
         Rb = GetComponent<Rigidbody2D>();
     }
-
+    
     private void Initialize()
     {
         if (!IsServer)
@@ -69,17 +87,31 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
 
     public void OnTriggerEnter2D(Collider2D other)
     {
-        if (!IsServer)
+        if (!IsServer || _isDespawning)
         {
             return;
         }
+
+        if (!IsThrowed.Value)
+        {
+            return;
+        }
+
+        LastOwner.TryGetComponent(out TeamComponent lastOwnerTeam);
         
-        if (IsThrowed.Value) 
-        { 
+        if (!other.TryGetComponent(out TeamComponent otherTeam) || otherTeam.TeamID.Value != lastOwnerTeam.TeamID.Value)
+        {
+            _isDespawning = true;
             GetComponent<NetworkObject>().Despawn(true);
+            DebuggerConsole.Instance.LogClientRpc("Weapon throw touched " + other.gameObject.name);
             if (other.TryGetComponent(out HealthComponent healthComponent))
             {
-                healthComponent.DamageServerRpc(DamageByThrow);
+                healthComponent.Damage(DamageByThrow, LastOwner.GetComponent<NetworkObject>().NetworkObjectId);
+            }
+
+            if (other.attachedRigidbody)
+            {
+                other.attachedRigidbody.AddForce(Rb.linearVelocity.normalized * KnockbackForce, ForceMode2D.Impulse);
             }
         }
     }
@@ -87,14 +119,16 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     
     void Update()
     {
+        Visuals.SetActive(!ShouldHide.Value);
+        
+        if (FireRateTimer > 0)
+        {
+            FireRateTimer -= Time.deltaTime;
+        }
+        
         if (!IsServer)
         {
             return;
-        }
-        
-        if (FireRateTimer.Value > 0)
-        {
-            FireRateTimer.Value -= Time.deltaTime;
         }
         
         if (!IsThrowed.Value)
@@ -102,7 +136,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
             return;
         }
 
-        if (!Mathf.Approximately(Rb.linearVelocity.magnitude, 0))
+        if (Rb.linearVelocity.magnitude > _throwSpeedThreshold)
         {
             return;
         }
@@ -126,7 +160,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         {
             case > 0:
             {
-                if(FireRateTimer.Value <= 0)
+                if(FireRateTimer <= 0)
                 {
                     Shoot();
                 }
@@ -142,56 +176,133 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     public virtual void Shoot()
     {
         Vector2 direction = transform.right;
+        var teamComponent = LastOwner.GetComponent<TeamComponent>();
+        int teamIDValue = (teamComponent)? teamComponent.TeamID.Value : -1;
         switch (WeaponShootType)
         {
             case ShootType.Projectile:
                 SpawnProjectileServerRpc(ShootPoint.position, direction);
                 break;
             case ShootType.Raycast:
+                
+                RaycastHit2D raycastResult = RaycastUtils.RaycastFirstEnnemy(teamIDValue, ShootPoint.position, direction, MaxDistance, 
+                    (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("World")));
+                
+                if (raycastResult && raycastResult.collider.TryGetComponent(out HealthComponent healthComponent))
+                {
+                    healthComponent.DamageServerRpc(Damage, LastOwner.GetNetworkObjectId());
+                }
+                
+                Vector2 endPoint;
+                if(raycastResult==true)
+                {
+                    endPoint = raycastResult.point;
+                }
+                else
+                {
+                    endPoint = (Vector2)ShootPoint.position + direction * MaxDistance;
+                }
+                SpawnBulletTrailServerRpc(endPoint);
+                
+                break;
+            case ShootType.Melee:
+                var overlapResult = Physics2D.OverlapBoxAll(ShootPoint.position, MeleeRange, ShootPoint.eulerAngles.z, 
+                    (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("World")));
+
+                foreach (Collider2D collider in overlapResult)
+                {
+                    if (collider.TryGetComponent(out TeamComponent otherTeamComponent) && teamIDValue == otherTeamComponent.TeamID.Value)
+                    {
+                        continue;
+                    }
+
+                    if (!collider.TryGetComponent(out HealthComponent healthComponent2))
+                    {
+                        continue;
+                    }
+                    
+                    healthComponent2.DamageServerRpc(Damage, LastOwner.GetNetworkObjectId());
+                        
+                    if (collider.attachedRigidbody)
+                    {
+                        var colliderNetworkObject = collider.attachedRigidbody.GetComponent<NetworkObject>();
+                        var ownerClientId = colliderNetworkObject.OwnerClientId;
+
+                        ApplyKnockbackClientRpc(colliderNetworkObject.NetworkObjectId, direction, RpcTarget.Single(ownerClientId, RpcTargetUse.Temp));
+                    }
+                }
+                
                 break;
         }
+        FireRateTimer = FireRate;
         OnShootServerRpc();
+        Rigidbody2D playerRigidbody = transform.parent.GetComponentInParent<Rigidbody2D>();
+        playerRigidbody.AddForce(-direction * RecoilForce, ForceMode2D.Impulse);
+        
+        LastOwner.GetComponent<AnimScript>().StartAnim();
+    }
+
+    [Rpc(SendTo.SpecifiedInParams, AllowTargetOverride = true)]
+    private void ApplyKnockbackClientRpc(ulong playerObjectId, Vector2 direction, RpcParams rpcParams = default)
+    {
+        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject);
+        playerObject.GetComponent<Rigidbody2D>()?.AddForce(direction * KnockbackForce, ForceMode2D.Impulse);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void SpawnBulletTrailServerRpc(Vector2 endPoint)
+    {
+        SpawnBulletTrailClientRpc(endPoint);
     }
     
-    [ServerRpc]
+    [Rpc(SendTo.ClientsAndHost)]
+    private void SpawnBulletTrailClientRpc(Vector2 endPoint)
+    {
+        GameObject tempTrainé=new GameObject("tempTrainé");
+        DespawnTraine despawnTraine = tempTrainé.AddComponent<DespawnTraine>();
+        tempTrainé.transform.position=Vector3.zero;
+        LineRenderer lineRenderer = tempTrainé.AddComponent<LineRenderer>();
+        lineRenderer.material = new(TrailMaterial);
+        lineRenderer.material.color=Color.black;
+        lineRenderer.SetPosition(0, ShootPoint.position);
+        lineRenderer.SetPosition(1, endPoint);
+    }
+    
+    [Rpc(SendTo.Server)]
     protected virtual void OnShootServerRpc()
     {
-        FireRateTimer.Value = FireRate;
+        FireRateTimer = FireRate;
         Ammo.Value -= 1;
     }
 
-    [ServerRpc]
+    [Rpc(SendTo.Server)]
     private void SpawnProjectileServerRpc(Vector2 position, Vector2 direction)
     {
         direction.Normalize();
         GameObject spawnedBullet = Instantiate(ProjectilePrefab, position, Quaternion.identity);
         spawnedBullet.GetComponent<NetworkObject>().Spawn();
-        spawnedBullet.GetComponent<Projectile>().Direction = direction;
+        var projectile = spawnedBullet.GetComponent<Projectile>();
+        projectile.Direction = direction;
+        projectile.SenderObject = LastOwner;
         
-    }
-
-
-    [ServerRpc]
-    public void HideServerRpc()
-    {
-        HideClientRpc();
+        projectile.IsExplosive = IsExplosive;
+        projectile.ExplosionSelfKnockback = ExplosionSelfKnockback;
+        projectile.ExplosionDamage = ExplosionDamage;
+        projectile.ExplosionRange = ExplosionRange;
+        projectile.ExplosionKnockback = ExplosionKnockback;
     }
     
-    [ClientRpc]
-    private void HideClientRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    public void HideClientRpc()
     {
         Visuals.SetActive(false);
+        DebuggerConsole.Instance.Log("hide weapon on client");
     }
     
-    [ServerRpc]
-    public void ShowServerRpc()
-    {
-        ShowClientRpc();
-    }
-    
-    [ClientRpc]
-    private void ShowClientRpc()
+    [Rpc(SendTo.ClientsAndHost)]
+    public void ShowClientRpc()
     {
         Visuals.SetActive(true);
+        DebuggerConsole.Instance.Log("hide weapon on client");
     }
 }
