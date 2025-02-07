@@ -52,6 +52,9 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
 
     private bool _isDespawning = false;
     private float _throwSpeedThreshold = 0.2f;
+
+    [SerializeField] private string _nomTir;
+     [SerializeField] private string _nomLancé;
     
     private void Awake()
     {
@@ -194,6 +197,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 
                 break;
         }
+        AudioManager.Instance.PlaySFX(_nomTir,transform.position);
         FireRateTimer = FireRate;
         OnShootServerRpc();
         Rigidbody2D playerRigidbody = transform.parent.GetComponentInParent<Rigidbody2D>();

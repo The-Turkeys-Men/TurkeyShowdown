@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Extensions;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -9,6 +11,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] protected AudioMixerGroup _audioMixerMusic;
     public AudioSource AudioSourceMusic;
     public AudioSource AudioSourceSFX;
+    public List<string> nomMusic;
    
 
     public Sound[] MusicSounds;
@@ -27,7 +30,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void PlaySound( Sound[] soundList, string name,Vector3 pos ,AudioMixerGroup Volume,float sonsLocale)
+    private void PlaySound( Sound[] soundList, string name,Vector3 pos ,AudioMixerGroup Volume,float sonsLocale,bool loop)
     {
         Sound sound = Array.Find(soundList, s => s.Name == name);
     
@@ -42,6 +45,7 @@ public class AudioManager : MonoBehaviour
             AudioSource audioSource= tempAudio.AddComponent<AudioSource>();
             audioSource.spatialBlend=sonsLocale;
             audioSource.clip = sound.Clip;
+            audioSource.loop=loop;
             audioSource.outputAudioMixerGroup=Volume;
             audioSource.Play();
             Destroy(tempAudio,sound.Clip.length);
@@ -70,18 +74,21 @@ public class AudioManager : MonoBehaviour
         StopSound(AudioSourceSFX);
     }
 
-    public void PlayMusic(string name,Vector3 pos)
+    public void PlayMusic(Vector3 pos)
     {
+        string name= nomMusic.PickRandom();
         float sonsLocale=0f;
         AudioMixerGroup Volume= _audioMixerMusic;
-        PlaySound( MusicSounds, name,pos,Volume,sonsLocale);
+        bool loop=true;
+        PlaySound( MusicSounds, name,pos,Volume,sonsLocale,loop);
     }
 
     public void PlaySFX(string name,Vector3 pos)
     {
         float sonsLocale=1f;
+        bool loop=false;
         AudioMixerGroup Volume=_audioMixerSFX;
-        PlaySound( SfxSounds, name, pos,Volume,sonsLocale);
+        PlaySound( SfxSounds, name, pos,Volume,sonsLocale,loop);
     }
 
     public bool IsSoundInList(Sound[] soundList, string name)

@@ -357,7 +357,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3836522990
+  GlobalObjectIdHash: 3413963084
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1326,6 +1326,107 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1387595106}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &351178622
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 351178624}
+  - component: {fileID: 351178623}
+  m_Layer: 0
+  m_Name: AudioManadger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &351178623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 351178622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78c76db0d177af4186e1c4f10ecc0cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioMixerSFX: {fileID: 4731759000219265110, guid: 22e1f7067ba6d114e944d89b4bfeca04, type: 2}
+  _audioMixerMusic: {fileID: 4788024110106703659, guid: 22e1f7067ba6d114e944d89b4bfeca04, type: 2}
+  AudioSourceMusic: {fileID: 0}
+  AudioSourceSFX: {fileID: 0}
+  nomMusic:
+  - Music1
+  - Music2
+  - Music3
+  - Music4
+  MusicSounds:
+  - Name: Music1
+    Clip: {fileID: 8300000, guid: b080efb90c692cf4d80b3d2bcc618366, type: 3}
+  - Name: Music2
+    Clip: {fileID: 8300000, guid: e1744c8bb7f15e344bf5af54339e8c00, type: 3}
+  - Name: Music3
+    Clip: {fileID: 8300000, guid: 911e754d7b8aab745bc85c9db15b3974, type: 3}
+  - Name: Music4
+    Clip: {fileID: 8300000, guid: 31b16594631ab6f46a6feff121ce1e2f, type: 3}
+  SfxSounds:
+  - Name: crisDinde
+    Clip: {fileID: 8300000, guid: 5353c320a4d3bf844903d69cfd2c4ea8, type: 3}
+  - Name: glockRilod
+    Clip: {fileID: 8300000, guid: b9e72ca03854b084fb96aec3b73d673c, type: 3}
+  - Name: glockChout
+    Clip: {fileID: 8300000, guid: a51b366c2edc9a24d9adb986769b5c03, type: 3}
+  - Name: coupBatte
+    Clip: {fileID: 8300000, guid: 02e43989ba02b304cb12cf1a8e6d2fe5, type: 3}
+  - Name: Shild1
+    Clip: {fileID: 8300000, guid: fd4256cc895f9c44583f495427bae69a, type: 3}
+  - Name: coupCouteaux
+    Clip: {fileID: 8300000, guid: 02e43989ba02b304cb12cf1a8e6d2fe5, type: 3}
+  - Name: choutUzi
+    Clip: {fileID: 8300000, guid: aeb7c7ead8dbd1a4b9c277143cb2b95a, type: 3}
+  - Name: soin
+    Clip: {fileID: 8300000, guid: 6a4a1e0f3976c8149880636230be3172, type: 3}
+  - Name: tirGlock2
+    Clip: {fileID: 8300000, guid: 05d0adf264d564b489ae09fec65bb910, type: 3}
+  - Name: rechargeLanceMissil
+    Clip: {fileID: 8300000, guid: 90e6616c8ef78e34ebd807222a043c3c, type: 3}
+  - Name: missilExplotion
+    Clip: {fileID: 8300000, guid: 54af97f993df1524bb8c45fee0532db1, type: 3}
+  - Name: uziRecharge
+    Clip: {fileID: 8300000, guid: bf61bd4e8a0d7534cb83c2b6980365b6, type: 3}
+  - Name: "lanc\xE9"
+    Clip: {fileID: 8300000, guid: e9cb894d0baf0c94d90cb8695b77caef, type: 3}
+  - Name: pauseMine
+    Clip: {fileID: 8300000, guid: 38e6565fff6e2734799387f9ea87e1ee, type: 3}
+  - Name: damegeDinde
+    Clip: {fileID: 8300000, guid: 91deb1cd6c545ab48b836972152de9e1, type: 3}
+  - Name: MarcheMine
+    Clip: {fileID: 8300000, guid: 7e85262bd8964314c9274b248d3b0e35, type: 3}
+  - Name: hitBat
+    Clip: {fileID: 8300000, guid: aa1ee34ea12ddec40bb9d1d0cd3d2fe6, type: 3}
+  - Name: mort
+    Clip: {fileID: 8300000, guid: cc3de98ad4d896542a467a81fce2ae64, type: 3}
+  - Name: mineExplotion
+    Clip: {fileID: 8300000, guid: 54af97f993df1524bb8c45fee0532db1, type: 3}
+--- !u!4 &351178624
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 351178622}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -10.162735, y: -5.711272, z: 0.4017418}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &357539367
 GameObject:
   m_ObjectHideFlags: 0
@@ -1492,7 +1593,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1595635356
+  GlobalObjectIdHash: 3997082301
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -2600,7 +2701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2807717669
+  GlobalObjectIdHash: 841390672
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -10086,7 +10187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 969798251
+  GlobalObjectIdHash: 4083549097
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -11100,7 +11201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 229900288
+  GlobalObjectIdHash: 2427813901
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -13028,3 +13129,4 @@ SceneRoots:
   - {fileID: 922062112}
   - {fileID: 1387595106}
   - {fileID: 287822748}
+  - {fileID: 351178624}
