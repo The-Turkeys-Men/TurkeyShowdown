@@ -54,6 +54,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     public Transform ShootPoint { get; set; }
 
     public NetworkVariable<bool> IsThrowed = new(false);
+    public NetworkVariable<bool> ShouldHide = new(false);
 
     public UnityEvent OnGrab { get; set; } = new();
     
@@ -66,7 +67,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     {
         Rb = GetComponent<Rigidbody2D>();
     }
-
+    
     private void Initialize()
     {
         if (!IsServer)
@@ -118,6 +119,8 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     
     void Update()
     {
+        Visuals.SetActive(!ShouldHide.Value);
+        
         if (FireRateTimer > 0)
         {
             FireRateTimer -= Time.deltaTime;
@@ -288,25 +291,12 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         projectile.ExplosionRange = ExplosionRange;
         projectile.ExplosionKnockback = ExplosionKnockback;
     }
-
-    [Rpc(SendTo.Server, RequireOwnership = false)]
-    public void HideServerRpc()
-    {
-        DebuggerConsole.Instance.LogServerRpc("hide weapon on server");
-        HideClientRpc();
-    }
     
     [Rpc(SendTo.ClientsAndHost)]
     public void HideClientRpc()
     {
         Visuals.SetActive(false);
         DebuggerConsole.Instance.Log("hide weapon on client");
-    }
-    
-    [Rpc(SendTo.Server, RequireOwnership = false)]
-    public void ShowServerRpc()
-    {
-        ShowClientRpc();
     }
     
     [Rpc(SendTo.ClientsAndHost)]

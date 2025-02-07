@@ -78,11 +78,11 @@ public class PlayerWeapon : NetworkBehaviour
         
         var weaponComponent = weaponNetworkObject.GetComponent<BaseWeapon>();
         weaponComponent.IsThrowed.Value = true;
+        weaponComponent.ShouldHide.Value = false;
         
         weaponComponent.Rb.simulated = true;
         weaponComponent.Rb.AddForce(direction.normalized * weaponComponent.ThrowForce, ForceMode2D.Impulse);
         weaponComponent.Rb.AddTorque(weaponComponent.ThrowTorque, ForceMode2D.Impulse);
-        weaponComponent.ShowClientRpc();
     }
     
     public void TryEquipWeapon()
@@ -152,7 +152,7 @@ public class PlayerWeapon : NetworkBehaviour
         weaponNetworkObject.TrySetParent(playerNetworkObject);
         var baseWeapon = weaponNetworkObject.GetComponent<BaseWeapon>();
         baseWeapon.CanBePickUp.Value = false;
-        baseWeapon.HideClientRpc();
+        baseWeapon.ShouldHide.Value = true;
         baseWeapon.GetComponent<IGrabbable>().OnGrab.Invoke();
         baseWeapon.LastOwner = playerNetworkObject.gameObject;
         

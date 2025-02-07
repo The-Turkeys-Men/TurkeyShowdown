@@ -394,6 +394,9 @@ MonoBehaviour:
   OnRespawn:
     m_PersistentCalls:
       m_Calls: []
+  OnDamaged:
+    m_PersistentCalls:
+      m_Calls: []
   _isPlayer: 1
 --- !u!114 &8629905100730461844
 MonoBehaviour:
@@ -564,35 +567,35 @@ MonoBehaviour:
     Layer: 0
     OriginatingState: -1908925969
     DestinationState: 901236897
-    TransitionDuration: 0.25
+    TransitionDuration: 0
     TriggerNameHash: -2123461723
     TransitionIndex: 0
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -2059956868
     DestinationState: -794014476
-    TransitionDuration: 0.25
+    TransitionDuration: 0
     TriggerNameHash: -2123461723
     TransitionIndex: 1
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: 1754552702
     DestinationState: -753170384
-    TransitionDuration: 0.25
+    TransitionDuration: 0
     TriggerNameHash: -2123461723
     TransitionIndex: 0
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: -1961462648
     DestinationState: 815375814
-    TransitionDuration: 0.25
+    TransitionDuration: 0
     TriggerNameHash: -2123461723
     TransitionIndex: 0
   - IsCrossFadeExit: 0
     Layer: 0
     OriginatingState: 56480480
     DestinationState: -1194196050
-    TransitionDuration: 0.25
+    TransitionDuration: 0
     TriggerNameHash: -2123461723
     TransitionIndex: 0
   m_Animator: {fileID: 1259358862509349588}
@@ -875,9 +878,49 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1065087246603383647}
+    - target: {fileID: 1756827542377729707, guid: 764b342f154ae8244824846e3e6c285c, type: 3}
+      propertyPath: _healthComponent
+      value: 
+      objectReference: {fileID: 3577906075511020807}
+    - target: {fileID: 2273745011621197401, guid: 764b342f154ae8244824846e3e6c285c, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2273745011621197401, guid: 764b342f154ae8244824846e3e6c285c, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2273745011621197401, guid: 764b342f154ae8244824846e3e6c285c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2273745011621197401, guid: 764b342f154ae8244824846e3e6c285c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3578941284153683863, guid: 764b342f154ae8244824846e3e6c285c, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3599120005504618615, guid: 764b342f154ae8244824846e3e6c285c, type: 3}
       propertyPath: m_Name
       value: PlayerHUD
+      objectReference: {fileID: 0}
+    - target: {fileID: 5680388997683553456, guid: 764b342f154ae8244824846e3e6c285c, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5680388997683553456, guid: 764b342f154ae8244824846e3e6c285c, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5680388997683553456, guid: 764b342f154ae8244824846e3e6c285c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5680388997683553456, guid: 764b342f154ae8244824846e3e6c285c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7969156711513371486, guid: 764b342f154ae8244824846e3e6c285c, type: 3}
       propertyPath: m_Pivot.x

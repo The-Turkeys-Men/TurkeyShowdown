@@ -4,7 +4,7 @@ using Image = UnityEngine.UI.Image;
 public class ContourDamage : MonoBehaviour
 {
     [SerializeField] private HealthComponent _healthComponent;
-    private Image _panelImage;
+    [SerializeField] private Image _panelImage;
     Color _currentColor;
 
     [SerializeField, Range(0, 1)] private float _damageSpeed = 1;
@@ -12,7 +12,6 @@ public class ContourDamage : MonoBehaviour
     
     void Start()
     {
-        _panelImage = GetComponent<Image>();
         if (_panelImage != null)
         {
             _currentColor = _panelImage.color;
