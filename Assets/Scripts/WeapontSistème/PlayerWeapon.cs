@@ -139,6 +139,7 @@ public class PlayerWeapon : NetworkBehaviour
         if (WeaponInventory.Count > 0)
         {
             EquipedWeapon = WeaponInventory[0];
+            GetComponent<AnimScript>().SetAnimatorServerRpc(EquipedWeapon.WeaponId); 
         }
     }
     

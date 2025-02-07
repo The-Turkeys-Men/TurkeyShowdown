@@ -15,8 +15,9 @@ public class HealthComponent : NetworkBehaviour
     public NetworkVariable<int> Armor;
     public int MaxArmor;
 
-    public UnityEvent<ulong> OnDeath = new();
-    public UnityEvent OnRespawn = new();
+    [HideInInspector] public UnityEvent<ulong> OnDeath = new();
+    [HideInInspector] public UnityEvent OnRespawn = new();
+    [HideInInspector] public UnityEvent OnDamaged = new();
     
     [SerializeField] private bool _isPlayer = false;
      
@@ -82,9 +83,17 @@ public class HealthComponent : NetworkBehaviour
             {
                 //todo: optimize this
                 var killerId = senderObject.GetComponent<NetworkObject>().OwnerClientId;
-                FindAnyObjectByType<DeathMatchManager>().OnPlayerKill(killerId);
+                ((DeathMatchManager)DeathMatchManager.GetInstance()).OnPlayerKill(killerId);
                 DebuggerConsole.Instance.LogClientRpc("Player killed by: " + senderObject.name);
             }
         }
+        OnDamaged.Invoke();
+        OnDamagedClientRpc();
+    }
+    
+    [Rpc(SendTo.ClientsAndHost)]
+    public void OnDamagedClientRpc()
+    {
+        OnDamaged.Invoke();
     }
 }
