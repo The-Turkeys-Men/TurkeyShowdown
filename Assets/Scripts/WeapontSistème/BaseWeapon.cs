@@ -261,9 +261,10 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         GameObject tempTrainé=new GameObject("tempTrainé");
         DespawnTraine despawnTraine = tempTrainé.AddComponent<DespawnTraine>();
         tempTrainé.transform.position=Vector3.zero;
+        despawnTraine.StartWidth = 0.15f;
         LineRenderer lineRenderer = tempTrainé.AddComponent<LineRenderer>();
         lineRenderer.material = new(TrailMaterial);
-        lineRenderer.material.color=Color.black;
+        lineRenderer.material.color= new Color(0, 0, 0, 0.5f);
         lineRenderer.SetPosition(0, ShootPoint.position);
         lineRenderer.SetPosition(1, endPoint);
     }

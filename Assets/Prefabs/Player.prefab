@@ -758,10 +758,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _followTransform: {fileID: 4942938090148323569}
   _speed: 5
-  _maxX: 40
-  _maxY: 30
-  _minX: -40
-  _minY: -30
+  _maxX: 25
+  _maxY: 23
+  _minX: -55
+  _minY: -25
   IsSemiLock: 0
 --- !u!20 &1065087246603383647
 Camera:
