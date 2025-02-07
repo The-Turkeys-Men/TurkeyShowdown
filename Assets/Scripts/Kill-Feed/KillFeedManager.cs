@@ -14,7 +14,7 @@ public class KillFeedManager : MonoBehaviour
     public Image[] weaponImages;
 
     private int maxKillEntries = 3; // Nombre maximum d'entrées dans le killfeed
-    private float showDuration = 3f; // Durée d'affichage de chaque entrée
+    private float showDuration = 5f; // Durée d'affichage de chaque entrée
 
     private void Awake()
     {

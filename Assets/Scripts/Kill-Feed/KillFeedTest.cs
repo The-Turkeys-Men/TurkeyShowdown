@@ -30,7 +30,10 @@ public class KillFeedTest : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         KillFeedManager.Instance.AddKill("4", "Li", 2);
         
+        yield return new WaitForSeconds(0.5f);
+        KillFeedManager.Instance.AddKill("5", "Li", 2);
+        
         yield return new WaitForSeconds(1f);
-        KillFeedManager.Instance.AddKill("5", "MBAPE", 3);
+        KillFeedManager.Instance.AddKill("6", "MBAPE", 3);
     }
 }
