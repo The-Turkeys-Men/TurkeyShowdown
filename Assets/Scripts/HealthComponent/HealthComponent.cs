@@ -15,11 +15,14 @@ public class HealthComponent : NetworkBehaviour
     public NetworkVariable<int> Armor;
     public int MaxArmor;
 
-    public UnityEvent<ulong> OnDeath = new();
-    public UnityEvent OnRespawn = new();
+    [HideInInspector] public UnityEvent<ulong> OnDeath = new();
+    [HideInInspector] public UnityEvent OnRespawn = new();
+    [HideInInspector] public UnityEvent OnDamaged = new();
     
     [SerializeField] private bool _isPlayer = false;
      
+    public bool IsDead => Health.Value <= 0;
+    
     [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
     private void OnDeathClientRpc()
     {
@@ -50,6 +53,10 @@ public class HealthComponent : NetworkBehaviour
 
     public void Damage(int damage, ulong senderId)
     {
+        if (IsDead)
+        {
+            return;
+        }
         GameObject senderObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[senderId].gameObject;
         if (senderObject.TryGetComponent(out TeamComponent senderTeamComponent) && TryGetComponent(out TeamComponent receiverTeamComponent))
         {
@@ -83,9 +90,17 @@ public class HealthComponent : NetworkBehaviour
             {
                 //todo: optimize this
                 var killerId = senderObject.GetComponent<NetworkObject>().OwnerClientId;
-                FindAnyObjectByType<DeathMatchManager>().OnPlayerKill(killerId);
+                ((DeathMatchManager)DeathMatchManager.GetInstance()).OnPlayerKill(killerId);
                 DebuggerConsole.Instance.LogClientRpc("Player killed by: " + senderObject.name);
             }
         }
+        OnDamaged.Invoke();
+        OnDamagedClientRpc();
+    }
+    
+    [Rpc(SendTo.ClientsAndHost)]
+    public void OnDamagedClientRpc()
+    {
+        OnDamaged.Invoke();
     }
 }

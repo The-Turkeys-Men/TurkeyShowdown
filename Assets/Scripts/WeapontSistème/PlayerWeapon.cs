@@ -13,19 +13,6 @@ public class PlayerWeapon : NetworkBehaviour
     
     public bool Dizziness;
 
-    private void Awake()
-    {
-        GetComponent<HealthComponent>().OnDeath.AddListener(OnDeath);
-    }
-
-    private void OnDeath(ulong arg0)
-    {
-        if (EquipedWeapon)
-        {
-            ThrowWeapon();
-        }
-    }
-
     void Update()
     {
         if (!IsOwner)
@@ -91,11 +78,11 @@ public class PlayerWeapon : NetworkBehaviour
         
         var weaponComponent = weaponNetworkObject.GetComponent<BaseWeapon>();
         weaponComponent.IsThrowed.Value = true;
+        weaponComponent.ShouldHide.Value = false;
         
         weaponComponent.Rb.simulated = true;
         weaponComponent.Rb.AddForce(direction.normalized * weaponComponent.ThrowForce, ForceMode2D.Impulse);
         weaponComponent.Rb.AddTorque(weaponComponent.ThrowTorque, ForceMode2D.Impulse);
-        weaponComponent.ShowClientRpc();
     }
     
     public void TryEquipWeapon()
@@ -139,6 +126,7 @@ public class PlayerWeapon : NetworkBehaviour
         EquipedWeapon.transform.position = transform.position + Vector3.up;
         
         WeaponInventory.Add(EquipedWeapon);
+        GetComponent<AnimScript>().SetAnimatorServerRpc(EquipedWeapon.WeaponId); 
     }
 
     private void UnEquipWeapon()
@@ -151,6 +139,7 @@ public class PlayerWeapon : NetworkBehaviour
         if (WeaponInventory.Count > 0)
         {
             EquipedWeapon = WeaponInventory[0];
+            GetComponent<AnimScript>().SetAnimatorServerRpc(EquipedWeapon.WeaponId); 
         }
     }
     
@@ -163,7 +152,7 @@ public class PlayerWeapon : NetworkBehaviour
         weaponNetworkObject.TrySetParent(playerNetworkObject);
         var baseWeapon = weaponNetworkObject.GetComponent<BaseWeapon>();
         baseWeapon.CanBePickUp.Value = false;
-        baseWeapon.HideClientRpc();
+        baseWeapon.ShouldHide.Value = true;
         baseWeapon.GetComponent<IGrabbable>().OnGrab.Invoke();
         baseWeapon.LastOwner = playerNetworkObject.gameObject;
         

@@ -14,7 +14,7 @@ public class Grappler : NetworkBehaviour
     [SerializeField] private float _startWidth = 0f;
     [SerializeField] private float _endWidth = 1f;
     [SerializeField] private float _grappleRange = 5;
-    private Vector3 _hitGrapPosition;
+    private Vector3 _hitGrabPosition;
     private Quaternion _hitGrapRotation;
     
      
@@ -25,7 +25,7 @@ public class Grappler : NetworkBehaviour
 
     private Vector2 _grappledPoint;
     private float _grappleDistance;
-    private GameObject _curentGrabTete;
+    private GrappleHead _curentGrabHead;
     private Vector2 _wallNormal;
     private float _wallAngle;
     private float _wallHeadOffset = -0.5f;
@@ -69,18 +69,48 @@ public class Grappler : NetworkBehaviour
         {
             _wallNormal = hitInfo.normal;
             _wallAngle = Mathf.Atan2(_wallNormal.x, -_wallNormal.y) * Mathf.Rad2Deg;
-            StartGrab(hitInfo.point);
-            
-            _hitGrapPosition=hitInfo.point - _wallNormal * _wallHeadOffset;
-            _hitGrapRotation = Quaternion.Euler(0f, 0f, _wallAngle);
-            _curentGrabTete = Instantiate(_teteGrapain,_hitGrapPosition,_hitGrapRotation);
-            _curentGrabTete.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+
             AudioManager.Instance.PlaySFX("grapain",transform.position);
+            
+            SpawnHead(hitInfo.point, _wallNormal, _wallAngle);
+            SpawnHeadServerRpc(hitInfo.point, _wallNormal, _wallAngle);
+            
+            StartGrab(hitInfo.point);
         }
 
     }
 
+    [Rpc(SendTo.Server)]
+    private void SpawnHeadServerRpc(Vector2 hitPoint, Vector2 hitNormal, float wallAngle)
+    {
+        SpawnHeadClientRpc(hitPoint, hitNormal, wallAngle);
+    }
     
+    [Rpc(SendTo.ClientsAndHost)]
+    private void SpawnHeadClientRpc(Vector2 hitPoint, Vector2 hitNormal, float wallAngle)
+    {
+        if (IsOwner)
+        {
+            return;
+        }
+        SpawnHead(hitPoint, hitNormal, wallAngle);
+    }
+    
+    private void SpawnHead(Vector2 hitPoint, Vector2 hitNormal, float wallAngle)
+    {
+        _hitGrabPosition= hitPoint - hitNormal * _wallHeadOffset;
+        _curentGrabHead = Instantiate(_teteGrapain,_tete.transform.position,_tete.transform.rotation).GetComponent<GrappleHead>();
+        _curentGrabHead.GoToPoint(_hitGrabPosition, wallAngle);
+        _curentGrabHead.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+        _curentGrabHead.BodyTransform = _neckStartPoint;
+        _curentGrabHead.OnBackToBody += OnHeadBackOnBody;
+    }
+
+    private void OnHeadBackOnBody()
+    {
+        Destroy(_curentGrabHead.gameObject);
+    }
+
 
     private void StartGrab(Vector2 hitPoint)
     {
@@ -106,8 +136,25 @@ public class Grappler : NetworkBehaviour
         SwitchGrabVisualEffect(Vector2.zero, false);
         SwitchGrabVisualEffectServerRpc(Vector2.zero, false);
         _isGripped = false;
-        Destroy(_curentGrabTete);
         
+        _curentGrabHead.GoBackToBody();
+        ReturnHeadServerRpc();
+    }
+
+    [Rpc(SendTo.Server)]
+    public void ReturnHeadServerRpc()
+    {
+        ReturnHeadClientRpc();
+    }
+    
+    [Rpc(SendTo.ClientsAndHost)]
+    public void ReturnHeadClientRpc()
+    {
+        if (!IsOwner)
+        {
+            return;
+        }
+        _curentGrabHead.GoBackToBody();
     }
 
     private void GrabUpdate()
@@ -126,9 +173,10 @@ public class Grappler : NetworkBehaviour
         }
         _grappleVisual.SetPosition(0, _startGrabPoint.position);
         _grappleVisual.SetPosition(1, _neckStartPoint.position);
+        _grappleVisual.SetPosition(2, _curentGrabHead.NeckTransform.position);
         UpdateGrabVisualEffectServerRpc();
         
-        _curentGrabTete.transform.eulerAngles = Vector3.forward * _wallAngle;
+        _curentGrabHead.transform.eulerAngles = Vector3.forward * _wallAngle;
     }
 
     [Rpc(SendTo.Server, RequireOwnership = false)]
@@ -146,7 +194,10 @@ public class Grappler : NetworkBehaviour
     private void SwitchGrabVisualEffect(Vector2 hitPoint, bool activated)
     {
         _grappleVisual.enabled = activated;
-        _grappleVisual.SetPosition(2, hitPoint- _wallNormal * _wallNeckOffset);
+        if (activated)
+        {
+            _grappleVisual.SetPosition(2, _curentGrabHead.NeckTransform.position);
+        }
         _tete.SetActive(true);
         
     }
@@ -162,6 +213,7 @@ public class Grappler : NetworkBehaviour
     {
         _grappleVisual.SetPosition(0, _startGrabPoint.position);
         _grappleVisual.SetPosition(1, _neckStartPoint.position);
+        _grappleVisual.SetPosition(2, _curentGrabHead.NeckTransform.position);
         _tete.SetActive(false);
     }
 
