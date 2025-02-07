@@ -53,7 +53,7 @@ public class PlayerMovement : NetworkBehaviour
             if((TimePas-=Time.deltaTime)<=0)
             {
                 AudioManager.Instance.PlaySFX("bruisDePas",transform.position);
-                TimePas=0.5f;
+                TimePas=0.3f;
             }
             
         }
