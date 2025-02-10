@@ -64,7 +64,16 @@ public class Grappler : NetworkBehaviour
 
     public void TryGrab(Vector2 grabDirection)
     {
-        RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, grabDirection, _grappleRange, 1 << 6);
+        RaycastHit2D[] hitInfos = Physics2D.RaycastAll(transform.position, grabDirection, _grappleRange, 1 << LayerMask.NameToLayer("World"));
+        RaycastHit2D hitInfo = default;
+        foreach (RaycastHit2D info in hitInfos)
+        {
+            if (info.collider && !info.collider.isTrigger)
+            {
+                hitInfo = info;
+                break;
+            }
+        }
         if (hitInfo)
         {
             _wallNormal = hitInfo.normal;

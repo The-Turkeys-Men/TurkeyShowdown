@@ -49,6 +49,11 @@ public class Projectile : NetworkBehaviour
             return;
         }
 
+        if (other.isTrigger)
+        {
+            return;
+        }
+        
         if (SenderObject.TryGetComponent(out TeamComponent senderTeamComponent) && other.TryGetComponent(out TeamComponent otherTeamComponent))
         {
             if (senderTeamComponent.TeamID == otherTeamComponent.TeamID)
