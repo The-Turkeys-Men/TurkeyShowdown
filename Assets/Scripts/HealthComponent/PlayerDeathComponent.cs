@@ -40,7 +40,10 @@ namespace Health
         private void OnDeath(ulong arg0)
         {
             OnDeathEvent?.Invoke();
-            respawnButton.enabled = true;
+            if (IsOwner)
+            {
+                respawnButton.enabled = true;
+            }
             var playerController = GetComponent<PlayerController>();
             playerController.InputActivated = false;
 

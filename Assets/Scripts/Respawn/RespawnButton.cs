@@ -1,7 +1,4 @@
-using System;
 using TMPro;
-using Unity.Netcode;
-using UnityEditor.Embree;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +7,7 @@ public class RespawnButton : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _RespawnButtonText;
     [SerializeField] private Button _RespawnButton;
     [SerializeField]private float timer;
-   public GameObject DeathScreen;
+    [SerializeField] private GameObject DeathScreen;
     
     private float time;
 
@@ -35,5 +32,6 @@ public class RespawnButton : MonoBehaviour
     { 
         PlayerSpawner.SpawnerInstance.RespawnPlayer(gameObject);
        _RespawnButton.interactable = false;
+       DeathScreen.SetActive(false);
     }
 }

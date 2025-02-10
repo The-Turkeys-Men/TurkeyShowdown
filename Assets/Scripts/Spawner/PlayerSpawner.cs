@@ -35,7 +35,7 @@ public class PlayerSpawner : NetworkBehaviour
 
     #region Respawn
 
-    [Rpc(SendTo.ClientsAndHost)]
+    /*[Rpc(SendTo.ClientsAndHost)]
     private void OnDeathClientRpc(ulong playerObjectId)
     {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject))
@@ -45,7 +45,7 @@ public class PlayerSpawner : NetworkBehaviour
         }
         
         //playerObject.gameObject.SetActive(false);
-        StartCoroutine(SpawnTimer(playerObject.gameObject));
+       // StartCoroutine(SpawnTimer(playerObject.gameObject));
     }
     
     [Rpc(SendTo.Server)]
@@ -58,14 +58,14 @@ public class PlayerSpawner : NetworkBehaviour
         }
         
         //playerObject.gameObject.SetActive(false);
-        StartCoroutine(SpawnTimer(playerObject.gameObject));
+        // StartCoroutine(SpawnTimer(playerObject.gameObject));
     }
     
-    IEnumerator SpawnTimer(GameObject player)
+   IEnumerator SpawnTimer(GameObject player)
     {
         yield return new WaitForSeconds(_respawnTime);
         RespawnPlayer(player);
-    }
+    }*/
 
     public void RespawnPlayer(GameObject player)
     {
@@ -74,7 +74,6 @@ public class PlayerSpawner : NetworkBehaviour
         player.transform.position = _playerSpawnPoint[Random.Range(0, _playerSpawnPoint.Length)].position;
         player.SetActive(true);
         healthComponent.OnRespawn.Invoke();
-        player.GetComponent<RespawnButton>().DeathScreen.SetActive(false);
         
         /*if (_spawnWeapon)
         {
@@ -127,8 +126,8 @@ public class PlayerSpawner : NetworkBehaviour
         NewPlayer.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
         NewPlayer.GetComponent<HealthComponent>().OnDeath.AddListener((playerObjectId) =>
         {
-            OnDeathClientRpc(playerObjectId);
-            OnDeathServerRpc(playerObjectId);
+            //OnDeathClientRpc(playerObjectId);
+            //OnDeathServerRpc(playerObjectId);
 
         });
         
