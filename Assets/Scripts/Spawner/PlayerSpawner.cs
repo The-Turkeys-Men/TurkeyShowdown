@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Extensions;
 using Unity.Netcode;
 using Unity.Netcode.Components;
@@ -57,7 +58,32 @@ public class PlayerSpawner : NetworkBehaviour
     {
         var healthComponent = player.GetComponent<HealthComponent>();
         healthComponent.SetHealthServerRpc(healthComponent.BaseHealth);
-        player.transform.position = _playerSpawnPoint[Random.Range(0, _playerSpawnPoint.Length)].position;
+        
+        //Check Player Around Spawns
+        List<Transform> emptySpawns = new List<Transform>();
+        int minCount = int.MaxValue;
+        
+        foreach (var checkSpawn in _playerSpawnPoint)
+        {
+            var colliders = Physics2D.OverlapCircleAll(checkSpawn.position, 10f, 1 << LayerMask.NameToLayer("Player"));
+            int count = colliders.Length;
+            
+            //Clears the list if a spawner is no longer isolated
+            if (count < minCount)
+            {
+                minCount = count;
+                emptySpawns.Clear();
+                emptySpawns.Add(checkSpawn);
+            }
+            else if (count == minCount)
+            {
+                emptySpawns.Add(checkSpawn);
+            }
+        }
+        
+        var spawn = emptySpawns.PickRandom();
+        player.transform.position = spawn.position;
+        
         player.SetActive(true);
         healthComponent.OnRespawn.Invoke();
         
