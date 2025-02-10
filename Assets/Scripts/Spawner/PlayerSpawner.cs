@@ -3,14 +3,15 @@ using Extensions;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PlayerSpawner : NetworkBehaviour
 {
     [SerializeField] private GameObject _playerPrefab;
     [SerializeField] private int _respawnTime = 5;
     [SerializeField] private Transform[] _playerSpawnPoint;
-    
     private GameObject NewPlayer;
+    public static PlayerSpawner SpawnerInstance;
 
     [SerializeField] private BaseWeapon _spawnWeapon;
     
@@ -19,9 +20,22 @@ public class PlayerSpawner : NetworkBehaviour
         NetworkManager.Singleton.OnClientConnectedCallback += SpawnPlayer;
     }
 
+    private void Awake()
+    {
+        if (SpawnerInstance == null)
+        { 
+            SpawnerInstance = this; 
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     #region Respawn
 
-    [Rpc(SendTo.ClientsAndHost)]
+    /*[Rpc(SendTo.ClientsAndHost)]
     private void OnDeathClientRpc(ulong playerObjectId)
     {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject))
@@ -31,7 +45,7 @@ public class PlayerSpawner : NetworkBehaviour
         }
         
         //playerObject.gameObject.SetActive(false);
-        StartCoroutine(SpawnTimer(playerObject.gameObject));
+       // StartCoroutine(SpawnTimer(playerObject.gameObject));
     }
     
     [Rpc(SendTo.Server)]
@@ -44,16 +58,16 @@ public class PlayerSpawner : NetworkBehaviour
         }
         
         //playerObject.gameObject.SetActive(false);
-        StartCoroutine(SpawnTimer(playerObject.gameObject));
+        // StartCoroutine(SpawnTimer(playerObject.gameObject));
     }
     
-    IEnumerator SpawnTimer(GameObject player)
+   IEnumerator SpawnTimer(GameObject player)
     {
         yield return new WaitForSeconds(_respawnTime);
         RespawnPlayer(player);
-    }
+    }*/
 
-    private void RespawnPlayer(GameObject player)
+    public void RespawnPlayer(GameObject player)
     {
         var healthComponent = player.GetComponent<HealthComponent>();
         healthComponent.SetHealthServerRpc(healthComponent.BaseHealth);
@@ -112,9 +126,11 @@ public class PlayerSpawner : NetworkBehaviour
         NewPlayer.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
         NewPlayer.GetComponent<HealthComponent>().OnDeath.AddListener((playerObjectId) =>
         {
-            OnDeathClientRpc(playerObjectId);
-            OnDeathServerRpc(playerObjectId);
+            //OnDeathClientRpc(playerObjectId);
+            //OnDeathServerRpc(playerObjectId);
+
         });
+        
 
         if (_spawnWeapon)
         {
