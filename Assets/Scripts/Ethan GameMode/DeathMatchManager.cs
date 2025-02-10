@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -82,6 +83,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
                 PlayerScores.SetDirty(true);
             }
 
+            // Vérifier s'il n'y a plus de joueurs connectés
             if (NetworkManager.Singleton.ConnectedClients.Count == 0)
             {
                 ResetServer();
@@ -97,10 +99,18 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
     private void ResetServer()
     {
-        isGameActive = false;
-        TimeLeft.Value = MaxGameTime;
-        PlayerScores.Value.Clear();
-        PlayerScores.SetDirty(true);
+        if (NetworkManager.Singleton.ConnectedClients.Count == 0)
+        {
+            isGameActive = false;
+            TimeLeft.Value = MaxGameTime;
+            PlayerScores.Value.Clear();
+            PlayerScores.SetDirty(true);
+            Debug.Log("Server reset: No players connected.");
+        }
+        else
+        {
+            Debug.Log("Server not reset: Players are still connected.");
+        }
     }
 
     private void UpdateTimer()
@@ -175,8 +185,25 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
         {
             Debug.Log("EndGame called, showing score panel.");
             PlayerScore[] playerScoresArray = PlayerScores.Value.ToArray();
-            ScorePanelManager.Instance.ShowScorePanelClientRpc(winnerId, playerScoresArray);
+
+            if (ScorePanelManager.Instance != null)
+            {
+                ScorePanelManager.Instance.ShowScorePanelClientRpc(winnerId, playerScoresArray);
+            }
+            else
+            {
+                Debug.LogError("ScorePanelManager.Instance est NULL ! Assure-toi qu'il est bien instancié.");
+            }
+
+            // Réinitialiser la partie après un délai (exemple : 10 secondes)
+            StartCoroutine(ResetGameAfterDelay(10f));
         }
+    }
+
+    private IEnumerator ResetGameAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        ResetServer();
     }
 
     private void Update()

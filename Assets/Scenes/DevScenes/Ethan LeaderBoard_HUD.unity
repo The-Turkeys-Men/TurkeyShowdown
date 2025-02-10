@@ -339,15 +339,15 @@ RectTransform:
   m_GameObject: {fileID: 227381314}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1533706563}
-  m_Father: {fileID: 884346562}
+  m_Father: {fileID: 650662961}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -954}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 257, y: -831}
   m_SizeDelta: {x: 236.66003, y: 44.46}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &227381317
@@ -903,9 +903,10 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1713927319}
   - {fileID: 884346562}
+  - {fileID: 1713927319}
   - {fileID: 1154672360}
+  - {fileID: 227381316}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1032,8 +1033,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  FirstPlaceText: {fileID: 815205265}
-  CurrentPlaceText: {fileID: 252522981}
 --- !u!4 &775370871
 Transform:
   m_ObjectHideFlags: 0
@@ -1486,7 +1485,6 @@ RectTransform:
   m_Children:
   - {fileID: 407820087}
   - {fileID: 847319080}
-  - {fileID: 227381316}
   m_Father: {fileID: 650662961}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1772,10 +1770,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   maxGameTime: 20
   scoreToWin: 10
-  disconnectDelay: 30
-  scorePanel: {fileID: 884346561}
-  resultText: {fileID: 847319082}
-  disconnectButton: {fileID: 227381315}
 --- !u!114 &1040354535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1827,6 +1821,8 @@ GameObject:
   - component: {fileID: 1154672360}
   - component: {fileID: 1154672362}
   - component: {fileID: 1154672361}
+  - component: {fileID: 1154672363}
+  - component: {fileID: 1154672364}
   m_Layer: 5
   m_Name: Panel LeaderBoardHUD
   m_TagString: Untagged
@@ -1893,6 +1889,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1154672359}
   m_CullTransparentMesh: 1
+--- !u!114 &1154672363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1154672359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 2400739856
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &1154672364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1154672359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33409eabbb2d20643951f9c9ff18b19b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  FirstPlaceText: {fileID: 815205265}
+  CurrentPlaceText: {fileID: 252522981}
 --- !u!1 &1533706562
 GameObject:
   m_ObjectHideFlags: 0

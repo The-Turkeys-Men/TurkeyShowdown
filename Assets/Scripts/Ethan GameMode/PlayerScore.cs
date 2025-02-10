@@ -1,17 +1,26 @@
+using System;
 using Unity.Netcode;
 using Unity.Collections;
 
-[System.Serializable]
-public struct PlayerScore : INetworkSerializable
+public struct PlayerScore : INetworkSerializable, IEquatable<PlayerScore>
 {
     public ulong PlayerId;
     public FixedString64Bytes PlayerName;
     public int Score;
 
+    // Serialize the structure for network transmission
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         serializer.SerializeValue(ref PlayerId);
         serializer.SerializeValue(ref PlayerName);
         serializer.SerializeValue(ref Score);
     }
+
+    // Compare two PlayerScore instances based on PlayerId and Score
+    public bool Equals(PlayerScore other) => PlayerId == other.PlayerId && Score == other.Score;
+    
+    public override bool Equals(object obj) => obj is PlayerScore other && Equals(other);
+
+    // Generate a hash code based on PlayerId and Score
+    public override int GetHashCode() => HashCode.Combine(PlayerId, Score);
 }

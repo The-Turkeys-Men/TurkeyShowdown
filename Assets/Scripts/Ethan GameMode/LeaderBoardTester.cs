@@ -4,18 +4,18 @@ using Unity.Netcode;
 
 public class LeaderboardTester : MonoBehaviour
 {
-    [SerializeField] private DeathMatchManager deathMatchManager;
-    [SerializeField] private int numberOfPlayers = 5;
+    [SerializeField] private DeathMatchManager _deathMatchManager;
+    [SerializeField] private int _numberOfPlayers = 5;
 
     private void Start()
     {
-        if (deathMatchManager == null)
+        if (_deathMatchManager == null)
         {
-            Debug.LogError("DeathMatchManager is not assigned in the LeaderboardTester.");
+            Debug.LogError("DeathMatchManager is not assigned in LeaderboardTester.");
             return;
         }
 
-        // Écoute l'événement de démarrage du serveur
+        // Listen to the server start event
         NetworkManager.Singleton.OnServerStarted += OnServerStarted;
     }
 
@@ -23,41 +23,41 @@ public class LeaderboardTester : MonoBehaviour
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            Debug.Log("Serveur détecté, lancement du test du leaderboard.");
+            Debug.Log("Server detected, launching leaderboard test.");
             SimulatePlayersAndScores();
         }
         else
         {
-            Debug.LogError("LeaderboardTester doit être exécuté sur le serveur !");
+            Debug.LogError("LeaderboardTester must be run on the server!");
         }
     }
 
     private void SimulatePlayersAndScores()
     {
-        // Nettoie les scores existants
-        deathMatchManager.PlayerScores.Value.Clear();
+        // Clear existing scores
+        _deathMatchManager.PlayerScores.Value.Clear();
 
-        // Crée une liste temporaire de scores
+        // Create a temporary list of scores
         List<PlayerScore> simulatedScores = new();
 
-        for (ulong i = 0; i < (ulong)numberOfPlayers; i++)
+        for (ulong i = 0; i < (ulong)_numberOfPlayers; i++)
         {
             int randomScore = Random.Range(0, 20);
             simulatedScores.Add(new PlayerScore { PlayerId = i, Score = randomScore });
         }
 
-        // Applique les scores et force la mise à jour du NetworkVariable
-        deathMatchManager.PlayerScores.Value = simulatedScores;
-        deathMatchManager.PlayerScores.SetDirty(true);
+        // Apply scores and force NetworkVariable update
+        _deathMatchManager.PlayerScores.Value = simulatedScores;
+        _deathMatchManager.PlayerScores.SetDirty(true);
 
-        // Debug pour voir les scores attribués
-        foreach (var playerScore in deathMatchManager.PlayerScores.Value)
+        // Debug to see assigned scores
+        foreach (var playerScore in _deathMatchManager.PlayerScores.Value)
         {
-            Debug.Log($"Joueur {playerScore.PlayerId} : {playerScore.Score} points");
+            Debug.Log($"Player {playerScore.PlayerId}: {playerScore.Score} points");
         }
 
-        // Simule la fin de la partie en désignant un gagnant
-        deathMatchManager.EndGame(GetWinnerId());
+        // Simulate the end of the game by selecting a winner
+        _deathMatchManager.EndGame(GetWinnerId());
     }
 
     private ulong GetWinnerId()
@@ -65,7 +65,7 @@ public class LeaderboardTester : MonoBehaviour
         ulong winnerId = ulong.MaxValue;
         int highestScore = 0;
 
-        foreach (var playerScore in deathMatchManager.PlayerScores.Value)
+        foreach (var playerScore in _deathMatchManager.PlayerScores.Value)
         {
             if (playerScore.Score > highestScore)
             {
