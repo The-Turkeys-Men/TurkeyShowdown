@@ -34,6 +34,9 @@ public class ColorChanger : NetworkBehaviour
                 "green" => new Color32(46, 204, 64, 255 / 4),
                 "blue" => new Color32(0, 116, 217, 255 / 4),
                 "purple" => new Color32(177, 13, 201, 255 / 4),
+                "black" => new Color32(0, 0, 0, 255 / 4),
+                "white" => new Color32(255, 255, 255, 255 / 4),
+                "pink" => new Color32(255, 192, 203, 255 / 4),
                 _ => Color.clear
             };
         }

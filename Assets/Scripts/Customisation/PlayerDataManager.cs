@@ -22,7 +22,7 @@ public class PlayerDataManager : NetworkBehaviour
         {
             Datainstance = this;
             DontDestroyOnLoad(this);
-            NetworkManager.Singleton.OnClientConnectedCallback += RefreshAllPlayers;
+            //NetworkManager.Singleton.OnClientConnectedCallback += RefreshAllPlayers;
         }
         else
         {
@@ -30,7 +30,7 @@ public class PlayerDataManager : NetworkBehaviour
         }
     }
 
-    public void RefreshAllPlayers(ulong _clientID)
+    public void RefreshAllPlayers()
     {
         var Players = NetworkManager.Singleton.ConnectedClients.Keys;
         foreach (var Player in Players)
@@ -49,8 +49,21 @@ public class PlayerDataManager : NetworkBehaviour
         Task<PlayerJSON> playerJson = _receivingJSON.FetchJSONValue();
         await playerJson;
         playerData.Add(clientID, playerJson.Result);
+        RefreshAllPlayersServerRpc();
     }
 
+    [Rpc(SendTo.Server)]
+    private void RefreshAllPlayersServerRpc()
+    {
+        RefreshAllPlayersClientRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void RefreshAllPlayersClientRpc()
+    {
+        RefreshAllPlayers();
+    }
+    
     public void sendJSON()
     {
         StartCoroutine(_jsonSender.SendJsonToServer(JsonUtility.ToJson(playerData)));
