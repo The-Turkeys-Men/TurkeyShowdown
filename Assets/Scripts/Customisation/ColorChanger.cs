@@ -19,7 +19,6 @@ public class ColorChanger : NetworkBehaviour
     private async Task Initialize()
     {
         await PlayerDataManager.Datainstance.ReceivingJSON(OwnerClientId);
-        PlayerDataManager.Datainstance.AddColorData(OwnerClientId,PlayerDataManager.Datainstance.playerData[OwnerClientId].color);
     }
 
     public void ChangeColor(string color)
