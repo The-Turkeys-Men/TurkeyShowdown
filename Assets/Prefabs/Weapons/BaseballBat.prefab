@@ -140,12 +140,16 @@ MonoBehaviour:
   <ExplosionKnockback>k__BackingField: 0
   <MaxDistance>k__BackingField: 2
   <MeleeRange>k__BackingField: {x: 1, y: 1}
-  <WallHitBoost>k__BackingField: 0
+  <WallHitBoost>k__BackingField: 6
   TrailMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   Rb: {fileID: 4640402740232878089}
   Visuals: {fileID: 7812902076482580572}
   IsThrowed:
     m_InternalValue: 0
+  ShouldHide:
+    m_InternalValue: 0
+  _nomTir: coupBatte
+  _nomLancer: lancer
 --- !u!50 &4640402740232878089
 Rigidbody2D:
   serializedVersion: 5

@@ -17,6 +17,7 @@ public class ArmorPack : NetworkBehaviour, IGrabbable
         DebuggerConsole.Instance.LogClientRpc("ArmorPack grab on server");
         OnGrab.Invoke();
         GetComponent<NetworkObject>().Despawn(true);
+        AudioManager.Instance.PlaySFX("Shild",transform.position);
     }
 
     public UnityEvent OnGrab { get; set; } = new();
