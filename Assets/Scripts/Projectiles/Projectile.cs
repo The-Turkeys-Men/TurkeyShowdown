@@ -116,10 +116,15 @@ public class Projectile : NetworkBehaviour
                 var objectId = collider.gameObject.GetNetworkObjectId();
                 if (collider.TryGetComponent(out KnockbackHandler knockbackHandler))
                 {
-                    if (objectId != ulong.MaxValue)
+                    if (senderTeamComponent.TeamID == otherTeamComponent.TeamID)
+                    {
+                        knockbackHandler.ApplyKnockbackClientRpc(direction, ExplosionSelfKnockback);
+                    }
+                    else
                     {
                         knockbackHandler.ApplyKnockbackClientRpc(direction, ExplosionKnockback);
                     }
+                        
                 }
 
                 if (collider.attachedRigidbody)

@@ -179,6 +179,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     
     public virtual void Shoot()
     {
+        Rigidbody2D playerRigidbody = transform.parent.GetComponentInParent<Rigidbody2D>();
         Vector2 direction = transform.right;
         var teamComponent = LastOwner.GetComponent<TeamComponent>();
         int teamIDValue = (teamComponent)? teamComponent.TeamID.Value : -1;
@@ -221,8 +222,16 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 var overlapResult = Physics2D.OverlapBoxAll(ShootPoint.position, MeleeRange, ShootPoint.eulerAngles.z, 
                     (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("World")));
 
+                bool appliedWallboost = false;
                 foreach (Collider2D collider in overlapResult)
                 {
+                    if (collider.gameObject.layer == LayerMask.NameToLayer("World") && !appliedWallboost)
+                    {
+                        playerRigidbody.AddForce(-direction * WallHitBoost, ForceMode2D.Impulse);
+                        appliedWallboost = true;
+                        continue;
+                    }
+                    
                     if (collider.TryGetComponent(out TeamComponent otherTeamComponent) && teamIDValue == otherTeamComponent.TeamID.Value)
                     {
                         continue;
@@ -249,24 +258,9 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         AudioManager.Instance.PlaySFX(_nomTir,transform.position);
         FireRateTimer = FireRate;
         OnShootServerRpc();
-        Rigidbody2D playerRigidbody = transform.parent.GetComponentInParent<Rigidbody2D>();
         playerRigidbody.AddForce(-direction * RecoilForce, ForceMode2D.Impulse);
         
         LastOwner.GetComponent<AnimScript>().StartAnim();
-    }
-    
-    [Rpc(SendTo.Server)]
-    private void ApplyKnockbackServerRpc(ulong playerObjectId, Vector2 direction, RpcParams rpcParams = default)
-    {
-        ApplyKnockbackClientRpc(playerObjectId, direction, rpcParams);
-    }
-
-    [Rpc(SendTo.SpecifiedInParams, AllowTargetOverride = true)]
-    private void ApplyKnockbackClientRpc(ulong playerObjectId, Vector2 direction, RpcParams rpcParams = default)
-    {
-        DebuggerConsole.Instance.Log("Knockback");
-        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject);
-        playerObject.GetComponent<Rigidbody2D>()?.AddForce(direction * KnockbackForce, ForceMode2D.Impulse);
     }
 
     [Rpc(SendTo.Server)]
