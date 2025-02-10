@@ -18,6 +18,8 @@ public class HealthComponent : NetworkBehaviour
     [HideInInspector] public UnityEvent<ulong> OnDeath = new();
     [HideInInspector] public UnityEvent OnRespawn = new();
     [HideInInspector] public UnityEvent OnDamaged = new();
+    public ParticleSystem particleSystemDamage;
+    
     
     [SerializeField] private bool _isPlayer = false;
      
@@ -68,7 +70,10 @@ public class HealthComponent : NetworkBehaviour
         
         if (Armor.Value > 0)
         {
+            particleSystemDamage.maxParticles=10;
+            particleSystemDamage.Play();
             Armor.Value -= damage;
+            AudioManager.Instance.PlaySFX("crisDinde",transform.position);
             if (Armor.Value <= 0)
             {
                 Health.Value += Armor.Value;
@@ -78,14 +83,17 @@ public class HealthComponent : NetworkBehaviour
         else
         {
             Health.Value -= damage;
+            PlayDamageParticleClientRpc(10);
+            AudioManager.Instance.PlaySFX("crisDinde",transform.position);
         }
-        if (Health. Value <= 0)
+        if (Health.Value <= 0)
         {
+            PlayDamageParticleClientRpc(30);
+            AudioManager.Instance.PlaySFX("mort",transform.position);
             OnDeath.Invoke(NetworkObjectId);
             OnDeathClientRpc();
             if (_isPlayer)
             {
-                //todo: optimize this
                 var killerId = senderObject.GetComponent<NetworkObject>().OwnerClientId;
                 ((DeathMatchManager)DeathMatchManager.GetInstance()).OnPlayerKill(killerId);
                 DebuggerConsole.Instance.LogClientRpc("Player killed by: " + senderObject.name);
@@ -93,6 +101,13 @@ public class HealthComponent : NetworkBehaviour
         }
         OnDamaged.Invoke();
         OnDamagedClientRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    public void PlayDamageParticleClientRpc(int amount)
+    {
+        particleSystemDamage.maxParticles=30;
+        particleSystemDamage.Play();
     }
     
     [Rpc(SendTo.ClientsAndHost)]

@@ -17,6 +17,7 @@ public class HealthPack : NetworkBehaviour, IGrabbable
         DebuggerConsole.Instance.LogClientRpc("HealthPack grab on server");
         OnGrab.Invoke();
         GetComponent<NetworkObject>().Despawn(true);
+        AudioManager.Instance.PlaySFX("soin",transform.position);
     }
 
     public UnityEvent OnGrab { get; set; } = new();
