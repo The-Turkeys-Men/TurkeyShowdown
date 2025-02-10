@@ -95,6 +95,11 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
             return;
         }
 
+        if (other.isTrigger)
+        {
+            return;
+        }
+
         if (!IsThrowed.Value)
         {
             return;
@@ -225,6 +230,11 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 bool appliedWallboost = false;
                 foreach (Collider2D collider in overlapResult)
                 {
+                    if (collider.isTrigger)
+                    {
+                        continue;
+                    }
+                    
                     if (collider.gameObject.layer == LayerMask.NameToLayer("World") && !appliedWallboost)
                     {
                         playerRigidbody.AddForce(-direction * WallHitBoost, ForceMode2D.Impulse);

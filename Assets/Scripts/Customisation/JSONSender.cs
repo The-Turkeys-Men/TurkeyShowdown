@@ -15,23 +15,23 @@ public class JSONSender : MonoBehaviour
     public void SendPlayerData()
     {
         // Create PlayerJSON object dynamically based on actual player's data
-        PlayerJSON player = new PlayerJSON()
-        {
-            Id = 4,
-            Pseudo = "MonPseudo",   // Replace with dynamical data
-            HighScore = 100,        // Replace with dynamical data
-            ScoreTable = new int[] { 10, 20, 30 }, // Replace with dynamical data
-            NbrVictory = 5,    // Replace with dynamical data
-            NbrDefeat = 2,     // Replace with dynamical data
-            Skins = new Skin[] // Replace with dynamical data
-            {
-                new Skin { Id = "skin1", Enabled = true },
-                new Skin { Id = "skin2", Enabled = true },
-                new Skin { Id = "skibidi", Enabled = true }
-            }
-        };
+        // PlayerJSON player = new PlayerJSON()
+        // {
+        //     id = 4,
+        //     pseudo = "MonPseudo",   // Replace with dynamical data
+        //     highScore = 100,        // Replace with dynamical data
+        //     ScoreTable = new int[] { 10, 20, 30 }, // Replace with dynamical data
+        //     NbrVictory = 5,    // Replace with dynamical data
+        //     NbrDefeat = 2,     // Replace with dynamical data
+        //     Skins = new Skin[] // Replace with dynamical data
+        //     {
+        //         new Skin { Id = "skin1", Enabled = true },
+        //         new Skin { Id = "skin2", Enabled = true },
+        //         new Skin { Id = "skibidi", Enabled = true }
+        //     }
+        // };
         // Convert the object to JSON and Send JSON to the server
-        StartCoroutine(SendJsonToServer(JsonUtility.ToJson(player)));
+        //StartCoroutine(SendJsonToServer(JsonUtility.ToJson(player)));
     }
 
     public IEnumerator SendJsonToServer(string jsonData)

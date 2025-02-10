@@ -1,12 +1,14 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Debugger;
 using Unity.Netcode;
 using UnityEditor;
 using UnityEngine;
 
 public class PlayerDataManager : NetworkBehaviour
 {
-    public PlayerJSON playerData;
+    public Dictionary<ulong, PlayerJSON> playerData;
     public NetworkVariable<Dictionary<ulong, string>> ColorData = new();
     
     public static PlayerDataManager Datainstance;
@@ -20,15 +22,15 @@ public class PlayerDataManager : NetworkBehaviour
         {
             Datainstance = this;
             DontDestroyOnLoad(this);
-            NetworkManager.Singleton.OnClientConnectedCallback += RefreshAllPlayers;
+            //NetworkManager.Singleton.OnClientConnectedCallback += RefreshAllPlayers;
         }
         else
         {
             Destroy(gameObject);
         }
     }
-    
-    public void RefreshAllPlayers(ulong _clientID)
+
+    public void RefreshAllPlayers()
     {
         var Players = NetworkManager.Singleton.ConnectedClients.Keys;
         foreach (var Player in Players)
@@ -42,13 +44,26 @@ public class PlayerDataManager : NetworkBehaviour
         ColorData.Value.Add(playerID, color);
     }
     
-    public async void receivingJSON()
+    public async Task ReceivingJSON(ulong clientID)
     {
         Task<PlayerJSON> playerJson = _receivingJSON.FetchJSONValue();
         await playerJson;
-        playerData = playerJson.Result;
+        playerData.Add(clientID, playerJson.Result);
+        RefreshAllPlayersServerRpc();
     }
 
+    [Rpc(SendTo.Server)]
+    private void RefreshAllPlayersServerRpc()
+    {
+        RefreshAllPlayersClientRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void RefreshAllPlayersClientRpc()
+    {
+        RefreshAllPlayers();
+    }
+    
     public void sendJSON()
     {
         StartCoroutine(_jsonSender.SendJsonToServer(JsonUtility.ToJson(playerData)));

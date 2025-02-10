@@ -78,7 +78,7 @@ public class AudioManager : NetworkBehaviour
 
     public void PlayMusic(Vector3 pos)
     {
-        if (IsServer)
+        if (IsServer && !IsHost)
         {
             PlayMusicClientRpc(pos);
         }
@@ -98,7 +98,7 @@ public class AudioManager : NetworkBehaviour
     
     public void PlaySFX(string name,Vector3 pos)
     {
-        if (IsServer)
+        if (IsServer && !IsHost)
         {
             PlaySFXClientRpc(name, pos);
         }

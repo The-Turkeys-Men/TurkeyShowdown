@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1479781966587454919}
   - component: {fileID: 8812592789628320801}
   - component: {fileID: 4734965248235509782}
+  - component: {fileID: 6512962153999253998}
   m_Layer: 0
   m_Name: Bush
   m_TagString: Untagged
@@ -149,3 +150,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sR: {fileID: 1479781966587454919}
   _timeFading: 0.5
+--- !u!114 &6512962153999253998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8836620967931506972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79743575a0250fa41a092b4640b723a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnterParticlePrefab: {fileID: 158997809574118583, guid: 986dc1816ae22bf43b86de25b9108a99, type: 3}
+  ExitParticlePrefab: {fileID: 158997809574118583, guid: 986dc1816ae22bf43b86de25b9108a99, type: 3}
