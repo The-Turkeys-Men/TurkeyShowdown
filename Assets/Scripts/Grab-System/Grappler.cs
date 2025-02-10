@@ -192,7 +192,7 @@ public class Grappler : NetworkBehaviour
             _grappleVisual.SetPosition(2, _curentGrabHead.NeckTransform.position);
         }
         _tete.SetActive(true);
-        
+        AudioManager.Instance.PlaySFX("retirGrapain",transform.position);
     }
     
     [Rpc(SendTo.Server)]
