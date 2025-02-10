@@ -10,7 +10,7 @@ public class RespawnButton : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _RespawnButtonText;
     [SerializeField] private Button _RespawnButton;
     [SerializeField]private float timer;
-    [SerializeField]private GameObject DeathScreen;
+   public GameObject DeathScreen;
     
     private float time;
 
@@ -35,6 +35,5 @@ public class RespawnButton : MonoBehaviour
     { 
         PlayerSpawner.SpawnerInstance.RespawnPlayer(gameObject);
        _RespawnButton.interactable = false;
-       DeathScreen.SetActive(false);
     }
 }

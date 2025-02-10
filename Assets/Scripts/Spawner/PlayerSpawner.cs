@@ -74,6 +74,7 @@ public class PlayerSpawner : NetworkBehaviour
         player.transform.position = _playerSpawnPoint[Random.Range(0, _playerSpawnPoint.Length)].position;
         player.SetActive(true);
         healthComponent.OnRespawn.Invoke();
+        player.GetComponent<RespawnButton>().DeathScreen.SetActive(false);
         
         /*if (_spawnWeapon)
         {
