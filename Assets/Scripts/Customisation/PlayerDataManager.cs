@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Debugger;
 using Unity.Netcode;
 using UnityEditor;
 using UnityEngine;
@@ -27,7 +29,12 @@ public class PlayerDataManager : NetworkBehaviour
             Destroy(gameObject);
         }
     }
-    
+
+    private void Start()
+    {
+        receivingJSON();
+    }
+
     public void RefreshAllPlayers(ulong _clientID)
     {
         var Players = NetworkManager.Singleton.ConnectedClients.Keys;
@@ -47,6 +54,7 @@ public class PlayerDataManager : NetworkBehaviour
         Task<PlayerJSON> playerJson = _receivingJSON.FetchJSONValue();
         await playerJson;
         playerData = playerJson.Result;
+        DebuggerConsole.Instance.Log("color : " + playerData.color);
     }
 
     public void sendJSON()
