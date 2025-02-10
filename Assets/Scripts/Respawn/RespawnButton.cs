@@ -30,7 +30,7 @@ public class RespawnButton : MonoBehaviour
     
     public void Respawn()
     { 
-        PlayerSpawner.SpawnerInstance.RespawnPlayer(gameObject);
+        PlayerSpawner.SpawnerInstance.RespawnPlayerServerRpc();
        _RespawnButton.interactable = false;
        DeathScreen.SetActive(false);
     }

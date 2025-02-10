@@ -1,10 +1,8 @@
-using System;
 using Debugger;
 using Extensions;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
-using WeaponSystem;
 
 public class HealthComponent : NetworkBehaviour
 {
