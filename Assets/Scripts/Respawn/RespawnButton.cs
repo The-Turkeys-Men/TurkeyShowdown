@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,7 +31,7 @@ public class RespawnButton : MonoBehaviour
     
     public void Respawn()
     { 
-        PlayerSpawner.SpawnerInstance.RespawnPlayerServerRpc();
+        PlayerSpawner.SpawnerInstance.RespawnPlayerServerRpc(NetworkManager.Singleton.LocalClientId);
        _RespawnButton.interactable = false;
        DeathScreen.SetActive(false);
     }

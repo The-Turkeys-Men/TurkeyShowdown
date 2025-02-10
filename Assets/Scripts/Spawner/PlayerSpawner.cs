@@ -66,15 +66,9 @@ public class PlayerSpawner : NetworkBehaviour
     }*/
 
     [Rpc(SendTo.Server)]
-    public void RespawnPlayerServerRpc()
+    public void RespawnPlayerServerRpc(ulong playerId)
     {
-        ulong id = NetworkManager.Singleton.LocalClientId;
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(id, out var playerObject))
-        {
-            Debug.LogError("Failed to get player object");
-            return;
-        }
-        RespawnPlayer(playerObject.gameObject);
+        RespawnPlayer(NetworkManager.Singleton.ConnectedClients[playerId].PlayerObject.gameObject);
     }
 
     private void RespawnPlayer(GameObject player)
@@ -168,7 +162,7 @@ public class PlayerSpawner : NetworkBehaviour
         }
         Camera.main.GetComponent<AudioListener>().enabled = false;
         NewPlayer = Instantiate(_playerPrefab, _playerSpawnPoint[Random.Range(0,_playerSpawnPoint.Length)].transform);
-        NewPlayer.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+        NewPlayer.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
         NewPlayer.GetComponent<HealthComponent>().OnDeath.AddListener((playerObjectId) =>
         {
             //OnDeathClientRpc(playerObjectId);
