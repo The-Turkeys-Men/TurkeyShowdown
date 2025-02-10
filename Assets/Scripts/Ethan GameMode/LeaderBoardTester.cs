@@ -38,12 +38,12 @@ public class LeaderboardTester : MonoBehaviour
         deathMatchManager.PlayerScores.Value.Clear();
 
         // Crée une liste temporaire de scores
-        Dictionary<ulong, int> simulatedScores = new();
+        List<PlayerScore> simulatedScores = new();
 
         for (ulong i = 0; i < (ulong)numberOfPlayers; i++)
         {
             int randomScore = Random.Range(0, 20);
-            simulatedScores[i] = randomScore;
+            simulatedScores.Add(new PlayerScore { PlayerId = i, Score = randomScore });
         }
 
         // Applique les scores et force la mise à jour du NetworkVariable
@@ -51,9 +51,9 @@ public class LeaderboardTester : MonoBehaviour
         deathMatchManager.PlayerScores.SetDirty(true);
 
         // Debug pour voir les scores attribués
-        foreach (var player in deathMatchManager.PlayerScores.Value)
+        foreach (var playerScore in deathMatchManager.PlayerScores.Value)
         {
-            Debug.Log($"Joueur {player.Key} : {player.Value} points");
+            Debug.Log($"Joueur {playerScore.PlayerId} : {playerScore.Score} points");
         }
 
         // Simule la fin de la partie en désignant un gagnant
@@ -65,12 +65,12 @@ public class LeaderboardTester : MonoBehaviour
         ulong winnerId = ulong.MaxValue;
         int highestScore = 0;
 
-        foreach (var player in deathMatchManager.PlayerScores.Value)
+        foreach (var playerScore in deathMatchManager.PlayerScores.Value)
         {
-            if (player.Value > highestScore)
+            if (playerScore.Score > highestScore)
             {
-                highestScore = player.Value;
-                winnerId = player.Key;
+                highestScore = playerScore.Score;
+                winnerId = playerScore.PlayerId;
             }
         }
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using TMPro;
@@ -23,7 +24,13 @@ public class ScorePanelManager : NetworkBehaviour
         }
     }
 
-    public void ShowScorePanel(ulong winnerId, Dictionary<ulong, int> playerScores)
+    [Rpc(SendTo.ClientsAndHost)]
+    public void ShowScorePanelClientRpc(ulong winnerId, PlayerScore[] playerScores)
+    {
+        ShowScorePanel(winnerId, playerScores);
+    }
+
+    public void ShowScorePanel(ulong winnerId, PlayerScore[] playerScores)
     {
         if (scorePanel == null)
         {
@@ -36,11 +43,10 @@ public class ScorePanelManager : NetworkBehaviour
         UpdateScoreDisplay(winnerId, playerScores);
     }
 
-    private void UpdateScoreDisplay(ulong winnerId, Dictionary<ulong, int> playerScores)
+    private void UpdateScoreDisplay(ulong winnerId, PlayerScore[] playerScores)
     {
         Debug.Log("Updating score display with player scores.");
-        List<KeyValuePair<ulong, int>> sortedPlayers = new(playerScores);
-        sortedPlayers.Sort((a, b) => b.Value.CompareTo(a.Value));
+        PlayerScore[] sortedPlayers = playerScores.OrderByDescending(ps => ps.Score).ToArray();
 
         if (firstPlayer == null)
         {
@@ -48,11 +54,11 @@ public class ScorePanelManager : NetworkBehaviour
             return;
         }
 
-        if (sortedPlayers.Count > 0)
+        if (sortedPlayers.Length > 0)
         {
             var firstPlayerData = sortedPlayers[0];
-            Debug.Log($"First player: ID {firstPlayerData.Key}, Score {firstPlayerData.Value}");
-            UpdateFirstPlayerDisplay(firstPlayer, firstPlayerData.Key, firstPlayerData.Value, 1);
+            Debug.Log($"First player: ID {firstPlayerData.PlayerId}, Score {firstPlayerData.Score}");
+            UpdateFirstPlayerDisplay(firstPlayer, firstPlayerData.PlayerId, firstPlayerData.Score, 1);
         }
 
         if (scoreBoard == null)
@@ -62,19 +68,29 @@ public class ScorePanelManager : NetworkBehaviour
         }
 
         // Mettre à jour directement les 7 entrées existantes
-        for (int i = 1; i < sortedPlayers.Count && i <= 7; i++)
+        for (int i = 1; i < sortedPlayers.Length && i <= 7; i++)
         {
             var playerData = sortedPlayers[i];
 
             if (i - 1 < scoreBoard.childCount)  // Vérifie si l'élément existe déjà
             {
                 Transform playerScore = scoreBoard.GetChild(i - 1);
-                Debug.Log($"Player {i}: ID {playerData.Key}, Score {playerData.Value}");
-                UpdatePlayerDisplay(playerScore, playerData.Key, playerData.Value, i + 1);
+                Debug.Log($"Player {i}: ID {playerData.PlayerId}, Score {playerData.Score}");
+                UpdatePlayerDisplay(playerScore, playerData.PlayerId, playerData.Score, i + 1);
             }
             else
             {
                 Debug.LogWarning($"ScoreBoard does not have enough children. Expected at least {i}, but found {scoreBoard.childCount}.");
+            }
+        }
+
+        // Désactiver les entrées inutilisées
+        for (int i = sortedPlayers.Length; i < 8; i++)  // 8 entrées au total (indices 0 à 7)
+        {
+            if (i - 1 < scoreBoard.childCount)
+            {
+                Transform playerScore = scoreBoard.GetChild(i - 1);
+                playerScore.gameObject.SetActive(false);  // Désactiver l'entrée
             }
         }
     }
@@ -87,6 +103,7 @@ public class ScorePanelManager : NetworkBehaviour
             return;
         }
 
+        playerScore.gameObject.SetActive(true);
         SetText(playerScore, "PosImage/PosText", rank.ToString());
         SetText(playerScore, "PlayerImage/PlayerNameText", $"Player {playerId}");
         SetText(playerScore, "ScoreImage/ScoreText", score.ToString());
@@ -100,6 +117,7 @@ public class ScorePanelManager : NetworkBehaviour
             return;
         }
 
+        playerDisplay.gameObject.SetActive(true);
         SetText(playerDisplay, "PlayerPosImage/PosText", rank.ToString());
         SetText(playerDisplay, "PlayerNameImage/NameText", $"Player {playerId}");
         SetText(playerDisplay, "PlayerScoreImage/ScoreText", score.ToString());

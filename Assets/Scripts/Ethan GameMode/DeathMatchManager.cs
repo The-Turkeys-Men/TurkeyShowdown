@@ -12,7 +12,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     public int MaxGameTime { get; set; }
     public int ScoreToWin { get; set; }
 
-    public NetworkVariable<Dictionary<ulong, int>> PlayerScores { get; set; } = new(new Dictionary<ulong, int>());
+    public NetworkVariable<List<PlayerScore>> PlayerScores { get; set; } = new(new List<PlayerScore>());
 
     private bool isGameActive = false;
     private const ulong NoWinner = ulong.MaxValue;
@@ -50,7 +50,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
             Initialize();
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
-            PlayerScores.Value = new Dictionary<ulong, int>();
+            PlayerScores.Value = new List<PlayerScore>();
         }
     }
 
@@ -58,9 +58,9 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     {
         if (IsServer)
         {
-            if (!PlayerScores.Value.ContainsKey(clientId))
+            if (!PlayerScores.Value.Exists(ps => ps.PlayerId == clientId))
             {
-                PlayerScores.Value[clientId] = 0;
+                PlayerScores.Value.Add(new PlayerScore { PlayerId = clientId, Score = 0 });
                 PlayerScores.SetDirty(true);
             }
 
@@ -75,9 +75,10 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     {
         if (IsServer)
         {
-            if (PlayerScores.Value.ContainsKey(clientId))
+            var playerScore = PlayerScores.Value.Find(ps => ps.PlayerId == clientId);
+            if (playerScore.PlayerId == clientId)
             {
-                PlayerScores.Value.Remove(clientId);
+                PlayerScores.Value.Remove(playerScore);
                 PlayerScores.SetDirty(true);
             }
 
@@ -125,12 +126,13 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     {
         if (!isGameActive) return;
 
-        if (PlayerScores.Value.ContainsKey(killerId))
+        var playerScore = PlayerScores.Value.Find(ps => ps.PlayerId == killerId);
+        if (playerScore.PlayerId == killerId)
         {
-            PlayerScores.Value[killerId]++;
+            playerScore.Score++;
             PlayerScores.SetDirty(true);
 
-            if (PlayerScores.Value[killerId] >= ScoreToWin)
+            if (playerScore.Score >= ScoreToWin)
             {
                 OnWin(killerId);
             }
@@ -147,12 +149,12 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
         ulong bestPlayerId = NoWinner;
         int bestScore = 0;
 
-        foreach (var player in PlayerScores.Value)
+        foreach (var playerScore in PlayerScores.Value)
         {
-            if (player.Value > bestScore)
+            if (playerScore.Score > bestScore)
             {
-                bestScore = player.Value;
-                bestPlayerId = player.Key;
+                bestScore = playerScore.Score;
+                bestPlayerId = playerScore.PlayerId;
             }
         }
 
@@ -172,7 +174,8 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
         if (IsServer)
         {
             Debug.Log("EndGame called, showing score panel.");
-            ScorePanelManager.Instance.ShowScorePanel(winnerId, PlayerScores.Value);
+            PlayerScore[] playerScoresArray = PlayerScores.Value.ToArray();
+            ScorePanelManager.Instance.ShowScorePanelClientRpc(winnerId, playerScoresArray);
         }
     }
 
