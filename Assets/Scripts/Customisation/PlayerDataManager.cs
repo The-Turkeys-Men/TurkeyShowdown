@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class PlayerDataManager : NetworkBehaviour
 {
-    public PlayerJSON playerData;
+    public Dictionary<ulong, PlayerJSON> playerData;
     public NetworkVariable<Dictionary<ulong, string>> ColorData = new();
     
     public static PlayerDataManager Datainstance;
@@ -30,11 +30,6 @@ public class PlayerDataManager : NetworkBehaviour
         }
     }
 
-    private void Start()
-    {
-        receivingJSON();
-    }
-
     public void RefreshAllPlayers(ulong _clientID)
     {
         var Players = NetworkManager.Singleton.ConnectedClients.Keys;
@@ -49,12 +44,11 @@ public class PlayerDataManager : NetworkBehaviour
         ColorData.Value.Add(playerID, color);
     }
     
-    public async void receivingJSON()
+    public async Task ReceivingJSON(ulong clientID)
     {
         Task<PlayerJSON> playerJson = _receivingJSON.FetchJSONValue();
         await playerJson;
-        playerData = playerJson.Result;
-        DebuggerConsole.Instance.Log("color : " + playerData.color);
+        playerData.Add(clientID, playerJson.Result);
     }
 
     public void sendJSON()

@@ -61,7 +61,7 @@ public class CharacterCustomization : MonoBehaviour
             { },
             color = "default",
         };*/
-        PlayerDataManager.Datainstance.receivingJSON();
+        PlayerDataManager.Datainstance.ReceivingJSON();
         PlayerDataManager.Datainstance.playerData.color =NewColor;
        PlayerDataManager.Datainstance.sendJSON();
     }
