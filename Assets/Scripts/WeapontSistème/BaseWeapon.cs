@@ -197,8 +197,16 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                     healthComponent.DamageServerRpc(Damage, LastOwner.GetNetworkObjectId());
                 }
                 
+                if (raycastResult && raycastResult.collider.attachedRigidbody)
+                {
+                    if (raycastResult.collider.attachedRigidbody.TryGetComponent(out KnockbackHandler knockbackHandler))
+                    {
+                        knockbackHandler.ApplyKnockbackServerRpc(direction, KnockbackForce);
+                    }
+                }
+                
                 Vector2 endPoint;
-                if(raycastResult==true)
+                if(raycastResult)
                 {
                     endPoint = raycastResult.point;
                 }
@@ -229,10 +237,10 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                         
                     if (collider.attachedRigidbody)
                     {
-                        var colliderNetworkObject = collider.attachedRigidbody.GetComponent<NetworkObject>();
-                        var ownerClientId = colliderNetworkObject.OwnerClientId;
-
-                        ApplyKnockbackClientRpc(colliderNetworkObject.NetworkObjectId, direction, RpcTarget.Single(ownerClientId, RpcTargetUse.Temp));
+                        if (collider.attachedRigidbody.TryGetComponent(out KnockbackHandler knockbackHandler))
+                        {
+                            knockbackHandler.ApplyKnockbackServerRpc(direction, KnockbackForce);
+                        }
                     }
                 }
                 
@@ -246,10 +254,17 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         
         LastOwner.GetComponent<AnimScript>().StartAnim();
     }
+    
+    [Rpc(SendTo.Server)]
+    private void ApplyKnockbackServerRpc(ulong playerObjectId, Vector2 direction, RpcParams rpcParams = default)
+    {
+        ApplyKnockbackClientRpc(playerObjectId, direction, rpcParams);
+    }
 
     [Rpc(SendTo.SpecifiedInParams, AllowTargetOverride = true)]
     private void ApplyKnockbackClientRpc(ulong playerObjectId, Vector2 direction, RpcParams rpcParams = default)
     {
+        DebuggerConsole.Instance.Log("Knockback");
         NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject);
         playerObject.GetComponent<Rigidbody2D>()?.AddForce(direction * KnockbackForce, ForceMode2D.Impulse);
     }
