@@ -54,7 +54,7 @@ public class PlayerDataManager : NetworkBehaviour
             var playerObject = NetworkManager.ConnectedClients[player].PlayerObject;
             if (playerObject)
             {
-                playerObject.GetComponent<ColorChanger>().ChangeColor(GetPlayerData(player).color.ToString());
+                playerObject.GetComponent<ColorChanger>().ChangeSprite(GetPlayerData(player).color.ToString());
                 Debug.Log("Refreshing player with clientId: " + player);
             }
         }
