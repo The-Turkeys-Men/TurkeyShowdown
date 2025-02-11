@@ -34,13 +34,18 @@ public class LeaderboardTester : MonoBehaviour
 
     private void SimulatePlayersAndScores()
     {
-        // Crée une liste temporaire de scores
+        // Crée une liste temporaire de scores avec des pseudos factices
         List<PlayerScore> simulatedScores = new();
 
         for (ulong i = 0; i < (ulong)numberOfPlayers; i++)
         {
             int randomScore = Random.Range(0, 20);
-            simulatedScores.Add(new PlayerScore { PlayerId = i, Score = randomScore });
+            simulatedScores.Add(new PlayerScore 
+            { 
+                PlayerId = i, 
+                PlayerName = $"Player {i + 1}", // Pseudo factice
+                Score = randomScore 
+            });
         }
 
         // Applique les scores via une méthode RPC
@@ -49,7 +54,7 @@ public class LeaderboardTester : MonoBehaviour
         // Debug pour voir les scores attribués
         foreach (var playerScore in simulatedScores)
         {
-            Debug.Log($"Joueur {playerScore.PlayerId} : {playerScore.Score} points");
+            Debug.Log($"Joueur {playerScore.PlayerName} (ID: {playerScore.PlayerId}) : {playerScore.Score} points");
         }
 
         // Simule la fin de la partie en désignant un gagnant
