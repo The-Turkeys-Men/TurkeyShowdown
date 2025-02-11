@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5166343653454719149}
   - component: {fileID: 1746249802743953986}
   - component: {fileID: 7497873692780958450}
+  - component: {fileID: 4178913839084460893}
   - component: {fileID: 1268388670247112755}
   m_Layer: 0
   m_Name: Vine
@@ -150,6 +151,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sR: {fileID: 5166343653454719149}
   _timeFading: 0.5
+--- !u!114 &4178913839084460893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 42510275544856402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79743575a0250fa41a092b4640b723a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnterParticlePrefab: {fileID: 158997809574118583, guid: 986dc1816ae22bf43b86de25b9108a99, type: 3}
+  ExitParticlePrefab: {fileID: 158997809574118583, guid: 986dc1816ae22bf43b86de25b9108a99, type: 3}
+  _nomSFX: 
+  baseVolume: 1
 --- !u!70 &1268388670247112755
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

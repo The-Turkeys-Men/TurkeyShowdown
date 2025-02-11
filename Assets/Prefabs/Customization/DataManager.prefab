@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7281363569617570304}
-  - component: {fileID: 7993764657181757833}
   - component: {fileID: 6387778943714370692}
+  - component: {fileID: 7993764657181757833}
   - component: {fileID: 7627266231775052497}
   - component: {fileID: 7422740194237391361}
   m_Layer: 0
@@ -35,18 +35,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7993764657181757833
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7071608457414000240}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6cf2fa288ff38a43bde72813f0bb548, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &6387778943714370692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 126211552
+  GlobalObjectIdHash: 441354678
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -72,6 +60,18 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &7993764657181757833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7071608457414000240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6cf2fa288ff38a43bde72813f0bb548, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &7627266231775052497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,7 +85,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  playerData: {fileID: 0}
   _receivingJSON: {fileID: 7422740194237391361}
   _jsonSender: {fileID: 7993764657181757833}
 --- !u!114 &7422740194237391361
@@ -100,4 +99,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dc1d0e18c36bb34f9515214b3bdb4f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: {fileID: 0}

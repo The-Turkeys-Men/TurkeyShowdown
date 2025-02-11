@@ -17,6 +17,7 @@ public class AudioManager : NetworkBehaviour
 
     public Sound[] MusicSounds;
     public Sound[] SfxSounds;
+    public GameObject tempAudio;
 
     private void Awake()
     {
@@ -41,7 +42,7 @@ public class AudioManager : NetworkBehaviour
         }
         else
         {
-            GameObject tempAudio=new GameObject("tempAudio");
+            tempAudio=new GameObject("tempAudio");
             tempAudio.transform.position=pos;
             AudioSource audioSource= tempAudio.AddComponent<AudioSource>();
             audioSource.spatialBlend=sonsLocale;
@@ -76,43 +77,43 @@ public class AudioManager : NetworkBehaviour
         StopSound(AudioSourceSFX);
     }
 
-    public void PlayMusic(Vector3 pos)
+    public void PlayMusic(Vector3 pos,float baseVolume)
     {
-        if (IsServer)
+        if (IsServer && !IsHost)
         {
-            PlayMusicClientRpc(pos);
+            PlayMusicClientRpc(pos,baseVolume);
         }
         string name= nomMusic.PickRandom();
         float sonsLocale=0f;
         AudioMixerGroup Volume= _audioMixerMusic;
-        float baseVolume= 0.404f;
+        baseVolume= 0.404f;
         bool loop=true;
         PlaySound( MusicSounds, name,pos,Volume,sonsLocale,loop,baseVolume);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
-    public void PlayMusicClientRpc(Vector3 pos)
+    public void PlayMusicClientRpc(Vector3 pos, float baseVolume)
     {
-        PlayMusic(pos);
+        PlayMusic(pos, baseVolume);
     }
     
-    public void PlaySFX(string name,Vector3 pos)
+    public void PlaySFX(string name,Vector3 pos, float baseVolume)
     {
-        if (IsServer)
+        if (IsServer && !IsHost)
         {
-            PlaySFXClientRpc(name, pos);
+            PlaySFXClientRpc(name, pos,baseVolume);
         }
         float sonsLocale=1f;
         bool loop=false;
         AudioMixerGroup Volume=_audioMixerSFX;
-        float baseVolume= 2f;
+        
         PlaySound( SfxSounds, name, pos,Volume,sonsLocale,loop,baseVolume);
     }
     
     [Rpc(SendTo.ClientsAndHost)]
-    public void PlaySFXClientRpc(string name,Vector3 pos)
+    public void PlaySFXClientRpc(string name,Vector3 pos , float baseVolume)
     {
-        PlaySFX(name,pos);
+        PlaySFX(name,pos,baseVolume);
     }
 
     public bool IsSoundInList(Sound[] soundList, string name)

@@ -26,6 +26,7 @@ public class Projectile : NetworkBehaviour
     
     private float _currentLifeTime;
     [HideInInspector] public Vector2 Direction;
+    [SerializeField]float baseVolume;
     
     private void Initialize()
     {
@@ -49,6 +50,11 @@ public class Projectile : NetworkBehaviour
             return;
         }
 
+        if (other.isTrigger)
+        {
+            return;
+        }
+        
         if (SenderObject.TryGetComponent(out TeamComponent senderTeamComponent) && other.TryGetComponent(out TeamComponent otherTeamComponent))
         {
             if (senderTeamComponent.TeamID == otherTeamComponent.TeamID)
@@ -68,7 +74,7 @@ public class Projectile : NetworkBehaviour
         }
         SpawnHitEffectRpc(transform.position);
         NetworkObject.Despawn(true);
-        AudioManager.Instance.PlaySFX("missilExplotion",transform.position);
+        AudioManager.Instance.PlaySFX("missilExplotion",transform.position,baseVolume);
     }
 
     [Rpc(SendTo.ClientsAndHost)]

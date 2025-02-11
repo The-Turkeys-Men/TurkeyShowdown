@@ -13,7 +13,7 @@ public class ObstacleOpacityManager : MonoBehaviour
 
     private void Start()
     {
-        _sR = GetComponent<SpriteRenderer>();
+        if (!_sR) _sR = GetComponent<SpriteRenderer>();
         _defaultColor = _sR.color;
         _fadedColor = _sR.color;
         _fadedColor.a = _valueAlphaColor;

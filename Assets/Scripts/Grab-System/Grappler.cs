@@ -32,6 +32,8 @@ public class Grappler : NetworkBehaviour
     private float _wallNeckOffset = -0.35f;
     [SerializeField] private Transform _neckStartPoint;
 
+    [SerializeField]float baseVolume;
+
 
     void Start()
     {
@@ -64,13 +66,22 @@ public class Grappler : NetworkBehaviour
 
     public void TryGrab(Vector2 grabDirection)
     {
-        RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, grabDirection, _grappleRange, 1 << 6);
+        RaycastHit2D[] hitInfos = Physics2D.RaycastAll(transform.position, grabDirection, _grappleRange, 1 << LayerMask.NameToLayer("World"));
+        RaycastHit2D hitInfo = default;
+        foreach (RaycastHit2D info in hitInfos)
+        {
+            if (info.collider && !info.collider.isTrigger)
+            {
+                hitInfo = info;
+                break;
+            }
+        }
         if (hitInfo)
         {
             _wallNormal = hitInfo.normal;
             _wallAngle = Mathf.Atan2(_wallNormal.x, -_wallNormal.y) * Mathf.Rad2Deg;
 
-            AudioManager.Instance.PlaySFX("grapain",transform.position);
+            AudioManager.Instance.PlaySFX("grapain",transform.position,baseVolume);
             
             SpawnHead(hitInfo.point, _wallNormal, _wallAngle);
             SpawnHeadServerRpc(hitInfo.point, _wallNormal, _wallAngle);
@@ -192,7 +203,7 @@ public class Grappler : NetworkBehaviour
             _grappleVisual.SetPosition(2, _curentGrabHead.NeckTransform.position);
         }
         _tete.SetActive(true);
-        
+        AudioManager.Instance.PlaySFX("retirGrapain",transform.position, baseVolume);
     }
     
     [Rpc(SendTo.Server)]
