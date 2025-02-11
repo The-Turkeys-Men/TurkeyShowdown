@@ -26,6 +26,7 @@ public class ColorChanger : NetworkBehaviour
         Debug.Log("Changing color to: " + color);
         foreach (var spriteRenderer in spriteRenderers)
         {
+            Debug.Log("Changing color of: " + spriteRenderer.name);
             spriteRenderer.color = color.ToLower() switch
             {
                 "red" => new Color32(255, 0, 0, 255 / 4),
