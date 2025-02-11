@@ -3,7 +3,7 @@ using Projectiles;
 using Unity.Netcode;
 using UnityEngine;
 
-public class Projectile : BaseProjectile
+public class Mine : BaseProjectile
 {
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -12,7 +12,7 @@ public class Projectile : BaseProjectile
             return;
         }
 
-        if (other.isTrigger)
+        if (other.gameObject.layer != LayerMask.NameToLayer("Player"))
         {
             return;
         }
@@ -23,6 +23,11 @@ public class Projectile : BaseProjectile
             {
                 return;
             }
+        }
+
+        if (other.gameObject == SenderObject)
+        {
+            return;
         }
         
         if (other.transform.TryGetComponent(out HealthComponent healthComponent))
@@ -38,13 +43,12 @@ public class Projectile : BaseProjectile
         NetworkObject.Despawn(true);
         AudioManager.Instance.PlaySFX("missilExplotion",transform.position,_baseVolume);
     }
-
+    
     [Rpc(SendTo.ClientsAndHost)]
     private void SpawnHitEffectRpc(Vector2 position)
     {
         GameObject hitEffect = Instantiate(HitEffectPrefab, position, Quaternion.identity);
     }
-    
     
     private void Update()
     {
@@ -52,9 +56,6 @@ public class Projectile : BaseProjectile
         {
             return;
         }
-        
-        _rigidbody.linearVelocity = Direction * Speed;
-        _rigidbody.rotation = Mathf.Atan2(Direction.y, Direction.x) * Mathf.Rad2Deg;
         
         _currentLifeTime += Time.deltaTime;
         if (_currentLifeTime >= MaxLifeTime)
@@ -67,7 +68,7 @@ public class Projectile : BaseProjectile
             NetworkObject.Despawn(true);
         }
     }
-
+    
     private void Explode()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, ExplosionRange);
@@ -111,8 +112,6 @@ public class Projectile : BaseProjectile
             {
                 healthComponent.Damage(ExplosionDamage, SenderObject.GetNetworkObjectId());
             }
-
-            
         }
     }
 }
