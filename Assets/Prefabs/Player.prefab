@@ -5294,6 +5294,7 @@ MonoBehaviour:
   _playerWeapon: {fileID: 3260235163975166542}
   _playerGrappler: {fileID: 2332458254201433568}
   _PlayerHud: {fileID: 9213160546116991034}
+  _WalkingAnimator: {fileID: 1124436771482812562}
   _rotationPivot: {fileID: 4492341432774784954}
   InputActivated: 1
 --- !u!114 &-1648982276250928982
@@ -6380,6 +6381,11 @@ PrefabInstance:
 --- !u!212 &983455151769983855 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 8376741930104977469, guid: 763a4da13d9bb9d44a7ee7079d0b9383, type: 3}
+  m_PrefabInstance: {fileID: 8783643633002865490}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1124436771482812562 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 8538552291691537344, guid: 763a4da13d9bb9d44a7ee7079d0b9383, type: 3}
   m_PrefabInstance: {fileID: 8783643633002865490}
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &1259358862509349588 stripped

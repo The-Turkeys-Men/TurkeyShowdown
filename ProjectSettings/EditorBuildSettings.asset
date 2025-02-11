@@ -35,6 +35,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/DevScenes/Flo-Devroom/Flo-feat-MiniMap.unity
     guid: e5e0c17775c8f5c48a098c37279f958b
+  - enabled: 1
+    path: Assets/Scenes/MainScene.unity
+    guid: 82d3128991ec5d34ebb58f0c64b9b6d9
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

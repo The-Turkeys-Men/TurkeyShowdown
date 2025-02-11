@@ -56,8 +56,18 @@ public class PlayerController : NetworkBehaviour
         {
             return;
         }
-        _WalkingAnimator.SetTrigger("IsWalking");
+        _WalkingAnimator.SetBool("IsWalking", true);
         _playerMovement.TryMove(direction);
+    }
+    
+    public void OnMoveCanceled()
+    {
+        if (!IsOwner || !InputActivated)
+        {
+            return;
+        }
+        _WalkingAnimator.SetBool("IsWalking", false);
+        _playerMovement.TryMove(Vector2.zero);
     }
     
     #endregion
@@ -117,4 +127,6 @@ public class PlayerController : NetworkBehaviour
     }
     
     #endregion
+
+    
 }
