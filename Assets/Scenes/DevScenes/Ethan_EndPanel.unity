@@ -553,8 +553,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18d723c8fb6e01f4fad1dc95462ce195, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _deathMatchManager: {fileID: 506259288}
-  _numberOfPlayers: 5
+  deathMatchManager: {fileID: 506259288}
+  numberOfPlayers: 5
 --- !u!4 &376852856
 Transform:
   m_ObjectHideFlags: 0

@@ -39,7 +39,7 @@ public class LeaderBoardHUDManager : NetworkBehaviour
         UpdateLeaderboardUI();
     }
 
-    private void UpdateLeaderboardUI()
+    public void UpdateLeaderboardUI()
     {
         if (_panel == null)
         {

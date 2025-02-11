@@ -1,77 +1,61 @@
-// using System.Collections.Generic;
-// using UnityEngine;
-//
-// public class TestLeaderboard : MonoBehaviour
-// {
-//     private DeathMatchManager deathMatchManager;
-//
-//     private void Start()
-//     {
-//         // Récupérer le GameModeManager et vérifier si c'est un DeathMatchManager
-//         if (GameModeManager.GetInstance() is DeathMatchManager dmManager)
-//         {
-//             deathMatchManager = dmManager;
-//         }
-//         else
-//         {
-//             Debug.LogError("[TestLeaderboard] DeathMatchManager introuvable !");
-//             return;
-//         }
-//
-//         // Initialiser des scores fictifs
-//         InitTestScores();
-//     }
-//
-//     private void InitTestScores()
-//     {
-//         List<PlayerScore> testScores = new List<PlayerScore>
-//         {
-//             new PlayerScore { PlayerId = 1, PlayerName = "Joueur 1", Score = 10 },
-//             new PlayerScore { PlayerId = 2, PlayerName = "Joueur 2", Score = 15 },
-//             new PlayerScore { PlayerId = 3, PlayerName = "Joueur 3", Score = 20 }
-//         };
-//
-//         // Simuler l'assignation des scores
-//         deathMatchManager.PlayerScores.Value = testScores;
-//
-//         Debug.Log("[TestLeaderboard] Scores initiaux ajoutés !");
-//         LeaderBoardHUDManager.Instance.ForceUpdateLeaderboard();
-//     }
-//
-//     private void Update()
-//     {
-//         if (Input.GetKeyDown(KeyCode.Space))
-//         {
-//             // Récupérer la liste actuelle et la copier
-//             List<PlayerScore> updatedScores = new List<PlayerScore>(deathMatchManager.PlayerScores.Value);
-//
-//             // Trouver le joueur 1 et lui ajouter des points
-//             for (int i = 0; i < updatedScores.Count; i++)
-//             {
-//                 if (updatedScores[i].PlayerId == 1)
-//                 {
-//                     PlayerScore newScore = updatedScores[i];
-//                     newScore.Score += 5;
-//                     updatedScores[i] = newScore;
-//                     break;
-//                 }
-//             }
-//
-//             // Mettre à jour le leaderboard
-//             deathMatchManager.PlayerScores.Value = updatedScores;
-//
-//             Debug.Log("[TestLeaderboard] Joueur 1 a gagné +5 points !");
-//             LeaderBoardHUDManager.Instance.ForceUpdateLeaderboard();
-//         }
-//     }
-// }
+using System.Collections;
+using System.Collections.Generic;
+using Unity.Netcode;
+using UnityEngine;
 
+public class TestLeaderBoard : NetworkBehaviour
+{
+    [SerializeField] private float updateInterval = 1f; // Intervalle de mise à jour en secondes
+    [SerializeField] private int maxScoreIncrement = 10; // Score maximum à ajouter à chaque mise à jour
 
+    private List<PlayerScore> playerScores = new List<PlayerScore>();
 
-// DANS Modifications dans LeaderBoardHUDManager.cs
-// public void ForceUpdateLeaderboard()
-// {
-//     if (panel == null) return;
-//
-//     UpdateLeaderboardClientRpc(panel.FirstPlaceText.text, panel.CurrentPlaceText.text);
-// }
+    public override void OnNetworkSpawn()
+    {
+        if (IsServer)
+        {
+            Debug.Log("Server is ready. Initializing player scores and starting score updates.");
+            InitializePlayerScores();
+            StartCoroutine(UpdateScoresRoutine());
+        }
+    }
+
+    private void InitializePlayerScores()
+    {
+        // Simuler quelques joueurs avec des scores initiaux
+        playerScores.Add(new PlayerScore { PlayerId = 1, PlayerName = "Player1", Score = 0 });
+        playerScores.Add(new PlayerScore { PlayerId = 2, PlayerName = "Player2", Score = 0 });
+        playerScores.Add(new PlayerScore { PlayerId = 3, PlayerName = "Player3", Score = 0 });
+
+        // Mettre à jour la liste des scores dans le DeathMatchManager
+        DeathMatchManager.GetInstance().PlayerScores.Value = playerScores;
+        Debug.Log("Player scores initialized.");
+    }
+
+    private IEnumerator UpdateScoresRoutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(updateInterval);
+
+            // Ajouter un score aléatoire à chaque joueur
+            for (int i = 0; i < playerScores.Count; i++)
+            {
+                PlayerScore updatedScore = playerScores[i];
+                int randomIncrement = Random.Range(0, maxScoreIncrement + 1);
+                updatedScore.Score += randomIncrement;
+                playerScores[i] = updatedScore; // Mettre à jour la structure dans la liste
+            }
+
+            // Mettre à jour la liste des scores dans le DeathMatchManager
+            DeathMatchManager.GetInstance().PlayerScores.Value = playerScores;
+            Debug.Log("Player scores updated.");
+
+            // Forcer la mise à jour de l'UI via le LeaderBoardHUDManager
+            if (LeaderBoardHUDManager.Instance != null)
+            {
+                LeaderBoardHUDManager.Instance.UpdateLeaderboardUI();
+            }
+        }
+    }
+}
