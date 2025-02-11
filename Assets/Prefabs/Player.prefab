@@ -5292,6 +5292,7 @@ MonoBehaviour:
   _playerMovement: {fileID: -1648982276250928982}
   _playerWeapon: {fileID: 3260235163975166542}
   _playerGrappler: {fileID: 2332458254201433568}
+  _PlayerHud: {fileID: 9213160546116991034}
   _rotationPivot: {fileID: 4492341432774784954}
   InputActivated: 1
 --- !u!114 &-1648982276250928982
@@ -6141,6 +6142,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &9213160546116991034 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3599120005504618615, guid: 764b342f154ae8244824846e3e6c285c, type: 3}
+  m_PrefabInstance: {fileID: 5632063764743891021}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8783643633002865490
 PrefabInstance:
   m_ObjectHideFlags: 0

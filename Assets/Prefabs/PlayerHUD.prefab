@@ -1190,11 +1190,11 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4292497041215467079}
   - {fileID: 3745476113796220090}
+  - {fileID: 6069455150214174205}
+  - {fileID: 4292497041215467079}
   - {fileID: 4759054764369785323}
   - {fileID: 14070565621845599}
-  - {fileID: 6069455150214174205}
   - {fileID: 7962067452688258506}
   - {fileID: 8604072754037209295}
   m_Father: {fileID: 0}
