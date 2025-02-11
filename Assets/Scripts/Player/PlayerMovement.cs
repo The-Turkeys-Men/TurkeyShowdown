@@ -11,6 +11,8 @@ public class PlayerMovement : NetworkBehaviour
     private Rigidbody2D _rigidBody;
 
     private Vector2 _moveDirection;
+
+    [SerializeField]float baseVolume;
     
     private void Awake()
     {
@@ -52,7 +54,7 @@ public class PlayerMovement : NetworkBehaviour
             movementDirection.Normalize();
             if((TimePas-=Time.deltaTime)<=0)
             {
-                AudioManager.Instance.PlaySFX("bruisDePas",transform.position);
+                AudioManager.Instance.PlaySFX("bruisDePas",transform.position,baseVolume);
                 TimePas=0.3f;
             }
             

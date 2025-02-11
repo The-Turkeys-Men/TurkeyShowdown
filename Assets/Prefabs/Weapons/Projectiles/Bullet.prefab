@@ -203,10 +203,14 @@ MonoBehaviour:
   Speed: 10
   Damage: 2
   MaxLifeTime: 5
-  Explosive: 0
+  IsExplosive: 0
+  ExplosionDamage: 0
   ExplosionRange: 0
+  ExplosionKnockback: 0
+  ExplosionSelfKnockback: 0
   HitEffectPrefab: {fileID: 3319359345782681422, guid: baf45d04fe8631d47a8094f1980250fe, type: 3}
   Direction: {x: 0, y: 0}
+  baseVolume: 1
 --- !u!50 &1619286104418477491
 Rigidbody2D:
   serializedVersion: 5

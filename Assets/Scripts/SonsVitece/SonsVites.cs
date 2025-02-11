@@ -5,6 +5,7 @@ public class SonsVites : MonoBehaviour
     public Rigidbody2D Rb;
    bool _active=true;
    public GameObject tempAudio;
+   float baseVolume;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -23,7 +24,7 @@ public class SonsVites : MonoBehaviour
                 
                 if(!_active)
                 {
-                     AudioManager.Instance.PlaySFX("vitesse",transform.position);
+                     AudioManager.Instance.PlaySFX("vitesse",transform.position,baseVolume);
                 tempAudio = AudioManager.Instance.tempAudio;
                 tempAudio.transform .SetParent(transform);
                 _active=false;

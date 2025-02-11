@@ -152,6 +152,7 @@ MonoBehaviour:
   _nomLancer: lancer
   _nomColition: colition
   _nomHit: 
+  baseVolume: 0.5
 --- !u!50 &4640402740232878089
 Rigidbody2D:
   serializedVersion: 5

@@ -164,3 +164,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnterParticlePrefab: {fileID: 158997809574118583, guid: 986dc1816ae22bf43b86de25b9108a99, type: 3}
   ExitParticlePrefab: {fileID: 158997809574118583, guid: 986dc1816ae22bf43b86de25b9108a99, type: 3}
+  _nomSFX: 
+  baseVolume: 1

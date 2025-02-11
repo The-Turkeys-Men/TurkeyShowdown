@@ -68,6 +68,10 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     [SerializeField] private string _nomColition;
      [SerializeField] private string _nomHit;
 
+     [SerializeField] private float baseVolume;
+
+
+
     
     private void Awake()
     {
@@ -114,7 +118,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         {
             _isDespawning = true;
             GetComponent<NetworkObject>().Despawn(true);
-            AudioManager.Instance.PlaySFX(_nomColition,transform.position);
+            AudioManager.Instance.PlaySFX(_nomColition,transform.position,baseVolume);
             DebuggerConsole.Instance.LogClientRpc("Weapon throw touched " + other.gameObject.name);
             if (other.TryGetComponent(out HealthComponent healthComponent))
             {
@@ -258,7 +262,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                     }
                     
                     healthComponent2.DamageServerRpc(Damage, LastOwner.GetNetworkObjectId());
-                    AudioManager.Instance.PlaySFX(_nomHit,transform.position);
+                    AudioManager.Instance.PlaySFX(_nomHit,transform.position,baseVolume);
                     if (collider.attachedRigidbody)
                     {
                         if (collider.attachedRigidbody.TryGetComponent(out KnockbackHandler knockbackHandler))
@@ -270,7 +274,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 
                 break;
         }
-        AudioManager.Instance.PlaySFX(_nomTir,transform.position);
+        AudioManager.Instance.PlaySFX(_nomTir,transform.position,baseVolume);
         FireRateTimer = FireRate;
         OnShootServerRpc();
         playerRigidbody.AddForce(-direction * RecoilForce, ForceMode2D.Impulse);
