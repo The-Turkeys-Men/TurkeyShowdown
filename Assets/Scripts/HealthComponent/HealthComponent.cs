@@ -23,6 +23,7 @@ public class HealthComponent : NetworkBehaviour
     
     [SerializeField] private bool _isPlayer = false;
      
+     [SerializeField] private float baseVolume;
     public bool IsDead => Health.Value <= 0;
     
     [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
@@ -73,7 +74,7 @@ public class HealthComponent : NetworkBehaviour
             particleSystemDamage.maxParticles=10;
             particleSystemDamage.Play();
             Armor.Value -= damage;
-            AudioManager.Instance.PlaySFX("crisDinde",transform.position);
+            AudioManager.Instance.PlaySFX("crisDinde",transform.position,baseVolume);
             if (Armor.Value <= 0)
             {
                 Health.Value += Armor.Value;
@@ -84,12 +85,12 @@ public class HealthComponent : NetworkBehaviour
         {
             Health.Value -= damage;
             PlayDamageParticleClientRpc(10);
-            AudioManager.Instance.PlaySFX("crisDinde",transform.position);
+            AudioManager.Instance.PlaySFX("crisDinde",transform.position,baseVolume);
         }
         if (Health.Value <= 0)
         {
             PlayDamageParticleClientRpc(30);
-            AudioManager.Instance.PlaySFX("mort",transform.position);
+            AudioManager.Instance.PlaySFX("mort",transform.position,baseVolume);
             OnDeath.Invoke(NetworkObjectId);
             OnDeathClientRpc();
             if (_isPlayer)

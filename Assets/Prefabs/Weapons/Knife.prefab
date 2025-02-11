@@ -150,6 +150,9 @@ MonoBehaviour:
     m_InternalValue: 0
   _nomTir: coupCouteaux
   _nomLancer: lancer
+  _nomColition: 
+  _nomHit: 
+  baseVolume: 0.5
 --- !u!50 &4640402740232878089
 Rigidbody2D:
   serializedVersion: 5

@@ -113,6 +113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  <WeaponId>k__BackingField: 0
   <FireRate>k__BackingField: 0
   <Damage>k__BackingField: 80
   <MaxAmmo>k__BackingField: 3
@@ -132,14 +133,26 @@ MonoBehaviour:
   <ProjectilePrefab>k__BackingField: {fileID: 0}
   <ProjectileSpeed>k__BackingField: 0
   <MaxLifetime>k__BackingField: 0
+  <IsExplosive>k__BackingField: 0
+  <ExplosionDamage>k__BackingField: 0
+  <ExplosionRange>k__BackingField: 0
+  <ExplosionSelfKnockback>k__BackingField: 0
+  <ExplosionKnockback>k__BackingField: 0
   <MaxDistance>k__BackingField: 1
+  <MeleeRange>k__BackingField: {x: 0, y: 0}
+  <WallHitBoost>k__BackingField: 0
   TrailMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   Rb: {fileID: 4640402740232878089}
   Visuals: {fileID: 7812902076482580572}
   IsThrowed:
     m_InternalValue: 0
+  ShouldHide:
+    m_InternalValue: 0
   _nomTir: 
   _nomLancer: pauseMine
+  _nomColition: 
+  _nomHit: 
+  baseVolume: 0.5
 --- !u!50 &4640402740232878089
 Rigidbody2D:
   serializedVersion: 5
