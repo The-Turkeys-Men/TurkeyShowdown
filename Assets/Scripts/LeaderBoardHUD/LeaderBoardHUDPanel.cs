@@ -1,20 +1,29 @@
-using System;
-using System.Collections.Generic;
-using Debugger;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
 public class LeaderBoardHUDPanel : NetworkBehaviour
 {
-    public List<TextMeshProUGUI> LeaderBoardTexts = new();
+    public TextMeshProUGUI FirstPlaceText;
     public TextMeshProUGUI CurrentPlaceText;
-    
-    private void Start()
+
+    public override void OnNetworkSpawn()
     {
-        if (IsOwner)
+        base.OnNetworkSpawn();
+        
+        if (IsClient)
         {
-            LeaderBoardHUDManager.Instance.SetPanel(this);
+            Debug.Log("[LeaderBoardHUDPanel] Client connected. Assigning panel to LeaderBoardHUDManager.");
+            
+            if (LeaderBoardHUDManager.Instance != null)
+            {
+                LeaderBoardHUDManager.Instance.SetPanel(this);
+                Debug.Log("[LeaderBoardHUDPanel] Panel successfully assigned.");
+            }
+            else
+            {
+                Debug.LogError("[LeaderBoardHUDPanel] Error: LeaderBoardHUDManager.Instance is NULL!");
+            }
         }
     }
 }
