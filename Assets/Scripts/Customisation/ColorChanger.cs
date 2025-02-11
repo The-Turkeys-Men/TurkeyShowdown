@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
@@ -6,20 +7,18 @@ public class ColorChanger : NetworkBehaviour
 {
     [SerializeField] private SpriteRenderer[] spriteRenderers;
 
-    public override void OnNetworkSpawn()
+
+    private async void Start()
     {
-        base.OnNetworkSpawn();
-        
         if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
-            Initialize();
+            await OnStart();
         }
     }
 
-    private async Task Initialize()
+    private async Task OnStart()
     {
         await PlayerDataManager.Datainstance.ReceivingJSON(OwnerClientId);
-        PlayerDataManager.Datainstance.AddColorData(OwnerClientId,PlayerDataManager.Datainstance.playerData[OwnerClientId].color);
     }
 
     public void ChangeColor(string color)

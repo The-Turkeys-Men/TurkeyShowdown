@@ -1,17 +1,14 @@
 using System.Collections;
 using System.Text;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class JSONSender : MonoBehaviour
+public class JSONSender : NetworkBehaviour
 {
 // Keep URL as it is
     private string url = "http://192.168.1.237/PHP/playerJSONFromUnity.php";
-    private void Start()
-    {
-        SendPlayerData();
-    }
-
+    
     public void SendPlayerData()
     {
         // Create PlayerJSON object dynamically based on actual player's data
