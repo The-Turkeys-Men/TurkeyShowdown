@@ -47,11 +47,6 @@ namespace Health
         private void OnDeath(ulong killer)
         {
             OnDeathEvent?.Invoke();
-            if (IsOwner)
-            {
-                respawnButton.enabled = true;
-            }
-            
             var killerObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[killer].gameObject;
             
             var playerController = GetComponent<PlayerController>();
@@ -63,7 +58,7 @@ namespace Health
             {
                 return;
             }
-            
+            respawnButton.enabled = true;
             KillFeedManager.Instance.AddKillServerRpc(killerObject.name, gameObject.name, 0);
             DebuggerConsole.Instance.LogServerRpc(killerObject.name + " addkill");
             
