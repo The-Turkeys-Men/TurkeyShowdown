@@ -11,9 +11,9 @@ using UnityEngine.Serialization;
 
 public class PlayerDataManager : NetworkBehaviour
 {
+    public static PlayerDataManager Datainstance;
     public NetworkVariable<List<PlayerDataNetworkable>> playerDatas = new();
     
-    public static PlayerDataManager Datainstance;
     
     public receivingJSON _receivingJSON;
     public JSONSender _jsonSender;
@@ -51,8 +51,12 @@ public class PlayerDataManager : NetworkBehaviour
         var players = NetworkManager.Singleton.ConnectedClients.Keys;
         foreach (var player in players)
         {
-            Debug.Log("Refreshing player with clientId: " + player);
-            NetworkManager.ConnectedClients[player].PlayerObject.GetComponent<ColorChanger>().ChangeColor(GetPlayerData(player).color.ToString());
+            var playerObject = NetworkManager.ConnectedClients[player].PlayerObject;
+            if (playerObject)
+            {
+                playerObject.GetComponent<ColorChanger>().ChangeColor(GetPlayerData(player).color.ToString());
+                Debug.Log("Refreshing player with clientId: " + player);
+            }
         }
         Debug.Log("Finished refreshing all players");
     }

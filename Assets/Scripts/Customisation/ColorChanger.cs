@@ -1,11 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ColorChanger : NetworkBehaviour
 {
-    [SerializeField] private SpriteRenderer[] spriteRenderers;
+    [SerializeField] private Transform _spriteParent;
 
 
     private async void Start()
@@ -23,9 +25,12 @@ public class ColorChanger : NetworkBehaviour
 
     public void ChangeColor(string color)
     {
-        Debug.Log("Changing color to: " + color);
-        foreach (var spriteRenderer in spriteRenderers)
+        Debug.Log("Changing color to: " + color + " char count : " + color.Length);
+        Debug.Log("SpriteRenderers count: " + _spriteParent.childCount);
+        foreach (Transform spriteObject in _spriteParent)
         {
+            SpriteRenderer spriteRenderer = spriteObject.GetComponent<SpriteRenderer>();
+            Debug.Log("Changing color of: " + spriteRenderer.name);
             spriteRenderer.color = color.ToLower() switch
             {
                 "red" => new Color32(255, 0, 0, 255 / 4),

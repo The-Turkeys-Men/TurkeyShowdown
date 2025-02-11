@@ -24,6 +24,7 @@ public class LeaderBoardHUDManager : NetworkBehaviour
     public void SetPanel(LeaderBoardHUDPanel newPanel)
     {
         _panel = newPanel;
+        UpdateLeaderboardUI();
     }
 
     public override void OnNetworkSpawn()
@@ -48,7 +49,6 @@ public class LeaderBoardHUDManager : NetworkBehaviour
         }
 
         List<PlayerScore> playerScores = DeathMatchManager.GetInstance().PlayerScores.Value;
-
         if (playerScores.Count == 0)
         {
             _panel.FirstPlaceText.text = "No players";

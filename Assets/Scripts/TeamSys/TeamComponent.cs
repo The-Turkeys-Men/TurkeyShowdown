@@ -1,10 +1,11 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
 public class TeamComponent : NetworkBehaviour
 {
     public NetworkVariable<int> TeamID = new NetworkVariable<int>(-1); // -1 signifie "pas d'équipe"
-
+    public Action OnTeamChangedEvent;
     public override void OnNetworkSpawn()
     {
         if (IsServer)
@@ -36,6 +37,7 @@ public class TeamComponent : NetworkBehaviour
 
     private void OnTeamChanged(int oldTeam, int newTeam)
     {
+        OnTeamChangedEvent?.Invoke();
         Debug.Log($"[TeamComponent] Joueur {OwnerClientId} a changé d'équipe : {oldTeam} -> {newTeam}");
     }
 }

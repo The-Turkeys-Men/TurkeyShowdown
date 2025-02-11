@@ -92,6 +92,7 @@ public class Projectile : NetworkBehaviour
         }
         
         _rigidbody.linearVelocity = Direction * Speed;
+        _rigidbody.rotation = Mathf.Atan2(Direction.y, Direction.x) * Mathf.Rad2Deg;
         
         _currentLifeTime += Time.deltaTime;
         if (_currentLifeTime >= MaxLifeTime)
