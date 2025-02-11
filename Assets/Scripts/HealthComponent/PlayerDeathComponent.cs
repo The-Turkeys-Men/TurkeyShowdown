@@ -8,6 +8,7 @@ namespace Health
 {
     public class PlayerDeathComponent : NetworkBehaviour
     {
+        [SerializeField] private RespawnButton respawnButton;
         private Rigidbody2D _rigidbody2D;
         
         private LayerMask _originalExcludeLayers;
@@ -32,6 +33,7 @@ namespace Health
         {
             OnRespawnEvent?.Invoke();
             
+            respawnButton.enabled = false;
             var playerController = GetComponent<PlayerController>();
             playerController.InputActivated = true;
             
@@ -45,6 +47,10 @@ namespace Health
         private void OnDeath(ulong killer)
         {
             OnDeathEvent?.Invoke();
+            if (IsOwner)
+            {
+                respawnButton.enabled = true;
+            }
             
             var killerObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[killer].gameObject;
             

@@ -1,6 +1,8 @@
-using UnityEngine;
+using System;
+using UnityEngine.Serialization;
 
-public class PlayerJSON : MonoBehaviour
+[System.Serializable]
+public class PlayerJSON
 {
     public int Id;
     public string Pseudo;
@@ -8,6 +10,6 @@ public class PlayerJSON : MonoBehaviour
     public int[] ScoreTable;
     public int NbrVictory;
     public int NbrDefeat;
-    public Skin[] Skins;
-    public string color;
+    public string[] Skins;
+    public string Color;
 }

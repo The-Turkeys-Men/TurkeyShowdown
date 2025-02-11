@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Extensions;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Audio;
 
-public class AudioManager : MonoBehaviour
+public class AudioManager : NetworkBehaviour
 {
     public static AudioManager Instance;
     [SerializeField] protected AudioMixerGroup _audioMixerSFX;
@@ -77,6 +78,10 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMusic(Vector3 pos)
     {
+        if (IsServer && !IsHost)
+        {
+            PlayMusicClientRpc(pos);
+        }
         string name= nomMusic.PickRandom();
         float sonsLocale=0f;
         AudioMixerGroup Volume= _audioMixerMusic;
@@ -85,13 +90,29 @@ public class AudioManager : MonoBehaviour
         PlaySound( MusicSounds, name,pos,Volume,sonsLocale,loop,baseVolume);
     }
 
+    [Rpc(SendTo.ClientsAndHost)]
+    public void PlayMusicClientRpc(Vector3 pos)
+    {
+        PlayMusic(pos);
+    }
+    
     public void PlaySFX(string name,Vector3 pos)
     {
+        if (IsServer && !IsHost)
+        {
+            PlaySFXClientRpc(name, pos);
+        }
         float sonsLocale=1f;
         bool loop=false;
         AudioMixerGroup Volume=_audioMixerSFX;
         float baseVolume= 2f;
         PlaySound( SfxSounds, name, pos,Volume,sonsLocale,loop,baseVolume);
+    }
+    
+    [Rpc(SendTo.ClientsAndHost)]
+    public void PlaySFXClientRpc(string name,Vector3 pos)
+    {
+        PlaySFX(name,pos);
     }
 
     public bool IsSoundInList(Sound[] soundList, string name)

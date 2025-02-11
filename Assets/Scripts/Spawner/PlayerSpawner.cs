@@ -1,16 +1,18 @@
 using System.Collections;
+using System.Collections.Generic;
 using Extensions;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PlayerSpawner : NetworkBehaviour
 {
     [SerializeField] private GameObject _playerPrefab;
     [SerializeField] private int _respawnTime = 5;
     [SerializeField] private Transform[] _playerSpawnPoint;
-    
     private GameObject NewPlayer;
+    public static PlayerSpawner SpawnerInstance;
 
     [SerializeField] private BaseWeapon _spawnWeapon;
     
@@ -19,9 +21,22 @@ public class PlayerSpawner : NetworkBehaviour
         NetworkManager.Singleton.OnClientConnectedCallback += SpawnPlayer;
     }
 
+    private void Awake()
+    {
+        if (SpawnerInstance == null)
+        { 
+            SpawnerInstance = this; 
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     #region Respawn
 
-    [Rpc(SendTo.ClientsAndHost)]
+    /*[Rpc(SendTo.ClientsAndHost)]
     private void OnDeathClientRpc(ulong playerObjectId)
     {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject))
@@ -31,7 +46,7 @@ public class PlayerSpawner : NetworkBehaviour
         }
         
         //playerObject.gameObject.SetActive(false);
-        StartCoroutine(SpawnTimer(playerObject.gameObject));
+       // StartCoroutine(SpawnTimer(playerObject.gameObject));
     }
     
     [Rpc(SendTo.Server)]
@@ -44,20 +59,45 @@ public class PlayerSpawner : NetworkBehaviour
         }
         
         //playerObject.gameObject.SetActive(false);
-        StartCoroutine(SpawnTimer(playerObject.gameObject));
+        // StartCoroutine(SpawnTimer(playerObject.gameObject));
     }
     
-    IEnumerator SpawnTimer(GameObject player)
+   IEnumerator SpawnTimer(GameObject player)
     {
         yield return new WaitForSeconds(_respawnTime);
         RespawnPlayer(player);
-    }
+    }*/
 
-    private void RespawnPlayer(GameObject player)
+    public void RespawnPlayer(GameObject player)
     {
         var healthComponent = player.GetComponent<HealthComponent>();
         healthComponent.SetHealthServerRpc(healthComponent.BaseHealth);
-        player.transform.position = _playerSpawnPoint[Random.Range(0, _playerSpawnPoint.Length)].position;
+        
+        //Check Player Around Spawns
+        List<Transform> emptySpawns = new List<Transform>();
+        int minCount = int.MaxValue;
+        
+        foreach (var checkSpawn in _playerSpawnPoint)
+        {
+            var colliders = Physics2D.OverlapCircleAll(checkSpawn.position, 10f, 1 << LayerMask.NameToLayer("Player"));
+            int count = colliders.Length;
+            
+            //Clears the list if a spawner is no longer isolated
+            if (count < minCount)
+            {
+                minCount = count;
+                emptySpawns.Clear();
+                emptySpawns.Add(checkSpawn);
+            }
+            else if (count == minCount)
+            {
+                emptySpawns.Add(checkSpawn);
+            }
+        }
+        
+        var spawn = emptySpawns.PickRandom();
+        player.transform.position = spawn.position;
+        
         player.SetActive(true);
         healthComponent.OnRespawn.Invoke();
         
@@ -109,12 +149,14 @@ public class PlayerSpawner : NetworkBehaviour
         }
         
         NewPlayer = Instantiate(_playerPrefab, _playerSpawnPoint[Random.Range(0,_playerSpawnPoint.Length)].transform);
-        NewPlayer.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+        NewPlayer.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
         NewPlayer.GetComponent<HealthComponent>().OnDeath.AddListener((playerObjectId) =>
         {
-            OnDeathClientRpc(playerObjectId);
-            OnDeathServerRpc(playerObjectId);
+            //OnDeathClientRpc(playerObjectId);
+            //OnDeathServerRpc(playerObjectId);
+
         });
+        
 
         if (_spawnWeapon)
         {

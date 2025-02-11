@@ -9,8 +9,15 @@ public static class RaycastUtils
         
         foreach (RaycastHit2D hit in raycastResults)
         {
+            if (hit.collider.isTrigger)
+            {
+                continue;
+            }
+            
             if (hit.collider.TryGetComponent(out HealthComponent healthComponent))
             {
+                
+                
                 if (healthComponent.IsDead)
                 {
                     continue;

@@ -49,6 +49,11 @@ public class Projectile : NetworkBehaviour
             return;
         }
 
+        if (other.isTrigger)
+        {
+            return;
+        }
+        
         if (SenderObject.TryGetComponent(out TeamComponent senderTeamComponent) && other.TryGetComponent(out TeamComponent otherTeamComponent))
         {
             if (senderTeamComponent.TeamID == otherTeamComponent.TeamID)
@@ -112,14 +117,28 @@ public class Projectile : NetworkBehaviour
             
             if (SenderObject.TryGetComponent(out TeamComponent senderTeamComponent) && collider.TryGetComponent(out TeamComponent otherTeamComponent))
             {
+                Vector2 direction = (collider.transform.position - transform.position).normalized;
+                var objectId = collider.gameObject.GetNetworkObjectId();
+                if (collider.TryGetComponent(out KnockbackHandler knockbackHandler))
+                {
+                    if (senderTeamComponent.TeamID == otherTeamComponent.TeamID)
+                    {
+                        knockbackHandler.ApplyKnockbackClientRpc(direction, ExplosionSelfKnockback);
+                    }
+                    else
+                    {
+                        knockbackHandler.ApplyKnockbackClientRpc(direction, ExplosionKnockback);
+                    }
+                        
+                }
+
+                if (collider.attachedRigidbody)
+                {
+                    collider.attachedRigidbody.AddForce(direction * ExplosionKnockback, ForceMode2D.Impulse);
+                }
+                
                 if (senderTeamComponent.TeamID == otherTeamComponent.TeamID)
                 {
-                    Vector2 direction = (collider.transform.position - transform.position).normalized;
-                    var objectId = collider.gameObject.GetNetworkObjectId();
-                    if (objectId != ulong.MaxValue)
-                    {
-                        ApplyKnockbackRpc(objectId, direction * ExplosionSelfKnockback);
-                    }
                     continue;
                 }
             }
@@ -129,22 +148,7 @@ public class Projectile : NetworkBehaviour
                 healthComponent.Damage(ExplosionDamage, SenderObject.GetNetworkObjectId());
             }
 
-            if (collider.TryGetComponent(out Rigidbody2D rb))
-            {
-                Vector2 direction = (collider.transform.position - transform.position).normalized;
-                var objectId = collider.gameObject.GetNetworkObjectId();
-                if (objectId != ulong.MaxValue)
-                {
-                    ApplyKnockbackRpc(objectId, direction * ExplosionKnockback);
-                }
-            }
+            
         }
-    }
-
-    [Rpc(SendTo.ClientsAndHost)]
-    private void ApplyKnockbackRpc(ulong playerObjectId, Vector2 knockback)
-    {
-        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject);
-        playerObject.GetComponent<Rigidbody2D>().AddForce(knockback * ExplosionSelfKnockback, ForceMode2D.Impulse);
     }
 }
