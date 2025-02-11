@@ -12,6 +12,7 @@ public class PlayerWeapon : NetworkBehaviour
     public Transform WeaponHolder;
     
     public bool Dizziness;
+    [SerializeField]float baseVolume;
 
     void Update()
     {
@@ -62,7 +63,7 @@ public class PlayerWeapon : NetworkBehaviour
     public void ThrowWeapon()
     {
         EquipedWeapon.Rb.simulated = true;
-        AudioManager.Instance.PlaySFX("lancer",transform.position);
+        AudioManager.Instance.PlaySFX("lancer",transform.position,baseVolume);
         ulong weaponId = EquipedWeapon.GetComponent<NetworkObject>().NetworkObjectId;
         UpdateWeaponPosServerRpc(weaponId, WeaponHolder.position);
         OnThrowWeaponServerRpc(weaponId, EquipedWeapon.transform.right);

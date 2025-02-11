@@ -1,10 +1,8 @@
-using System;
 using Debugger;
 using Extensions;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
-using WeaponSystem;
 
 public class HealthComponent : NetworkBehaviour
 {
@@ -23,12 +21,18 @@ public class HealthComponent : NetworkBehaviour
     
     [SerializeField] private bool _isPlayer = false;
      
+     [SerializeField] private float baseVolume;
     public bool IsDead => Health.Value <= 0;
     
     [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
-    private void OnDeathClientRpc()
+    private void OnDeathClientRpc(ulong killerId)
     {
         OnDeath.Invoke(gameObject.GetNetworkObjectId());
+
+        if (NetworkManager.LocalClientId == killerId)
+        {
+            AudioManager.Instance.PlaySFX("audioKil",transform.position,1);
+        }
     }
 
     public void Heal(int amount)
@@ -73,7 +77,7 @@ public class HealthComponent : NetworkBehaviour
             particleSystemDamage.maxParticles=10;
             particleSystemDamage.Play();
             Armor.Value -= damage;
-            AudioManager.Instance.PlaySFX("crisDinde",transform.position);
+            AudioManager.Instance.PlaySFX("crisDinde",transform.position,baseVolume);
             if (Armor.Value <= 0)
             {
                 Health.Value += Armor.Value;
@@ -84,17 +88,17 @@ public class HealthComponent : NetworkBehaviour
         {
             Health.Value -= damage;
             PlayDamageParticleClientRpc(10);
-            AudioManager.Instance.PlaySFX("crisDinde",transform.position);
+            AudioManager.Instance.PlaySFX("crisDinde",transform.position,baseVolume);
         }
         if (Health.Value <= 0)
         {
+            var killerId = senderObject.GetComponent<NetworkObject>().OwnerClientId;
             PlayDamageParticleClientRpc(30);
-            AudioManager.Instance.PlaySFX("mort",transform.position);
+            AudioManager.Instance.PlaySFX("mort",transform.position,baseVolume);
             OnDeath.Invoke(NetworkObjectId);
-            OnDeathClientRpc();
+            OnDeathClientRpc(killerId);
             if (_isPlayer)
             {
-                var killerId = senderObject.GetComponent<NetworkObject>().OwnerClientId;
                 ((DeathMatchManager)DeathMatchManager.GetInstance()).OnPlayerKill(killerId);
                 DebuggerConsole.Instance.LogClientRpc("Player killed by: " + senderObject.name);
             }

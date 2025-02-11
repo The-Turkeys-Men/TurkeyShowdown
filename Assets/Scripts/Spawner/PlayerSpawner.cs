@@ -11,16 +11,13 @@ public class PlayerSpawner : NetworkBehaviour
     [SerializeField] private GameObject _playerPrefab;
     [SerializeField] private int _respawnTime = 5;
     [SerializeField] private Transform[] _playerSpawnPoint;
+    [SerializeField] private GameObject _playButton;
     private GameObject NewPlayer;
     public static PlayerSpawner SpawnerInstance;
 
     [SerializeField] private BaseWeapon _spawnWeapon;
     
-    private void Start()
-    {
-        NetworkManager.Singleton.OnClientConnectedCallback += SpawnPlayer;
-    }
-
+    
     private void Awake()
     {
         if (SpawnerInstance == null)
@@ -46,7 +43,7 @@ public class PlayerSpawner : NetworkBehaviour
         }
         
         //playerObject.gameObject.SetActive(false);
-       // StartCoroutine(SpawnTimer(playerObject.gameObject));
+       //StartCoroutine(SpawnTimer(playerObject.gameObject));
     }
     
     [Rpc(SendTo.Server)]
@@ -68,7 +65,13 @@ public class PlayerSpawner : NetworkBehaviour
         RespawnPlayer(player);
     }*/
 
-    public void RespawnPlayer(GameObject player)
+    [Rpc(SendTo.Server)]
+    public void RespawnPlayerServerRpc(ulong playerId)
+    {
+        RespawnPlayer(NetworkManager.Singleton.ConnectedClients[playerId].PlayerObject.gameObject);
+    }
+
+    private void RespawnPlayer(GameObject player)
     {
         var healthComponent = player.GetComponent<HealthComponent>();
         healthComponent.SetHealthServerRpc(healthComponent.BaseHealth);
@@ -94,7 +97,7 @@ public class PlayerSpawner : NetworkBehaviour
                 emptySpawns.Add(checkSpawn);
             }
         }
-        
+        Debug.Log(emptySpawns.Count);
         var spawn = emptySpawns.PickRandom();
         player.transform.position = spawn.position;
         
@@ -139,7 +142,17 @@ public class PlayerSpawner : NetworkBehaviour
 
     #endregion
     
-    
+    public void Spawn()
+    {
+        _playButton.SetActive(false);
+        SpawnPlayerServerRpc(NetworkManager.Singleton.LocalClientId);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void SpawnPlayerServerRpc(ulong playerId)
+    {
+        SpawnPlayer(playerId);
+    }
     
     private void SpawnPlayer(ulong clientId)
     {
@@ -147,7 +160,7 @@ public class PlayerSpawner : NetworkBehaviour
         {
             return;
         }
-        
+        Camera.main.GetComponent<AudioListener>().enabled = false;
         NewPlayer = Instantiate(_playerPrefab, _playerSpawnPoint[Random.Range(0,_playerSpawnPoint.Length)].transform);
         NewPlayer.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
         NewPlayer.GetComponent<HealthComponent>().OnDeath.AddListener((playerObjectId) =>

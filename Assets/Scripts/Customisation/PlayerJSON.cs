@@ -4,12 +4,12 @@ using UnityEngine.Serialization;
 [System.Serializable]
 public class PlayerJSON
 {
-    public int Id;
-    public string Pseudo;
-    public int HighScore;
-    public int[] ScoreTable;
-    public int NbrVictory;
-    public int NbrDefeat;
-    public string[] Skins;
-    public string Color;
+    public int id;
+    public string color;
+    public string[] skins;
+    public string pseudo;
+    public int highScore;
+    public int[] scoreTable;
+    public int nbrVictory;
+    public int nbrDefeat;
 }

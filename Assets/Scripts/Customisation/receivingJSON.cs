@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Debugger;
+using Newtonsoft.Json;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -51,11 +52,9 @@ public class receivingJSON : NetworkBehaviour
                
                Debug.Log("Received JSON: " + jsonval);
                
-               Debug.Log("Trying without trim from json: " + JsonUtility.FromJson<PlayerJSON>(jsonval));
-               
                // Remove any invisible characters
-               jsonval = jsonval.Trim().Replace("\uFEFF", "");
-               Debug.Log("Json trimmed: " + jsonval);
+               jsonval = jsonval.Trim('\uFEFF', '\u200B', '\u200E', '\u200F');
+               //Debug.Log("Json trimmed: " + jsonval);
        
                try
                {
@@ -65,7 +64,7 @@ public class receivingJSON : NetworkBehaviour
                }
                catch (ArgumentException e)
                {
-                   Debug.LogError("JSON parse error: " + e.Message);
+                   Debug.LogError("JSON test parse error: " + e.Message);
                    return null;
                }
            }

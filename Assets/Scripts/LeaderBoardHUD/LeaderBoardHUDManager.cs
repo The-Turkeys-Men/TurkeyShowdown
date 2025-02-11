@@ -1,44 +1,14 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Debugger;
 using Unity.Netcode;
 using UnityEngine;
 using TMPro;
-using Unity.Collections;
 
 public class LeaderBoardHUDManager : NetworkBehaviour
 {
     public static LeaderBoardHUDManager Instance;
-    
-    public List<TextMeshProUGUI> LeaderBoardTexts = new();
-    public TextMeshProUGUI CurrentPlaceText;
+    private LeaderBoardHUDPanel _panel;
 
-    private struct PlayerScore : INetworkSerializable, IEquatable<PlayerScore>
-    {
-        public ulong ClientId;
-        public FixedString64Bytes PlayerName;
-        public int Score;
-
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-        {
-            serializer.SerializeValue(ref ClientId);
-            serializer.SerializeValue(ref PlayerName);
-            serializer.SerializeValue(ref Score);
-        }
-
-        public bool Equals(PlayerScore other) => ClientId == other.ClientId && Score == other.Score;
-        public override bool Equals(object obj) => obj is PlayerScore other && Equals(other);
-        public override int GetHashCode() => HashCode.Combine(ClientId, Score);
-    }
-
-    public void SetPanel(LeaderBoardHUDPanel panel)
-    {
-        LeaderBoardTexts = panel.LeaderBoardTexts;
-        CurrentPlaceText = panel.CurrentPlaceText;
-        UpdateLeaderboardUI();
-    }
-    
     private void Awake()
     {
         if (!Instance)
@@ -51,59 +21,74 @@ public class LeaderBoardHUDManager : NetworkBehaviour
         }
     }
 
+    public void SetPanel(LeaderBoardHUDPanel newPanel)
+    {
+        _panel = newPanel;
+        UpdateLeaderboardUI();
+    }
+
     public override void OnNetworkSpawn()
     {
-        DeathMatchManager.GetInstance().PlayerScores.OnValueChanged += OnScoresChanged;
-        //UpdateLeaderboardUI();
+        if (IsClient)
+        {
+            DeathMatchManager.GetInstance().PlayerScores.OnValueChanged += OnScoresChanged;
+        }
     }
-    
-    private void OnScoresChanged(Dictionary<ulong, int> previousvalue, Dictionary<ulong, int> newvalue)
+
+    private void OnScoresChanged(List<PlayerScore> previousScores, List<PlayerScore> newScores)
     {
         UpdateLeaderboardUI();
     }
 
-    private void UpdateLeaderboardUI()
+    public void UpdateLeaderboardUI()
     {
-        if (!CurrentPlaceText || LeaderBoardTexts.Count == 0)
+        if (_panel == null)
         {
+            Debug.LogError("[LeaderBoardHUDManager] Panel not assigned!");
             return;
         }
 
-        Dictionary<ulong, int> gmPlayerScores = DeathMatchManager.GetInstance().PlayerScores.Value;
-
-        PlayerScore[] sortedScores = new PlayerScore[gmPlayerScores.Count];
-        for (int i = 0; i < gmPlayerScores.Count; i++)
+        List<PlayerScore> playerScores = DeathMatchManager.GetInstance().PlayerScores.Value;
+        if (playerScores.Count == 0)
         {
-            var playerScore = gmPlayerScores.ElementAt(i);
-            PlayerScore updatedScore = new()
-            {
-                ClientId = playerScore.Key,
-                PlayerName = $"Player_{i + 1}",
-                Score = playerScore.Value,
-            };
-            DebuggerConsole.Instance.Log($"Player {updatedScore.PlayerName} has {updatedScore.Score} points.");
-            sortedScores[i] = updatedScore;
+            _panel.FirstPlaceText.text = "No players";
+            _panel.CurrentPlaceText.text = "Unranked";
+            return;
         }
 
-        Array.Sort(sortedScores, (a, b) => b.Score.CompareTo(a.Score));
+        playerScores = playerScores.OrderByDescending(ps => ps.Score).ToList();
 
-        for (int i = 0; i < sortedScores.Length; i++)
+        ulong localPlayerId = NetworkManager.Singleton.LocalClientId;
+        int playerRank = playerScores.FindIndex(ps => ps.PlayerId == localPlayerId);
+
+        _panel.CurrentPlaceText.text = playerRank == -1 
+            ? "Unranked" 
+            : $"#{playerRank + 1} {playerScores[playerRank].PlayerName} - {playerScores[playerRank].Score}";
+
+        _panel.FirstPlaceText.text = playerRank == 0 && playerScores.Count > 1 
+            ? $"#2 {playerScores[1].PlayerName} - {playerScores[1].Score}" 
+            : $"#1 {playerScores[0].PlayerName} - {playerScores[0].Score}";
+
+        UpdateLeaderboardClientRpc(_panel.FirstPlaceText.text, _panel.CurrentPlaceText.text);
+    }
+
+    [ClientRpc]
+    private void UpdateLeaderboardClientRpc(string firstPlaceText, string currentPlaceText)
+    {
+        if (!IsClient) return;
+        if (_panel != null)
         {
-            if (sortedScores[i].ClientId == NetworkManager.Singleton.LocalClientId)
-            {
-                CurrentPlaceText.text = $"#{i + 1} {sortedScores[i].PlayerName} - {sortedScores[i].Score}";
-                break;
-            }
+            _panel.FirstPlaceText.text = firstPlaceText;
+            _panel.CurrentPlaceText.text = currentPlaceText;
         }
+    }
 
-        
-        for (int i = 0; i < sortedScores.Length; i++)
+    public void ResetLeaderboard()
+    {
+        if (_panel != null)
         {
-            if (i >= LeaderBoardTexts.Count)
-            {
-                break;
-            }
-            LeaderBoardTexts[i].text = $"#{i + 1} {sortedScores[i].PlayerName} - {sortedScores[i].Score}";
+            _panel.FirstPlaceText.text = "No players";
+            _panel.CurrentPlaceText.text = "Unranked";
         }
     }
 }

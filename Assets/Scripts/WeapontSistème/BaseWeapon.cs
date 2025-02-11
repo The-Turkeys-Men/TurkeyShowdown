@@ -41,6 +41,8 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     [field:Header("raycast")]
     [field:SerializeField] public float MaxDistance { get; set; }
 
+    [SerializeField] public Color RaycastColor;
+
     [field:Header("Melee")]
     [field:SerializeField] public Vector2 MeleeRange { get; set; }
     [field:SerializeField] public float WallHitBoost { get; set; }
@@ -67,6 +69,10 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     [SerializeField] private string _nomLancer;
     [SerializeField] private string _nomColition;
      [SerializeField] private string _nomHit;
+
+     [SerializeField] private float baseVolume;
+
+
 
     
     private void Awake()
@@ -114,7 +120,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         {
             _isDespawning = true;
             GetComponent<NetworkObject>().Despawn(true);
-            AudioManager.Instance.PlaySFX(_nomColition,transform.position);
+            AudioManager.Instance.PlaySFX(_nomColition,transform.position,baseVolume);
             DebuggerConsole.Instance.LogClientRpc("Weapon throw touched " + other.gameObject.name);
             if (other.TryGetComponent(out HealthComponent healthComponent))
             {
@@ -258,7 +264,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                     }
                     
                     healthComponent2.DamageServerRpc(Damage, LastOwner.GetNetworkObjectId());
-                    AudioManager.Instance.PlaySFX(_nomHit,transform.position);
+                    AudioManager.Instance.PlaySFX(_nomHit,transform.position,baseVolume);
                     if (collider.attachedRigidbody)
                     {
                         if (collider.attachedRigidbody.TryGetComponent(out KnockbackHandler knockbackHandler))
@@ -270,7 +276,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 
                 break;
         }
-        AudioManager.Instance.PlaySFX(_nomTir,transform.position);
+        AudioManager.Instance.PlaySFX(_nomTir,transform.position,baseVolume);
         FireRateTimer = FireRate;
         OnShootServerRpc();
         playerRigidbody.AddForce(-direction * RecoilForce, ForceMode2D.Impulse);
@@ -293,7 +299,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         despawnTraine.StartWidth = 0.15f;
         LineRenderer lineRenderer = tempTrainé.AddComponent<LineRenderer>();
         lineRenderer.material = new(TrailMaterial);
-        lineRenderer.material.color= new Color(0, 0, 0, 0.5f);
+        lineRenderer.material.color = RaycastColor;
         lineRenderer.SetPosition(0, ShootPoint.position);
         lineRenderer.SetPosition(1, endPoint);
     }

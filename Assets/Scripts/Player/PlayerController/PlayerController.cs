@@ -1,5 +1,4 @@
 using System;
-using Debugger;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -10,10 +9,19 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private PlayerMovement _playerMovement;
     [SerializeField] private PlayerWeapon _playerWeapon;
     [SerializeField] private Grappler _playerGrappler;
+    [SerializeField] private GameObject _PlayerHud;
 
     [SerializeField] private Transform _rotationPivot;
 
     [FormerlySerializedAs("_inputActivated")] public bool InputActivated = true;
+
+    private void Start()
+    {
+        if (!IsOwner)
+        {
+            Destroy(_PlayerHud);
+        }
+    }
 
     private void Update()
     {

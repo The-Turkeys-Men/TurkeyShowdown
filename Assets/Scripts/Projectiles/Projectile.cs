@@ -26,6 +26,7 @@ public class Projectile : NetworkBehaviour
     
     private float _currentLifeTime;
     [HideInInspector] public Vector2 Direction;
+    [SerializeField]float baseVolume;
     
     private void Initialize()
     {
@@ -73,7 +74,7 @@ public class Projectile : NetworkBehaviour
         }
         SpawnHitEffectRpc(transform.position);
         NetworkObject.Despawn(true);
-        AudioManager.Instance.PlaySFX("missilExplotion",transform.position);
+        AudioManager.Instance.PlaySFX("missilExplotion",transform.position,baseVolume);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
@@ -91,6 +92,7 @@ public class Projectile : NetworkBehaviour
         }
         
         _rigidbody.linearVelocity = Direction * Speed;
+        _rigidbody.rotation = Mathf.Atan2(Direction.y, Direction.x) * Mathf.Rad2Deg;
         
         _currentLifeTime += Time.deltaTime;
         if (_currentLifeTime >= MaxLifeTime)
