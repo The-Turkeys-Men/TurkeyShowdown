@@ -23,6 +23,7 @@ public class ColorChanger : NetworkBehaviour
 
     public void ChangeColor(string color)
     {
+        Debug.Log("Changing color to: " + color);
         foreach (var spriteRenderer in spriteRenderers)
         {
             spriteRenderer.color = color.ToLower() switch

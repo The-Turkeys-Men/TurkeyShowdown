@@ -67,14 +67,14 @@ public class PlayerDataManager : NetworkBehaviour
         PlayerDataNetworkable playerDataNetworkable = new()
         {
             ClientId = clientID,
-            id = playerJson.Result.Id,
-            pseudo = playerJson.Result.Pseudo,
-            highScore = playerJson.Result.HighScore,
-            nbrVictory = playerJson.Result.NbrVictory,
-            nbrDefeat = playerJson.Result.NbrDefeat,
-            color = playerJson.Result.Color,
-            scoreTable = playerJson.Result.ScoreTable.ToList(),
-            skins = playerJson.Result.Skins.ToList()
+            id = playerJson.Result.id,
+            pseudo = playerJson.Result.pseudo,
+            highScore = playerJson.Result.highScore,
+            nbrVictory = playerJson.Result.nbrVictory,
+            nbrDefeat = playerJson.Result.nbrDefeat,
+            color = playerJson.Result.color,
+            scoreTable = playerJson.Result.scoreTable.ToList(),
+            skins = playerJson.Result.skins.ToList()
         };
         Debug.Log("Created PlayerDataNetworkable for clientID: " + clientID);
     
@@ -96,7 +96,7 @@ public class PlayerDataManager : NetworkBehaviour
             Debug.Log("Added new player data for clientID: " + clientID);
         }
         
-        Debug.Log("Received JSON with pseudo: " + playerJson.Result.Pseudo);
+        Debug.Log("Received JSON with pseudo: " + playerJson.Result.pseudo);
         RefreshAllPlayersServerRpc();
     }
 
