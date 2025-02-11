@@ -10,6 +10,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private PlayerWeapon _playerWeapon;
     [SerializeField] private Grappler _playerGrappler;
     [SerializeField] private GameObject _PlayerHud;
+    [SerializeField] private Animator _WalkingAnimator;
 
     [SerializeField] private Transform _rotationPivot;
 
@@ -55,7 +56,7 @@ public class PlayerController : NetworkBehaviour
         {
             return;
         }
-        
+        _WalkingAnimator.SetTrigger("IsWalking");
         _playerMovement.TryMove(direction);
     }
     
