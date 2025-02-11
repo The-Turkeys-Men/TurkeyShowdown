@@ -17,6 +17,7 @@ public class AudioManager : NetworkBehaviour
 
     public Sound[] MusicSounds;
     public Sound[] SfxSounds;
+    public GameObject tempAudio;
 
     private void Awake()
     {
@@ -41,7 +42,7 @@ public class AudioManager : NetworkBehaviour
         }
         else
         {
-            GameObject tempAudio=new GameObject("tempAudio");
+            tempAudio=new GameObject("tempAudio");
             tempAudio.transform.position=pos;
             AudioSource audioSource= tempAudio.AddComponent<AudioSource>();
             audioSource.spatialBlend=sonsLocale;

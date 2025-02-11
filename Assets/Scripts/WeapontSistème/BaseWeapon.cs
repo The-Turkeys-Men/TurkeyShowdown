@@ -64,7 +64,10 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     private float _throwSpeedThreshold = 0.2f;
 
     [SerializeField] private string _nomTir;
-     [SerializeField] private string _nomLancer;
+    [SerializeField] private string _nomLancer;
+    [SerializeField] private string _nomColition;
+     [SerializeField] private string _nomHit;
+
     
     private void Awake()
     {
@@ -111,6 +114,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         {
             _isDespawning = true;
             GetComponent<NetworkObject>().Despawn(true);
+            AudioManager.Instance.PlaySFX(_nomColition,transform.position);
             DebuggerConsole.Instance.LogClientRpc("Weapon throw touched " + other.gameObject.name);
             if (other.TryGetComponent(out HealthComponent healthComponent))
             {
@@ -239,6 +243,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                     {
                         playerRigidbody.AddForce(-direction * WallHitBoost, ForceMode2D.Impulse);
                         appliedWallboost = true;
+
                         continue;
                     }
                     
@@ -253,7 +258,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                     }
                     
                     healthComponent2.DamageServerRpc(Damage, LastOwner.GetNetworkObjectId());
-                        
+                    AudioManager.Instance.PlaySFX(_nomHit,transform.position);
                     if (collider.attachedRigidbody)
                     {
                         if (collider.attachedRigidbody.TryGetComponent(out KnockbackHandler knockbackHandler))

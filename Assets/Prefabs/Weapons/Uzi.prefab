@@ -150,6 +150,8 @@ MonoBehaviour:
     m_InternalValue: 0
   _nomTir: tirUzi
   _nomLancer: lancer
+  _nomColition: colition
+  _nomHit: 
 --- !u!50 &4640402740232878089
 Rigidbody2D:
   serializedVersion: 5

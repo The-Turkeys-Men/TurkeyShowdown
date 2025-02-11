@@ -6,6 +6,7 @@ public class ObstacleParticleSpawner : MonoBehaviour
 {
     public GameObject EnterParticlePrefab;
     public GameObject ExitParticlePrefab;
+    [SerializeField] private string _nomSFX;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -14,6 +15,7 @@ public class ObstacleParticleSpawner : MonoBehaviour
             return;
         }
         Instantiate(EnterParticlePrefab, other.transform.position, Quaternion.identity);
+        AudioManager.Instance.PlaySFX(_nomSFX,transform.position);
     }
 
     private void OnTriggerExit2D(Collider2D other)
