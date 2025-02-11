@@ -1,14 +1,15 @@
 using System;
+using UnityEngine.Serialization;
 
 [System.Serializable]
 public class PlayerJSON
 {
-    public int id;
-    public string pseudo;
-    public int highScore;
-    public int[] scoreTable;
-    public int nbrVictory;
-    public int nbrDefeat;
-    public string[] skins;
-    public string color;
+    public int Id;
+    public string Pseudo;
+    public int HighScore;
+    public int[] ScoreTable;
+    public int NbrVictory;
+    public int NbrDefeat;
+    public string[] Skins;
+    public string Color;
 }

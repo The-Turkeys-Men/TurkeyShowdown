@@ -149,7 +149,7 @@ public class PlayerSpawner : NetworkBehaviour
         }
         
         NewPlayer = Instantiate(_playerPrefab, _playerSpawnPoint[Random.Range(0,_playerSpawnPoint.Length)].transform);
-        NewPlayer.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
+        NewPlayer.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
         NewPlayer.GetComponent<HealthComponent>().OnDeath.AddListener((playerObjectId) =>
         {
             //OnDeathClientRpc(playerObjectId);

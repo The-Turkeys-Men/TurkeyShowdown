@@ -48,10 +48,14 @@ public class receivingJSON : NetworkBehaviour
            else
            {
                string jsonval = request.downloadHandler.text;
+               
                Debug.Log("Received JSON: " + jsonval);
-       
+               
+               Debug.Log("Trying without trim from json: " + JsonUtility.FromJson<PlayerJSON>(jsonval));
+               
                // Remove any invisible characters
                jsonval = jsonval.Trim().Replace("\uFEFF", "");
+               Debug.Log("Json trimmed: " + jsonval);
        
                try
                {
