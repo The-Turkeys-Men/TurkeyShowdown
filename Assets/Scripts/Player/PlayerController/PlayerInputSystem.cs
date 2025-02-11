@@ -60,7 +60,14 @@ public class PlayerInputSystem : NetworkBehaviour
 
    public  void OnMove(InputAction.CallbackContext context)
     {
-        _playerController.OnMove(context.ReadValue<Vector2>());
+        if (context.canceled)
+        {
+            _playerController.OnMoveCanceled();
+        }
+        else
+        {
+            _playerController.OnMove(context.ReadValue<Vector2>());
+        }
     }
 
     #endregion
