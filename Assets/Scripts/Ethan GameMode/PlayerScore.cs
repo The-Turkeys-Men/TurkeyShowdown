@@ -2,7 +2,8 @@ using System;
 using Unity.Netcode;
 using Unity.Collections;
 
-public struct PlayerScore : INetworkSerializable, IEquatable<PlayerScore>
+[Serializable]
+public class PlayerScore : INetworkSerializable, IEquatable<PlayerScore>
 {
     public ulong PlayerId;
     public FixedString64Bytes PlayerName;
