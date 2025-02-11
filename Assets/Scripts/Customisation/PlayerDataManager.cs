@@ -1,19 +1,16 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Customisation;
-using Debugger;
 using Unity.Netcode;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class PlayerDataManager : NetworkBehaviour
 {
     public static PlayerDataManager Datainstance;
     public NetworkVariable<List<PlayerDataNetworkable>> playerDatas = new();
-    
+
+    public NetworkVariable<List<int>> playerScores = new();
     
     public receivingJSON _receivingJSON;
     public JSONSender _jsonSender;
@@ -82,12 +79,20 @@ public class PlayerDataManager : NetworkBehaviour
         };
         Debug.Log("Created PlayerDataNetworkable for clientID: " + clientID);
     
+        AddingPlayerJsonDataServerRpc(clientID, playerDataNetworkable);
+        
+        
+    }
+
+    [Rpc(SendTo.Server, RequireOwnership = false)]
+    private void AddingPlayerJsonDataServerRpc(ulong clientID, PlayerDataNetworkable newData)
+    {
         bool replacedData = false;
         for (int i = 0; i < playerDatas.Value.Count; i++)
         {
             if (playerDatas.Value[i].ClientId == clientID)
             {
-                playerDatas.Value[i] = playerDataNetworkable;
+                playerDatas.Value[i] = newData;
                 replacedData = true;
                 Debug.Log("Replaced existing player data for clientID: " + clientID);
                 break;
@@ -96,12 +101,12 @@ public class PlayerDataManager : NetworkBehaviour
     
         if (!replacedData)
         {
-            playerDatas.Value.Add(playerDataNetworkable);
+            playerDatas.Value.Add(newData);
             Debug.Log("Added new player data for clientID: " + clientID);
         }
         
-        Debug.Log("Received JSON with pseudo: " + playerJson.Result.pseudo);
-        RefreshAllPlayersServerRpc();
+        Debug.Log("Received JSON with pseudo: " + newData.pseudo);
+        RefreshAllPlayersClientRpc();
     }
 
     [Rpc(SendTo.Server, RequireOwnership = false)]

@@ -63,7 +63,7 @@ public class LeaderBoardHUDManager : NetworkBehaviour
             Debug.LogError("[LeaderBoardHUDManager] Panel not assigned!");
             return;
         }
-
+        
         List<PlayerScore> playerScores = DeathMatchManager.GetInstance().PlayerScores.Value;
         if (playerScores.Count == 0)
         {
@@ -74,21 +74,26 @@ public class LeaderBoardHUDManager : NetworkBehaviour
         }
 
         playerScores = playerScores.OrderByDescending(ps => ps.Score).ToList();
+        
+        foreach (var playerScore in playerScores.ToList())
+        {
+            Debug.Log($"Pseudo detected with id {playerScore.PlayerId}: " + PlayerDataManager.Datainstance?.GetPlayerData(playerScore.PlayerId)?.pseudo);
+        }
 
         ulong localPlayerId = NetworkManager.Singleton.LocalClientId;
         int playerRank = playerScores.FindIndex(ps => ps.PlayerId == localPlayerId);
 
         // Récupérer le pseudo du joueur à partir de PlayerDataManager
-        string playerName = (PlayerDataManager.Datainstance?.GetPlayerData(localPlayerId)?.pseudo).ToString() ?? "Player " + localPlayerId;
-        Debug.Log($"[LeaderBoardHUDManager] Updating UI for player {localPlayerId}: {playerName}");
+        string playerName = (PlayerDataManager.Datainstance?.GetPlayerData(localPlayerId)?.pseudo).ToString();
 
         _panel.CurrentPlaceText.text = playerRank == -1 
             ? "Unranked" 
             : $"#{playerRank + 1} {playerName} - {playerScores[playerRank].Score}";
 
-        string firstPlaceName = (PlayerDataManager.Datainstance?.GetPlayerData(playerScores[0].PlayerId)?.pseudo).ToString() ?? "Player " + playerScores[0].PlayerId;
+        string firstPlaceName = (PlayerDataManager.Datainstance?.GetPlayerData(playerScores[0].PlayerId)?.pseudo).ToString();
+        string secondPlaceName = (PlayerDataManager.Datainstance?.GetPlayerData(playerScores[1].PlayerId)?.pseudo).ToString();
         _panel.FirstPlaceText.text = playerRank == 0 && playerScores.Count > 1 
-            ? $"#2 {PlayerDataManager.Datainstance?.GetPlayerData(playerScores[1].PlayerId)?.pseudo ?? "Player " + playerScores[1].PlayerId} - {playerScores[1].Score}" 
+            ? $"#2 {secondPlaceName} - {playerScores[1].Score}" 
             : $"#1 {firstPlaceName} - {playerScores[0].Score}";
 
         UpdateLeaderboardClientRpc(_panel.FirstPlaceText.text, _panel.CurrentPlaceText.text);
