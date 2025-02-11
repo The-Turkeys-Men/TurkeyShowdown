@@ -22,10 +22,10 @@ public class TestLeaderBoard : NetworkBehaviour
 
     private void InitializePlayerScores()
     {
-        // Simuler quelques joueurs avec des scores initiaux
-        playerScores.Add(new PlayerScore { PlayerId = 1, PlayerName = "Player1", Score = 0 });
-        playerScores.Add(new PlayerScore { PlayerId = 2, PlayerName = "Player2", Score = 0 });
-        playerScores.Add(new PlayerScore { PlayerId = 3, PlayerName = "Player3", Score = 0 });
+        // Simuler quelques joueurs avec des scores initiaux et des pseudos factices
+        playerScores.Add(new PlayerScore { PlayerId = 1, PlayerName = "Jojo", Score = 0 });
+        playerScores.Add(new PlayerScore { PlayerId = 2, PlayerName = "NICOLAS", Score = 0 });
+        playerScores.Add(new PlayerScore { PlayerId = 3, PlayerName = "LeH", Score = 0 });
 
         // Mettre à jour la liste des scores dans le DeathMatchManager
         DeathMatchManager.GetInstance().PlayerScores.Value = playerScores;
