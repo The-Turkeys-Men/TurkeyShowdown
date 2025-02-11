@@ -133,6 +133,11 @@ MonoBehaviour:
   <ProjectilePrefab>k__BackingField: {fileID: 0}
   <ProjectileSpeed>k__BackingField: 0
   <MaxLifetime>k__BackingField: 0
+  <IsExplosive>k__BackingField: 0
+  <ExplosionDamage>k__BackingField: 0
+  <ExplosionRange>k__BackingField: 0
+  <ExplosionSelfKnockback>k__BackingField: 0
+  <ExplosionKnockback>k__BackingField: 0
   <MaxDistance>k__BackingField: 15
   <MeleeRange>k__BackingField: {x: 0, y: 0}
   <WallHitBoost>k__BackingField: 0
@@ -141,6 +146,13 @@ MonoBehaviour:
   Visuals: {fileID: 7812902076482580572}
   IsThrowed:
     m_InternalValue: 0
+  ShouldHide:
+    m_InternalValue: 0
+  _nomTir: tirUzi
+  _nomLancer: lancer
+  _nomColition: colition
+  _nomHit: 
+  baseVolume: 0.5
 --- !u!50 &4640402740232878089
 Rigidbody2D:
   serializedVersion: 5

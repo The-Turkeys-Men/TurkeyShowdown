@@ -62,6 +62,16 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
 
     private bool _isDespawning = false;
     private float _throwSpeedThreshold = 0.2f;
+
+    [SerializeField] private string _nomTir;
+    [SerializeField] private string _nomLancer;
+    [SerializeField] private string _nomColition;
+     [SerializeField] private string _nomHit;
+
+     [SerializeField] private float baseVolume;
+
+
+
     
     private void Awake()
     {
@@ -92,6 +102,11 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
             return;
         }
 
+        if (other.isTrigger)
+        {
+            return;
+        }
+
         if (!IsThrowed.Value)
         {
             return;
@@ -103,6 +118,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         {
             _isDespawning = true;
             GetComponent<NetworkObject>().Despawn(true);
+            AudioManager.Instance.PlaySFX(_nomColition,transform.position,baseVolume);
             DebuggerConsole.Instance.LogClientRpc("Weapon throw touched " + other.gameObject.name);
             if (other.TryGetComponent(out HealthComponent healthComponent))
             {
@@ -168,6 +184,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 break;
             }
             case 0:
+                
                 Debug.Log("Out of Ammo");
                 break;
         }
@@ -175,6 +192,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     
     public virtual void Shoot()
     {
+        Rigidbody2D playerRigidbody = transform.parent.GetComponentInParent<Rigidbody2D>();
         Vector2 direction = transform.right;
         var teamComponent = LastOwner.GetComponent<TeamComponent>();
         int teamIDValue = (teamComponent)? teamComponent.TeamID.Value : -1;
@@ -193,8 +211,16 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                     healthComponent.DamageServerRpc(Damage, LastOwner.GetNetworkObjectId());
                 }
                 
+                if (raycastResult && raycastResult.collider.attachedRigidbody)
+                {
+                    if (raycastResult.collider.attachedRigidbody.TryGetComponent(out KnockbackHandler knockbackHandler))
+                    {
+                        knockbackHandler.ApplyKnockbackServerRpc(direction, KnockbackForce);
+                    }
+                }
+                
                 Vector2 endPoint;
-                if(raycastResult==true)
+                if(raycastResult)
                 {
                     endPoint = raycastResult.point;
                 }
@@ -209,8 +235,22 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                 var overlapResult = Physics2D.OverlapBoxAll(ShootPoint.position, MeleeRange, ShootPoint.eulerAngles.z, 
                     (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("World")));
 
+                bool appliedWallboost = false;
                 foreach (Collider2D collider in overlapResult)
                 {
+                    if (collider.isTrigger)
+                    {
+                        continue;
+                    }
+                    
+                    if (collider.gameObject.layer == LayerMask.NameToLayer("World") && !appliedWallboost)
+                    {
+                        playerRigidbody.AddForce(-direction * WallHitBoost, ForceMode2D.Impulse);
+                        appliedWallboost = true;
+
+                        continue;
+                    }
+                    
                     if (collider.TryGetComponent(out TeamComponent otherTeamComponent) && teamIDValue == otherTeamComponent.TeamID.Value)
                     {
                         continue;
@@ -222,31 +262,24 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
                     }
                     
                     healthComponent2.DamageServerRpc(Damage, LastOwner.GetNetworkObjectId());
-                        
+                    AudioManager.Instance.PlaySFX(_nomHit,transform.position,baseVolume);
                     if (collider.attachedRigidbody)
                     {
-                        var colliderNetworkObject = collider.attachedRigidbody.GetComponent<NetworkObject>();
-                        var ownerClientId = colliderNetworkObject.OwnerClientId;
-
-                        ApplyKnockbackClientRpc(colliderNetworkObject.NetworkObjectId, direction, RpcTarget.Single(ownerClientId, RpcTargetUse.Temp));
+                        if (collider.attachedRigidbody.TryGetComponent(out KnockbackHandler knockbackHandler))
+                        {
+                            knockbackHandler.ApplyKnockbackServerRpc(direction, KnockbackForce);
+                        }
                     }
                 }
                 
                 break;
         }
+        AudioManager.Instance.PlaySFX(_nomTir,transform.position,baseVolume);
         FireRateTimer = FireRate;
         OnShootServerRpc();
-        Rigidbody2D playerRigidbody = transform.parent.GetComponentInParent<Rigidbody2D>();
         playerRigidbody.AddForce(-direction * RecoilForce, ForceMode2D.Impulse);
         
         LastOwner.GetComponent<AnimScript>().StartAnim();
-    }
-
-    [Rpc(SendTo.SpecifiedInParams, AllowTargetOverride = true)]
-    private void ApplyKnockbackClientRpc(ulong playerObjectId, Vector2 direction, RpcParams rpcParams = default)
-    {
-        NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject);
-        playerObject.GetComponent<Rigidbody2D>()?.AddForce(direction * KnockbackForce, ForceMode2D.Impulse);
     }
 
     [Rpc(SendTo.Server)]
@@ -261,9 +294,10 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         GameObject tempTrainé=new GameObject("tempTrainé");
         DespawnTraine despawnTraine = tempTrainé.AddComponent<DespawnTraine>();
         tempTrainé.transform.position=Vector3.zero;
+        despawnTraine.StartWidth = 0.15f;
         LineRenderer lineRenderer = tempTrainé.AddComponent<LineRenderer>();
         lineRenderer.material = new(TrailMaterial);
-        lineRenderer.material.color=Color.black;
+        lineRenderer.material.color= new Color(0, 0, 0, 0.5f);
         lineRenderer.SetPosition(0, ShootPoint.position);
         lineRenderer.SetPosition(1, endPoint);
     }

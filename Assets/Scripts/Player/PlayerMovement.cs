@@ -6,10 +6,13 @@ public class PlayerMovement : NetworkBehaviour
     public float MaxWalkSpeed = 7f; // Max walking speed
     public float Acceleration = 15f;
     public float Friction = 3f;
+    public float TimePas;
 
     private Rigidbody2D _rigidBody;
 
     private Vector2 _moveDirection;
+
+    [SerializeField]float baseVolume;
     
     private void Awake()
     {
@@ -49,8 +52,14 @@ public class PlayerMovement : NetworkBehaviour
         if (movementDirection.magnitude > 0)
         {
             movementDirection.Normalize();
+            if((TimePas-=Time.deltaTime)<=0)
+            {
+                AudioManager.Instance.PlaySFX("bruisDePas",transform.position,baseVolume);
+                TimePas=0.3f;
+            }
+            
         }
-
+        
         // Get the current velocity of the rigidbody
         Vector2 velocity = _rigidBody.linearVelocity;
         float projectedSpeed = Vector2.Dot(velocity, movementDirection);
@@ -58,6 +67,7 @@ public class PlayerMovement : NetworkBehaviour
         // Apply a force only if the projected speed is less than the max speed or if the speed is negative (slowing down)
         if (projectedSpeed < MaxWalkSpeed || projectedSpeed < 0)
         {
+            
             _rigidBody.AddForce(movementDirection * Acceleration, ForceMode2D.Force);
         }
     }

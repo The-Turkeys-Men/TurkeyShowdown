@@ -6,6 +6,7 @@ using UnityEngine.Events;
 public class HealthPack : NetworkBehaviour, IGrabbable
 {
     [SerializeField] private int _healAmount = 25;
+    [SerializeField] private float baseVolume;
     
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -17,6 +18,7 @@ public class HealthPack : NetworkBehaviour, IGrabbable
         DebuggerConsole.Instance.LogClientRpc("HealthPack grab on server");
         OnGrab.Invoke();
         GetComponent<NetworkObject>().Despawn(true);
+        AudioManager.Instance.PlaySFX("soin",transform.position, baseVolume);
     }
 
     public UnityEvent OnGrab { get; set; } = new();
