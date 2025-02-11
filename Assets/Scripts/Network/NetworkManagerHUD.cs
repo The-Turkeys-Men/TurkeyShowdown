@@ -8,7 +8,12 @@ public class NetworkManagerHUD : MonoBehaviour
     {
         if (Application.isBatchMode)
         {
-            NetworkManager.Singleton.StartServer();
+            OnStartServer();
+        }
+
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            OnStartClient();
         }
     }
 
