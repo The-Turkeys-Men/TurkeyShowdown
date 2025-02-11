@@ -11,9 +11,9 @@ using UnityEngine.Serialization;
 
 public class PlayerDataManager : NetworkBehaviour
 {
+    public static PlayerDataManager Datainstance;
     public NetworkVariable<List<PlayerDataNetworkable>> playerDatas = new();
     
-    public static PlayerDataManager Datainstance;
     
     public receivingJSON _receivingJSON;
     public JSONSender _jsonSender;
@@ -51,8 +51,12 @@ public class PlayerDataManager : NetworkBehaviour
         var players = NetworkManager.Singleton.ConnectedClients.Keys;
         foreach (var player in players)
         {
-            Debug.Log("Refreshing player with clientId: " + player);
-            NetworkManager.ConnectedClients[player].PlayerObject.GetComponent<ColorChanger>().ChangeColor(GetPlayerData(player).color.ToString());
+            var playerObject = NetworkManager.ConnectedClients[player].PlayerObject;
+            if (playerObject)
+            {
+                playerObject.GetComponent<ColorChanger>().ChangeColor(GetPlayerData(player).color.ToString());
+                Debug.Log("Refreshing player with clientId: " + player);
+            }
         }
         Debug.Log("Finished refreshing all players");
     }
@@ -67,14 +71,14 @@ public class PlayerDataManager : NetworkBehaviour
         PlayerDataNetworkable playerDataNetworkable = new()
         {
             ClientId = clientID,
-            id = playerJson.Result.Id,
-            pseudo = playerJson.Result.Pseudo,
-            highScore = playerJson.Result.HighScore,
-            nbrVictory = playerJson.Result.NbrVictory,
-            nbrDefeat = playerJson.Result.NbrDefeat,
-            color = playerJson.Result.Color,
-            scoreTable = playerJson.Result.ScoreTable.ToList(),
-            skins = playerJson.Result.Skins.ToList()
+            id = playerJson.Result.id,
+            pseudo = playerJson.Result.pseudo,
+            highScore = playerJson.Result.highScore,
+            nbrVictory = playerJson.Result.nbrVictory,
+            nbrDefeat = playerJson.Result.nbrDefeat,
+            color = playerJson.Result.color,
+            scoreTable = playerJson.Result.scoreTable.ToList(),
+            skins = playerJson.Result.skins.ToList()
         };
         Debug.Log("Created PlayerDataNetworkable for clientID: " + clientID);
     
@@ -96,7 +100,7 @@ public class PlayerDataManager : NetworkBehaviour
             Debug.Log("Added new player data for clientID: " + clientID);
         }
         
-        Debug.Log("Received JSON with pseudo: " + playerJson.Result.Pseudo);
+        Debug.Log("Received JSON with pseudo: " + playerJson.Result.pseudo);
         RefreshAllPlayersServerRpc();
     }
 

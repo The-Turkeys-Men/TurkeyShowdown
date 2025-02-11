@@ -175,3 +175,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   _armorAmount: 25
+  baseVolume: 0.5

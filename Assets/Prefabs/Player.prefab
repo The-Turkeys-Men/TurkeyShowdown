@@ -5087,13 +5087,13 @@ GameObject:
   - component: {fileID: 3577906075511020807}
   - component: {fileID: 8629905100730461844}
   - component: {fileID: 672106109479174921}
-  - component: {fileID: 6925587170478758730}
   - component: {fileID: 3198498259834177743}
   - component: {fileID: 6331858361179706532}
   - component: {fileID: 2004033416341813864}
   - component: {fileID: 3069364741415985515}
   - component: {fileID: 4630353868013684955}
   - component: {fileID: 2458051151783609723}
+  - component: {fileID: 384624754579555456}
   m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
@@ -5292,6 +5292,7 @@ MonoBehaviour:
   _playerMovement: {fileID: -1648982276250928982}
   _playerWeapon: {fileID: 3260235163975166542}
   _playerGrappler: {fileID: 2332458254201433568}
+  _PlayerHud: {fileID: 9213160546116991034}
   _rotationPivot: {fileID: 4492341432774784954}
   InputActivated: 1
 --- !u!114 &-1648982276250928982
@@ -5311,6 +5312,7 @@ MonoBehaviour:
   Acceleration: 7
   Friction: 0
   TimePas: 0
+  baseVolume: 0
 --- !u!114 &3260235163975166542
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5329,6 +5331,7 @@ MonoBehaviour:
   EquipedWeapon: {fileID: 0}
   WeaponHolder: {fileID: 5316643467393662266}
   Dizziness: 0
+  baseVolume: 0
 --- !u!114 &2332458254201433568
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5350,6 +5353,7 @@ MonoBehaviour:
   _endWidth: 0.08
   _grappleRange: 6
   _neckStartPoint: {fileID: 107553869481509861}
+  baseVolume: 0
 --- !u!114 &3577906075511020807
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5381,6 +5385,7 @@ MonoBehaviour:
       m_Calls: []
   particleSystemDamage: {fileID: 5926074110812541429}
   _isPlayer: 1
+  baseVolume: 0
 --- !u!114 &8629905100730461844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5412,22 +5417,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   TeamID:
     m_InternalValue: -1
---- !u!114 &6925587170478758730
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1766801901717005780}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0897bb3b81e53d0498a54e5c966ea2aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  LeaderBoardTexts:
-  - {fileID: 8242361243342975319}
-  CurrentPlaceText: {fileID: 5768269400879962745}
 --- !u!120 &3198498259834177743
 LineRenderer:
   serializedVersion: 2
@@ -5643,6 +5632,21 @@ MonoBehaviour:
   _RespawnButton: {fileID: 7444264353650559280}
   timer: 3
   DeathScreen: {fileID: 5054855646893413362}
+--- !u!114 &384624754579555456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766801901717005780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33409eabbb2d20643951f9c9ff18b19b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  FirstPlaceText: {fileID: 8242361243342975319}
+  CurrentPlaceText: {fileID: 5768269400879962745}
 --- !u!1 &2121137832922311993
 GameObject:
   m_ObjectHideFlags: 0
@@ -6141,6 +6145,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &9213160546116991034 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3599120005504618615, guid: 764b342f154ae8244824846e3e6c285c, type: 3}
+  m_PrefabInstance: {fileID: 5632063764743891021}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8783643633002865490
 PrefabInstance:
   m_ObjectHideFlags: 0
