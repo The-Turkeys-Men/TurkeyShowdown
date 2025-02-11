@@ -2,13 +2,13 @@ using System;
 using System.Threading.Tasks;
 using Debugger;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class receivingJSON : MonoBehaviour
+public class receivingJSON : NetworkBehaviour
 {
-    private string url = "http://localhost/PHP/playerJSONToUnity.php";
-    public TextMeshProUGUI text;
+    private string url = "http://192.168.1.237/PHP/playerJSONToUnity.php";
     
     private void Start()
     {
@@ -43,17 +43,20 @@ public class receivingJSON : MonoBehaviour
            await request.SendWebRequest();
            if (request.result != UnityWebRequest.Result.Success)
            {
-               text.text = "tmauvais";
                return null;
            }
            else
            {
                string jsonval = request.downloadHandler.text;
+               
                Debug.Log("Received JSON: " + jsonval);
-
+               
+               Debug.Log("Trying without trim from json: " + JsonUtility.FromJson<PlayerJSON>(jsonval));
+               
                // Remove any invisible characters
                jsonval = jsonval.Trim().Replace("\uFEFF", "");
-
+               Debug.Log("Json trimmed: " + jsonval);
+       
                try
                {
                    PlayerJSON playerJSON = JsonUtility.FromJson<PlayerJSON>(jsonval);
