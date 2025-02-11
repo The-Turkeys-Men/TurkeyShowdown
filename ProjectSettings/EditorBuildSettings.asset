@@ -35,6 +35,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/DevScenes/PanelleSons.unity
     guid: 5f1702988862c23469a7962dcee45939
+  - enabled: 1
+    path: Assets/Scenes/DevScenes/AudioKil.unity
+    guid: 028ec8a120f7b1541b1b5d6ef52cf4b2
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

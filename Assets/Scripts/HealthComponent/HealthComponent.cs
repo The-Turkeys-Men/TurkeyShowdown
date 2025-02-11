@@ -25,9 +25,14 @@ public class HealthComponent : NetworkBehaviour
     public bool IsDead => Health.Value <= 0;
     
     [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
-    private void OnDeathClientRpc()
+    private void OnDeathClientRpc(ulong killerId)
     {
         OnDeath.Invoke(gameObject.GetNetworkObjectId());
+
+        if (NetworkManager.LocalClientId == killerId)
+        {
+            AudioManager.Instance.PlaySFX("audioKil",transform.position,1);
+        }
     }
 
     public void Heal(int amount)
@@ -87,13 +92,13 @@ public class HealthComponent : NetworkBehaviour
         }
         if (Health.Value <= 0)
         {
+            var killerId = senderObject.GetComponent<NetworkObject>().OwnerClientId;
             PlayDamageParticleClientRpc(30);
             AudioManager.Instance.PlaySFX("mort",transform.position,baseVolume);
             OnDeath.Invoke(NetworkObjectId);
-            OnDeathClientRpc();
+            OnDeathClientRpc(killerId);
             if (_isPlayer)
             {
-                var killerId = senderObject.GetComponent<NetworkObject>().OwnerClientId;
                 ((DeathMatchManager)DeathMatchManager.GetInstance()).OnPlayerKill(killerId);
                 DebuggerConsole.Instance.LogClientRpc("Player killed by: " + senderObject.name);
             }
