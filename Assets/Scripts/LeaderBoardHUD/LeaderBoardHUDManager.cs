@@ -21,17 +21,6 @@ public class LeaderBoardHUDManager : NetworkBehaviour
             Debug.LogWarning("[LeaderBoardHUDManager] Duplicate instance detected. Destroying the new one.");
             DestroyImmediate(gameObject);
         }
-
-        // Trouver le panneau automatiquement
-        _panel = GetComponentInChildren<LeaderBoardHUDPanel>(true);
-        if (_panel == null)
-        {
-            Debug.LogError("[LeaderBoardHUDManager] Panel not found in children!");
-        }
-        else
-        {
-            Debug.Log("[LeaderBoardHUDManager] Panel found and assigned.");
-        }
     }
 
     public void SetPanel(LeaderBoardHUDPanel newPanel)

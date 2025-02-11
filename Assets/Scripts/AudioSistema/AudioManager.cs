@@ -17,7 +17,8 @@ public class AudioManager : NetworkBehaviour
 
     public Sound[] MusicSounds;
     public Sound[] SfxSounds;
-    public GameObject tempAudio;
+    
+    [HideInInspector] public GameObject tempAudio;
 
     private void Awake()
     {
