@@ -3722,7 +3722,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &352947996
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4067,10 +4067,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   maxGameTime: 300
   scoreToWin: 20
-  disconnectDelay: 30
-  scorePanel: {fileID: 0}
-  resultText: {fileID: 0}
-  disconnectButton: {fileID: 0}
 --- !u!4 &381450459
 Transform:
   m_ObjectHideFlags: 0
@@ -6734,8 +6730,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  LeaderBoardTexts: []
-  CurrentPlaceText: {fileID: 0}
 --- !u!4 &545810186
 Transform:
   m_ObjectHideFlags: 0
@@ -12826,6 +12820,7 @@ MonoBehaviour:
   - {fileID: 1748061098}
   - {fileID: 2045731868}
   - {fileID: 680569174}
+  _playButton: {fileID: 0}
   _spawnWeapon: {fileID: 1681594491691932344, guid: 2abad833c9466ea46bdeb0feb71806fd, type: 3}
 --- !u!114 &1011316963
 MonoBehaviour:
@@ -31848,7 +31843,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -41.524, y: -21.309}
+  m_AnchoredPosition: {x: -41.523987, y: -21.309021}
   m_SizeDelta: {x: 66.1143, y: 33.3772}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1996828090

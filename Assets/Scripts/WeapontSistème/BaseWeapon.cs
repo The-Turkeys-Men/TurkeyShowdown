@@ -41,6 +41,8 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     [field:Header("raycast")]
     [field:SerializeField] public float MaxDistance { get; set; }
 
+    [SerializeField] public Color RaycastColor;
+
     [field:Header("Melee")]
     [field:SerializeField] public Vector2 MeleeRange { get; set; }
     [field:SerializeField] public float WallHitBoost { get; set; }
@@ -297,7 +299,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         despawnTraine.StartWidth = 0.15f;
         LineRenderer lineRenderer = tempTrainé.AddComponent<LineRenderer>();
         lineRenderer.material = new(TrailMaterial);
-        lineRenderer.material.color= new Color(0, 0, 0, 0.5f);
+        lineRenderer.material.color = RaycastColor;
         lineRenderer.SetPosition(0, ShootPoint.position);
         lineRenderer.SetPosition(1, endPoint);
     }
