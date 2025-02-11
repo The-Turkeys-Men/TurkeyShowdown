@@ -11,7 +11,7 @@ public class LeaderBoardHUDPanel : NetworkBehaviour
     {
         base.OnNetworkSpawn();
         
-        if (IsClient)
+        if (IsOwner)
         {
             Debug.Log("[LeaderBoardHUDPanel] Client connected. Assigning panel to LeaderBoardHUDManager.");
             

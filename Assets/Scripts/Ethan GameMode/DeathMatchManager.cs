@@ -140,8 +140,10 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
         if (playerScore.PlayerId == killerId)
         {
             playerScore.Score++;
+            
             PlayerScores.SetDirty(true);
 
+            Debug.Log(playerScore.Score + " points for player " + killerId);
             if (playerScore.Score >= ScoreToWin)
             {
                 OnWin(killerId);
