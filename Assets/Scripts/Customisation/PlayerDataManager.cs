@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Customisation;
+using Network;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -10,21 +11,34 @@ public class PlayerDataManager : NetworkBehaviour
 {
     public static PlayerDataManager Datainstance;
     
-    public NetworkVariable<List<PlayerDataNetworkable>> PlayerDataList = new(new List<PlayerDataNetworkable>());
-    
     public receivingJSON _receivingJSON;
     public JSONSender _jsonSender;
 
     public PlayerDataNetworkable GetPlayerData(ulong clientId)
     {
-        foreach (PlayerDataNetworkable playerData in PlayerDataList.Value.ToList())
+        NetworkObject playerObject = NetworkManager.ConnectedClients[clientId].PlayerObject;
+
+        if (!playerObject)
         {
-            if (clientId == playerData.ClientId)
-            {
-                return playerData;
-            }
+            return null;
         }
-        return null;
+
+        PlayerDataHolder playerDataHolder = playerObject.GetComponent<PlayerDataHolder>();
+        return playerDataHolder.GetPlayerData();
+    }
+
+    public void ApplyPlayerData(PlayerDataNetworkable playerData)
+    {
+        NetworkObject playerObject = NetworkManager.ConnectedClients[playerData.ClientId].PlayerObject;
+
+        if (!playerObject)
+        {
+            return;
+        }
+
+        PlayerDataHolder playerDataHolder = playerObject.GetComponent<PlayerDataHolder>();
+        playerDataHolder.SetPseudoServerRpc(playerData.pseudo.ToString());
+        playerDataHolder.SetColorServerRpc(playerData.color.ToString());
     }
     
     private void Awake()
@@ -64,7 +78,7 @@ public class PlayerDataManager : NetworkBehaviour
         await playerJson;
         Debug.Log("Received JSON data for clientID: " + clientID);
         
-        PlayerDataNetworkable playerDataNetworkable = new()
+        PlayerDataNetworkable playerData = new()
         {
             ClientId = clientID,
             id = playerJson.Result.id,
@@ -77,13 +91,14 @@ public class PlayerDataManager : NetworkBehaviour
         Debug.Log("Created PlayerDataNetworkable for clientID: " + clientID);
 
         Debug.Log("sending data");
-        AddingPlayerJsonDataServerRpc(clientID, playerDataNetworkable);
+        ApplyPlayerData(playerData);
+        
     }
     
     [Rpc(SendTo.Server, RequireOwnership = false)]
     private void AddingPlayerJsonDataServerRpc(ulong clientID, PlayerDataNetworkable newData)
     {
-        PlayerDataList.Value.Add(newData);
+        //PlayerDataList.Value.Add(newData);
         Debug.Log("AIOJEAFIOA Added player data to list for clientID: " + clientID);
 
         RefreshAllPlayersClientRpc();
