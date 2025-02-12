@@ -23,7 +23,6 @@ public class PlayerSpawner : NetworkBehaviour
         if (SpawnerInstance == null)
         { 
             SpawnerInstance = this; 
-            DontDestroyOnLoad(gameObject);
         }
         else
         {

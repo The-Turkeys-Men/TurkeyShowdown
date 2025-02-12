@@ -12,7 +12,7 @@ public class ColorChanger : NetworkBehaviour
 
     private async void Start()
     {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        if (Application.platform == RuntimePlatform.WebGLPlayer && IsOwner)
         {
             await OnStart();
         }

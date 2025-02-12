@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using MapVote;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -42,6 +43,10 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
         MaxGameTime = maxGameTime;
         ScoreToWin = scoreToWin;
         TimeLeft.Value = maxGameTime;
+        foreach (var connectedClient in NetworkManager.ConnectedClients)
+        {
+            OnClientConnected(connectedClient.Key);
+        }
     }
 
     public override void OnNetworkSpawn()
@@ -185,19 +190,20 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
         isGameActive = false;
         if (IsServer)
         {
-            Debug.Log("EndGame called, showing score panel.");
+            Debug.Log("[DeathMatchManager] EndGame called, showing score panel.");
             PlayerScore[] playerScoresArray = PlayerScores.Value.ToArray();
 
             if (ScorePanelManager.Instance != null)
             {
+                Debug.Log($"[DeathMatchManager] Calling ShowScorePanelClientRpc with {playerScoresArray.Length} players.");
                 ScorePanelManager.Instance.ShowScorePanelClientRpc(winnerId, playerScoresArray);
+                MapVoteManager.Instance?.StartMapVote();
             }
             else
             {
-                Debug.LogError("ScorePanelManager.Instance est NULL ! Assure-toi qu'il est bien instancié.");
+                Debug.LogError("[DeathMatchManager] ScorePanelManager.Instance is NULL!");
             }
 
-            // Réinitialiser la partie après un délai (exemple : 10 secondes)
             StartCoroutine(ResetGameAfterDelay(10f));
         }
     }
