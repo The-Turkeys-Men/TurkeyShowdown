@@ -9,8 +9,6 @@ public class PlayerDataManager : NetworkBehaviour
 {
     public static PlayerDataManager Datainstance;
     public NetworkVariable<List<PlayerDataNetworkable>> playerDatas = new();
-
-    public NetworkVariable<List<int>> playerScores = new();
     
     public receivingJSON _receivingJSON;
     public JSONSender _jsonSender;
@@ -93,6 +91,7 @@ public class PlayerDataManager : NetworkBehaviour
             if (playerDatas.Value[i].ClientId == clientID)
             {
                 playerDatas.Value[i] = newData;
+                playerDatas.SetDirty(true);
                 replacedData = true;
                 Debug.Log("Replaced existing player data for clientID: " + clientID);
                 break;

@@ -173,7 +173,7 @@ public class PlayerSpawner : NetworkBehaviour
         if (_spawnWeapon)
         {
             BaseWeapon newWeapon = Instantiate(_spawnWeapon, NewPlayer.transform.position, Quaternion.identity);
-            newWeapon.GetComponent<NetworkObject>().Spawn();
+            newWeapon.GetComponent<NetworkObject>().Spawn(true);
             NewPlayer.GetComponent<PlayerWeapon>().EquipWeapon(newWeapon);
             MakeThePlayerEquipWeaponRpc(NewPlayer.GetNetworkObjectId(), newWeapon.NetworkObjectId, 
                 RpcTarget.Single(NewPlayer.GetComponent<NetworkObject>().OwnerClientId, RpcTargetUse.Temp));

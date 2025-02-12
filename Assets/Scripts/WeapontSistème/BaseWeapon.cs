@@ -317,7 +317,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     {
         direction.Normalize();
         GameObject spawnedBullet = Instantiate(ProjectilePrefab, position, Quaternion.identity);
-        spawnedBullet.GetComponent<NetworkObject>().Spawn();
+        spawnedBullet.GetComponent<NetworkObject>().Spawn(true);
         var projectile = spawnedBullet.GetComponent<BaseProjectile>();
         projectile.Direction = direction;
         projectile.SenderObject = LastOwner;
