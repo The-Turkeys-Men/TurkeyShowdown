@@ -23,7 +23,7 @@ namespace Network
         {
             if (IsServer)
             {
-                SceneEventProgressStatus result = NetworkManager.Singleton.SceneManager.UnloadScene(currentScene);
+                NetworkManager.Singleton.SceneManager.UnloadScene(currentScene);
                 StartCoroutine(SwitchSceneCoroutine(sceneName));
             }
         }
@@ -31,7 +31,7 @@ namespace Network
         public IEnumerator SwitchSceneCoroutine(string sceneName)
         {
             yield return new WaitForSeconds(3);
-            NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
+            NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
             yield return null;
         }
     }

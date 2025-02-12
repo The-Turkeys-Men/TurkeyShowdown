@@ -127,6 +127,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4729949836816762818, guid: d1821a6d4f983394a87b9bb759b742dd, type: 3}
+      propertyPath: ConnectionData.Address
+      value: 127.0.0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 5458350895824441249, guid: d1821a6d4f983394a87b9bb759b742dd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
