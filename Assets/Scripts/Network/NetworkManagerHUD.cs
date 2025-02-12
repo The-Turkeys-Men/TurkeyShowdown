@@ -10,7 +10,6 @@ public class NetworkManagerHUD : MonoBehaviour
         if (Application.isBatchMode)
         {
             OnStartServer();
-            NetworkManager.Singleton.SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
         }
 
         if (Application.platform == RuntimePlatform.WebGLPlayer)
@@ -22,6 +21,7 @@ public class NetworkManagerHUD : MonoBehaviour
     public void OnStartServer()
     {
         NetworkManager.Singleton.StartServer();
+        NetworkManager.Singleton.SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
         gameObject.SetActive(false);
     }
     

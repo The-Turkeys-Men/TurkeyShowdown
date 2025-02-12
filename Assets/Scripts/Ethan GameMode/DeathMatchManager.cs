@@ -81,6 +81,12 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     {
         if (IsServer)
         {
+            if (PlayerScores.Value == null)
+            {
+                PlayerScores.Value = new List<PlayerScore>();
+            }
+            
+            Debug.Log("Player score is valid: " + PlayerScores.Value.Count);
             var playerScore = PlayerScores.Value.Find(ps => ps.PlayerId == clientId);
             if (playerScore.PlayerId == clientId)
             {
@@ -106,6 +112,11 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     {
         if (NetworkManager.Singleton.ConnectedClients.Count == 0)
         {
+            if (PlayerScores.Value == null)
+            {
+                PlayerScores.Value = new List<PlayerScore>();
+            }
+            
             isGameActive = false;
             TimeLeft.Value = MaxGameTime;
             PlayerScores.Value.Clear();
