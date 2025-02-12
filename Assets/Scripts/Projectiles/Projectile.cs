@@ -52,7 +52,6 @@ public class Projectile : BaseProjectile
         {
             return;
         }
-        
         _rigidbody.linearVelocity = Direction * Speed;
         _rigidbody.rotation = Mathf.Atan2(Direction.y, Direction.x) * Mathf.Rad2Deg;
         

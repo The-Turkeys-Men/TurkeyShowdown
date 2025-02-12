@@ -24,11 +24,6 @@ public class Mine : BaseProjectile
                 return;
             }
         }
-
-        if (other.gameObject == SenderObject)
-        {
-            return;
-        }
         
         if (other.transform.TryGetComponent(out HealthComponent healthComponent))
         {
@@ -56,7 +51,6 @@ public class Mine : BaseProjectile
         {
             return;
         }
-        
         _currentLifeTime += Time.deltaTime;
         if (_currentLifeTime >= MaxLifeTime)
         {

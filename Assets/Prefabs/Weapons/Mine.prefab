@@ -149,8 +149,8 @@ MonoBehaviour:
     m_InternalValue: 0
   ShouldHide:
     m_InternalValue: 0
-  _nomTir: PoseMine
-  _nomLancer: pauseMine
+  _nomTir: tirLanceMissil
+  _nomLancer: lancer
   _nomColition: 
   _nomHit: 
   baseVolume: 0.5
