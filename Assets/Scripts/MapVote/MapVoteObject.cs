@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,13 +24,13 @@ namespace MapVote
             _mapName.text = mapData.MapName;
             _mapImage.sprite = mapData.MapPreview;
             
-            mapVoteManager.MapVotes.OnValueChanged += (value, newValue) => UpdateVoteNumber(newValue);
+            mapVoteManager.MapVotes.OnDictionaryChanged += UpdateVoteNumber;
             
         }
 
         private void Start()
         {
-            UpdateVoteNumber(MapVoteManager.Instance.MapVotes.Value);
+            UpdateVoteNumber();
         }
 
         public void OnVote()
@@ -44,9 +45,9 @@ namespace MapVote
             GetComponentInChildren<Button>().interactable = false;
         }
 
-        private void UpdateVoteNumber(Dictionary<int, int> current)
+        private void UpdateVoteNumber(NetworkDictionaryEvent<int, int> changeEvent = default)
         {
-            int voteNumber = current[MapIndex];
+            int voteNumber = MapVoteManager.Instance.MapVotes[MapIndex];
             string textSuffix = voteNumber > 1 ? "s" : "";
             _voteButtonText.text = voteNumber + $" Vote{textSuffix}";
         }

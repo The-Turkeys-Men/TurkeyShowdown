@@ -629,6 +629,7 @@ MonoBehaviour:
   _mapName: {fileID: 512313380087968861}
   _mapImage: {fileID: 6366212510377917965}
   _voteButton: {fileID: 160547387728216660}
+  _voteButtonText: {fileID: 8444663876633994489}
 --- !u!114 &2330077368598444032
 MonoBehaviour:
   m_ObjectHideFlags: 0

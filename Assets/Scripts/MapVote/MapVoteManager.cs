@@ -13,12 +13,13 @@ namespace MapVote
         public static MapVoteManager Instance;
 
         public List<MapData> MapDatas = new();
-        
-        public NetworkVariable<Dictionary<int, int>> MapVotes = new(new Dictionary<int, int>());
+
+        public NetworkDictionary<int, int> MapVotes = new();
         
         private bool _isVoting;
         [SerializeField] private float _voteTime = 30f;
-        
+
+        [SerializeField] private Transform _mapVotePanel;
         [SerializeField] private Transform _mapVoteUIParent;
         [SerializeField] private MapVoteObject _mapVoteObjectPrefab;
         
@@ -36,20 +37,26 @@ namespace MapVote
                 return;
             }
             
+            _mapVotePanel.gameObject.SetActive(false);
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            base.OnNetworkSpawn();
+            
             if (IsServer)
             {
                 SetUpMapVoteServer();
             }
             
             SetUpMapVoteUI();
-            gameObject.SetActive(false);
         }
 
         private void SetUpMapVoteServer()
         {
             for (int i = 0; i < MapDatas.Count; i++)
             {
-                MapVotes.Value.Add(i, 0);
+                MapVotes.Add(i, 0);
             }
         }
         
@@ -72,28 +79,36 @@ namespace MapVote
 
         private void Update()
         {
-            if (!_isVoting)
+            if (!IsServer || !_isVoting)
             {
                 return;
             }
             
             _voteTime -= Time.deltaTime;
-            _timerText.text = $"Temps restant: {(int)_voteTime}";
+            UpdateTimerRpc((int)_voteTime);
             if (_voteTime <= 0)
             {
                 EndMapVote();
             }
         }
 
+        [Rpc(SendTo.ClientsAndHost)]
+        private void UpdateTimerRpc(int time)
+        {
+            _timerText.text = $"Temps restant: {time}";
+        }
+
         public void StartMapVote()
         {
+            Debug.Log("starting map vote");
             _isVoting = true;
         }
 
         [Rpc(SendTo.Server)]
         public void VoteForMapServerRpc(int mapIndex)
         {
-            MapVotes.Value[mapIndex]++;
+            MapVotes[mapIndex]++;
+            Debug.Log("Received vote for map " + mapIndex + " with now " + MapVotes[mapIndex] + " votes.");
         }
 
         private void EndMapVote()
@@ -102,9 +117,9 @@ namespace MapVote
             
             int highestVotes = int.MinValue;
             List<int> chosenMaps = new();
-            foreach (var mapIndex in MapVotes.Value.Keys)
+            foreach (var mapIndex in MapVotes.Keys)
             {
-                int currentMapVotes = MapVotes.Value[mapIndex];
+                int currentMapVotes = MapVotes[mapIndex];
                 if (currentMapVotes > highestVotes)
                 {
                     chosenMaps.Clear();
