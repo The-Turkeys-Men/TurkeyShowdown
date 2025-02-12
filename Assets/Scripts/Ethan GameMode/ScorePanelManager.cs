@@ -138,7 +138,7 @@ public class ScorePanelManager : NetworkBehaviour
         SetText(playerDisplay, "PlayerPosImage/PosText", rank.ToString());
 
         // Récupérer le pseudo du joueur à partir de PlayerDataManager
-        string playerName = (PlayerDataManager.Datainstance?.GetPlayerData(playerId)?.pseudo).ToString() ?? "Player " + playerId;
+        string playerName = (PlayerDataManager.Datainstance?.GetPlayerData(playerId).pseudo).ToString() ?? "Player " + playerId;
         Debug.Log($"[ScorePanelManager] Updating first player display for ID {playerId}: {playerName}");
         SetText(playerDisplay, "PlayerNameImage/NameText", playerName);
 

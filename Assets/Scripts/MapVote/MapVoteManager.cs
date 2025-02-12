@@ -146,7 +146,21 @@ namespace MapVote
                 networkObject.Despawn(true);
             }*/
             
+            DisconnectAndReconnectEveryoneRpc();
             NetworkSceneSwitcher.Instance.SwitchScene(gameObject.scene, MapDatas[nextMapIndex].SceneName);
+        }
+
+        [Rpc(SendTo.Everyone)]
+        public void DisconnectAndReconnectEveryoneRpc()
+        {
+            if (IsServer || IsHost)
+            {
+                return;
+            }
+            
+            Debug.Log("OOOOOOOOH DISCONNECTING EVERYONE");
+
+            NetworkSceneSwitcher.Instance.DisconnectAndReconnect();
         }
     }
 }

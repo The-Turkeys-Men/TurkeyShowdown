@@ -66,21 +66,21 @@ public class LeaderBoardHUDManager : NetworkBehaviour
         
         foreach (var playerScore in playerScores.ToList())
         {
-            Debug.Log($"Pseudo detected with id {playerScore.PlayerId}: " + PlayerDataManager.Datainstance?.GetPlayerData(playerScore.PlayerId)?.pseudo);
+            Debug.Log($"Pseudo detected with id {playerScore.PlayerId}: " + PlayerDataManager.Datainstance?.GetPlayerData(playerScore.PlayerId).pseudo);
         }
 
         ulong localPlayerId = NetworkManager.Singleton.LocalClientId;
         int playerRank = playerScores.FindIndex(ps => ps.PlayerId == localPlayerId);
 
         // Récupérer le pseudo du joueur à partir de PlayerDataManager
-        string playerName = (PlayerDataManager.Datainstance?.GetPlayerData(localPlayerId)?.pseudo).ToString();
+        string playerName = (PlayerDataManager.Datainstance?.GetPlayerData(localPlayerId).pseudo).ToString();
 
         _panel.CurrentPlaceText.text = playerRank == -1 
             ? "Unranked" 
             : $"#{playerRank + 1} {playerName} - {playerScores[playerRank].Score}";
 
-        string firstPlaceName = (PlayerDataManager.Datainstance?.GetPlayerData(playerScores[0].PlayerId)?.pseudo).ToString();
-        string secondPlaceName = (PlayerDataManager.Datainstance?.GetPlayerData(playerScores[1].PlayerId)?.pseudo).ToString();
+        string firstPlaceName = (PlayerDataManager.Datainstance?.GetPlayerData(playerScores[0].PlayerId).pseudo).ToString();
+        string secondPlaceName = (PlayerDataManager.Datainstance?.GetPlayerData(playerScores[1].PlayerId).pseudo).ToString();
         _panel.FirstPlaceText.text = playerRank == 0 && playerScores.Count > 1 
             ? $"#2 {secondPlaceName} - {playerScores[1].Score}" 
             : $"#1 {firstPlaceName} - {playerScores[0].Score}";
