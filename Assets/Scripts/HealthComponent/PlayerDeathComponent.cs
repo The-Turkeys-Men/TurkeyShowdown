@@ -41,6 +41,12 @@ namespace Health
             
             _rigidbody2D.linearVelocity = Vector2.zero;
             _rigidbody2D.excludeLayers = _originalExcludeLayers;
+            
+            if (!IsOwner)
+            {
+                return;
+            }
+            
             GetComponent<PlayerMovement>().Friction = _originalFriction;
             
             ShowAliveVisuals();
@@ -57,13 +63,15 @@ namespace Health
             
 
             _rigidbody2D.excludeLayers = ~(1 << LayerMask.NameToLayer("World"));
-            GetComponent<PlayerMovement>().Friction = 3;
-            GetComponent<PlayerMovement>().TryMove(Vector2.zero);
 
             if (!IsOwner)
             {
                 return;
             }
+            
+            GetComponent<PlayerMovement>().Friction = 3;
+            GetComponent<PlayerMovement>().TryMove(Vector2.zero);
+            
             respawnButton.enabled = true;
             KillFeedManager.Instance.AddKillServerRpc(killerObject.name, gameObject.name, 0);
             DebuggerConsole.Instance.LogServerRpc(killerObject.name + " addkill");

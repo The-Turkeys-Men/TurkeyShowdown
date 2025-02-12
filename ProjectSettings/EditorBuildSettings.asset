@@ -38,6 +38,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/DevScenes/Flo-Devroom/Flo-feat-MiniMap.unity
     guid: e5e0c17775c8f5c48a098c37279f958b
+  - enabled: 1
+    path: Assets/Scenes/DevScenes/TestMapVote/MapVote1.unity
+    guid: 3db229a66645a3e42a8de8e20170c6fd
+  - enabled: 1
+    path: Assets/Scenes/DevScenes/TestMapVote/MapVote2.unity
+    guid: ff4aa12c4eed1324caabc8cdbad23937
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
