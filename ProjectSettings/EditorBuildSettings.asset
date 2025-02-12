@@ -50,6 +50,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/DevScenes/TestMapVote/MapVote2.unity
     guid: ff4aa12c4eed1324caabc8cdbad23937
+  - enabled: 1
+    path: Assets/Scenes/Arene.unity
+    guid: ca71951e8a17cc14fbbed723e4950a65
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
