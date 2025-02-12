@@ -43,6 +43,10 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
         MaxGameTime = maxGameTime;
         ScoreToWin = scoreToWin;
         TimeLeft.Value = maxGameTime;
+        foreach (var connectedClient in NetworkManager.ConnectedClients)
+        {
+            OnClientConnected(connectedClient.Key);
+        }
     }
 
     public override void OnNetworkSpawn()
