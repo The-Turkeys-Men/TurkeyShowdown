@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using MapVote;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -192,6 +193,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
             {
                 Debug.Log($"[DeathMatchManager] Calling ShowScorePanelClientRpc with {playerScoresArray.Length} players.");
                 ScorePanelManager.Instance.ShowScorePanelClientRpc(winnerId, playerScoresArray);
+                MapVoteManager.Instance?.StartMapVote();
             }
             else
             {
