@@ -2,28 +2,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Customisation;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerDataManager : NetworkBehaviour
 {
     public static PlayerDataManager Datainstance;
-    public NetworkVariable<List<PlayerDataNetworkable>> playerDatas = new();
+    
+    public NetworkDictionary<ulong, int> PlayerIds = new();
+    public NetworkDictionary<ulong, FixedString32Bytes> PlayerPseudos = new();
+    public NetworkDictionary<ulong, int> PlayerHighScores = new();
+    public NetworkDictionary<ulong, int> PlayerNbrVictory = new();
+    public NetworkDictionary<ulong, int> PlayerNbrDefeat = new();
+    public NetworkDictionary<ulong, FixedString32Bytes> PlayerColors = new();
     
     public receivingJSON _receivingJSON;
     public JSONSender _jsonSender;
 
     public PlayerDataNetworkable GetPlayerData(ulong clientId)
     {
-        foreach (var playerData in playerDatas.Value.ToList())
+        PlayerDataNetworkable playerData = new()
         {
-            if (playerData.ClientId == clientId)
-            {
-                return playerData;
-            }
-        }
+            id = PlayerIds[clientId],
+            pseudo = PlayerPseudos[clientId],
+            highScore = PlayerHighScores[clientId],
+            nbrVictory = PlayerNbrVictory[clientId],
+            nbrDefeat = PlayerNbrDefeat[clientId],
+            color = PlayerColors[clientId],
+        };
 
-        return null;
+        return playerData;
     }
     
     private void Awake()
@@ -62,7 +71,7 @@ public class PlayerDataManager : NetworkBehaviour
         Task<PlayerJSON> playerJson = _receivingJSON.FetchJSONValue();
         await playerJson;
         Debug.Log("Received JSON data for clientID: " + clientID);
-    
+        
         PlayerDataNetworkable playerDataNetworkable = new()
         {
             ClientId = clientID,
@@ -78,34 +87,30 @@ public class PlayerDataManager : NetworkBehaviour
         Debug.Log("Created PlayerDataNetworkable for clientID: " + clientID);
     
         AddingPlayerJsonDataServerRpc(clientID, playerDataNetworkable);
-        
-        
     }
 
     [Rpc(SendTo.Server, RequireOwnership = false)]
     private void AddingPlayerJsonDataServerRpc(ulong clientID, PlayerDataNetworkable newData)
     {
-        bool replacedData = false;
-        for (int i = 0; i < playerDatas.Value.Count; i++)
-        {
-            if (playerDatas.Value[i].ClientId == clientID)
-            {
-                playerDatas.Value[i] = newData;
-                playerDatas.SetDirty(true);
-                replacedData = true;
-                Debug.Log("Replaced existing player data for clientID: " + clientID);
-                break;
-            }
-        }
-    
-        if (!replacedData)
-        {
-            playerDatas.Value.Add(newData);
-            Debug.Log("Added new player data for clientID: " + clientID);
-        }
+        PlayerIds.Add(clientID, newData.id);
+        PlayerPseudos.Add(clientID, newData.pseudo);
+        PlayerColors.Add(clientID, newData.color);
+        PlayerHighScores.Add(clientID, newData.highScore);
+        PlayerNbrVictory.Add(clientID, newData.nbrVictory);
+        PlayerNbrDefeat.Add(clientID, newData.nbrDefeat);
         
-        Debug.Log("Received JSON with pseudo: " + newData.pseudo);
+        PlayerIds.SetDirty(true);
+        PlayerPseudos.SetDirty(true);
+        PlayerHighScores.SetDirty(true);
+        PlayerNbrVictory.SetDirty(true);
+        PlayerNbrDefeat.SetDirty(true);
+        PlayerColors.SetDirty(true);
+        
+        Debug.Log("Added player data to dictionaries for clientID: " + clientID);
+
         RefreshAllPlayersClientRpc();
+        
+        return;
     }
 
     [Rpc(SendTo.Server, RequireOwnership = false)]
@@ -118,10 +123,5 @@ public class PlayerDataManager : NetworkBehaviour
     private void RefreshAllPlayersClientRpc()
     {
         RefreshAllPlayers();
-    }
-    
-    public void sendJSON()
-    {
-        StartCoroutine(_jsonSender.SendJsonToServer(JsonUtility.ToJson(playerDatas)));
     }
 }

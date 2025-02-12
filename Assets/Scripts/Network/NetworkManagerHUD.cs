@@ -1,6 +1,7 @@
 using System;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NetworkManagerHUD : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class NetworkManagerHUD : MonoBehaviour
         if (Application.isBatchMode)
         {
             OnStartServer();
+            NetworkManager.Singleton.SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
         }
 
         if (Application.platform == RuntimePlatform.WebGLPlayer)
@@ -27,6 +29,7 @@ public class NetworkManagerHUD : MonoBehaviour
     {
         NetworkManager.Singleton.StartHost();
         gameObject.SetActive(false);
+        NetworkManager.Singleton.SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
     }
     
     public void OnStartClient()

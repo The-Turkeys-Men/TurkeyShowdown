@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Extensions;
+using Network;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -101,6 +102,7 @@ namespace MapVote
         public void StartMapVote()
         {
             Debug.Log("starting map vote");
+            NetworkManager.Singleton.SceneManager.LoadScene("LoadingScene", LoadSceneMode.Additive);
             _isVoting = true;
         }
 
@@ -133,7 +135,18 @@ namespace MapVote
             }
 
             int nextMapIndex = chosenMaps.PickRandom();
-            NetworkManager.Singleton.SceneManager.LoadScene(MapDatas[nextMapIndex].SceneName, LoadSceneMode.Single);
+            
+            /*var networkObjects = FindObjectsOfType<NetworkObject>();
+            foreach (var networkObject in networkObjects)
+            {
+                if (networkObject.gameObject.scene.name == "DontDestroyOnLoad")
+                {
+                    continue;
+                }
+                networkObject.Despawn(true);
+            }*/
+            
+            NetworkSceneSwitcher.Instance.SwitchScene(gameObject.scene, MapDatas[nextMapIndex].SceneName);
         }
     }
 }

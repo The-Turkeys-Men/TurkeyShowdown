@@ -21,7 +21,7 @@ public class TeamComponent : NetworkBehaviour
         TeamID.OnValueChanged += OnTeamChanged;
     }
 
-    public override void OnNetworkDespawn()
+    /*public override void OnNetworkDespawn()
     {
         if (IsServer)
         {
@@ -33,7 +33,7 @@ public class TeamComponent : NetworkBehaviour
 
         // Désabonner l'événement pour éviter les fuites de mémoire
         TeamID.OnValueChanged -= OnTeamChanged;
-    }
+    }*/
 
     private void OnTeamChanged(int oldTeam, int newTeam)
     {
