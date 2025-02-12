@@ -21,7 +21,7 @@ public class Grappler : NetworkBehaviour
 
     private Rigidbody2D _rb;
 
-    private bool _isGripped;
+    public bool _isGripped{get; private set;}
 
     private Vector2 _grappledPoint;
     private float _grappleDistance;

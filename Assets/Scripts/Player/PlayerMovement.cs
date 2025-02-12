@@ -3,9 +3,10 @@ using UnityEngine;
 
 public class PlayerMovement : NetworkBehaviour
 {
+    [SerializeField] private Grappler Grappler;
     public float MaxWalkSpeed = 7f; // Max walking speed
     public float Acceleration = 15f;
-    public float Friction = 3f;
+    [Range(0f,1f)]public float Friction = .1f;
     public float TimePas;
 
     private Rigidbody2D _rigidBody;
@@ -25,10 +26,17 @@ public class PlayerMovement : NetworkBehaviour
         {
             return;
         }
+
+        if (!Grappler._isGripped)
+        {
+            Vector2 friction = _rigidBody.linearVelocity * Friction;
+            _rigidBody.AddForce(-friction, ForceMode2D.Force);
+        }
     }
 
     private void FixedUpdate()
     {
+       
         if (!IsOwner)
         {
             return;
@@ -37,7 +45,7 @@ public class PlayerMovement : NetworkBehaviour
         Move(_moveDirection);
         
         // Apply friction to gradually slow down
-        _rigidBody.linearVelocity *= (1 - Friction * Time.fixedDeltaTime);
+        //_rigidBody.linearVelocity *= (1 - Friction * Time.fixedDeltaTime);
     }
 
     public void TryMove(Vector2 movementDirection)
@@ -67,7 +75,6 @@ public class PlayerMovement : NetworkBehaviour
         // Apply a force only if the projected speed is less than the max speed or if the speed is negative (slowing down)
         if (projectedSpeed < MaxWalkSpeed || projectedSpeed < 0)
         {
-            
             _rigidBody.AddForce(movementDirection * Acceleration, ForceMode2D.Force);
         }
     }
