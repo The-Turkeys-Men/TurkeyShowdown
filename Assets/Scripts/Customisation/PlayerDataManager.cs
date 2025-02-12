@@ -10,29 +10,21 @@ public class PlayerDataManager : NetworkBehaviour
 {
     public static PlayerDataManager Datainstance;
     
-    public NetworkDictionary<ulong, int> PlayerIds = new();
-    public NetworkDictionary<ulong, FixedString32Bytes> PlayerPseudos = new();
-    public NetworkDictionary<ulong, int> PlayerHighScores = new();
-    public NetworkDictionary<ulong, int> PlayerNbrVictory = new();
-    public NetworkDictionary<ulong, int> PlayerNbrDefeat = new();
-    public NetworkDictionary<ulong, FixedString32Bytes> PlayerColors = new();
+    public NetworkVariable<List<PlayerDataNetworkable>> PlayerDataList = new(new List<PlayerDataNetworkable>());
     
     public receivingJSON _receivingJSON;
     public JSONSender _jsonSender;
 
     public PlayerDataNetworkable GetPlayerData(ulong clientId)
     {
-        PlayerDataNetworkable playerData = new()
+        foreach (PlayerDataNetworkable playerData in PlayerDataList.Value.ToList())
         {
-            id = PlayerIds[clientId],
-            pseudo = PlayerPseudos[clientId],
-            highScore = PlayerHighScores[clientId],
-            nbrVictory = PlayerNbrVictory[clientId],
-            nbrDefeat = PlayerNbrDefeat[clientId],
-            color = PlayerColors[clientId],
-        };
-
-        return playerData;
+            if (clientId == playerData.ClientId)
+            {
+                return playerData;
+            }
+        }
+        return null;
     }
     
     private void Awake()
@@ -81,32 +73,18 @@ public class PlayerDataManager : NetworkBehaviour
             nbrVictory = playerJson.Result.nbrVictory,
             nbrDefeat = playerJson.Result.nbrDefeat,
             color = playerJson.Result.color,
-            scoreTable = playerJson.Result.scoreTable.ToList(),
-            skins = playerJson.Result.skins.ToList()
         };
         Debug.Log("Created PlayerDataNetworkable for clientID: " + clientID);
-    
+
+        Debug.Log("sending data");
         AddingPlayerJsonDataServerRpc(clientID, playerDataNetworkable);
     }
-
+    
     [Rpc(SendTo.Server, RequireOwnership = false)]
     private void AddingPlayerJsonDataServerRpc(ulong clientID, PlayerDataNetworkable newData)
     {
-        PlayerIds.Add(clientID, newData.id);
-        PlayerPseudos.Add(clientID, newData.pseudo);
-        PlayerColors.Add(clientID, newData.color);
-        PlayerHighScores.Add(clientID, newData.highScore);
-        PlayerNbrVictory.Add(clientID, newData.nbrVictory);
-        PlayerNbrDefeat.Add(clientID, newData.nbrDefeat);
-        
-        PlayerIds.SetDirty(true);
-        PlayerPseudos.SetDirty(true);
-        PlayerHighScores.SetDirty(true);
-        PlayerNbrVictory.SetDirty(true);
-        PlayerNbrDefeat.SetDirty(true);
-        PlayerColors.SetDirty(true);
-        
-        Debug.Log("Added player data to dictionaries for clientID: " + clientID);
+        PlayerDataList.Value.Add(newData);
+        Debug.Log("AIOJEAFIOA Added player data to list for clientID: " + clientID);
 
         RefreshAllPlayersClientRpc();
         

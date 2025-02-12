@@ -23,7 +23,7 @@ namespace Network
         {
             if (IsServer)
             {
-                NetworkManager.Singleton.SceneManager.UnloadScene(currentScene);
+                SceneEventProgressStatus result = NetworkManager.Singleton.SceneManager.UnloadScene(currentScene);
                 StartCoroutine(SwitchSceneCoroutine(sceneName));
             }
         }
