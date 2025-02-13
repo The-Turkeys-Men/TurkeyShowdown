@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      GundindleTopDown_0: 1294418534718805820
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      BumbleDindonTopDown_0: 3346767442626299376
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

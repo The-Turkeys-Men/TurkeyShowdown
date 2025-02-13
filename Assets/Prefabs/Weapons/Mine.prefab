@@ -149,7 +149,7 @@ MonoBehaviour:
     m_InternalValue: 0
   ShouldHide:
     m_InternalValue: 0
-  _nomTir: tirLanceMissil
+  _nomTir: 
   _nomLancer: lancer
   _nomColition: 
   _nomHit: 
