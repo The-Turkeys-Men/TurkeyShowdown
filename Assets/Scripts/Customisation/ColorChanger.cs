@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AYellowpaper.SerializedCollections;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -30,17 +31,7 @@ public class ColorChanger : NetworkBehaviour
         SpriteRenderer bodySpriteRenderer = _spriteParentBody.GetComponent<SpriteRenderer>();
         SpriteRenderer armFeatherSpriteRenderer = _spriteParentArmFeather.GetComponent<SpriteRenderer>();
 
-        foreach (var _sprite in _sprites)
-        {
-            if (_sprite.Key == spriteName && _sprite.Key != "default")
-            {
-                bodySpriteRenderer.sprite = _sprite.Value;
-            }
-            else
-            {
-                bodySpriteRenderer.sprite = _sprites["default"];
-            }
-        }
+        bodySpriteRenderer.sprite = _sprites[spriteName];
     //     Debug.Log("Changing color to: " + color + " char count : " + color.Length);
     //     Debug.Log("SpriteRenderers count: " + _spriteParent.childCount);
     //     foreach (Transform spriteObject in _spriteParent)
