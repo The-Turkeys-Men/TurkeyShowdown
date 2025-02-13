@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce51eab2dcfd4ba9bc88713787408158, type: 3}
-  m_Name: "Ar\xE8ne"
+  m_Name: Verger
   m_EditorClassIdentifier: 
-  SceneName: Arene
-  MapPreview: {fileID: 2715973808290053358, guid: d069e28ebf2001947b6497e8083bca71, type: 3}
-  MapName: "Ar\xE8ne (WIP)"
+  SceneName: Verger
+  MapPreview: {fileID: 3768508510228984187, guid: ee338a6ca4fa6c84e80965cb172f00ef, type: 3}
+  MapName: Verger (WIP)

@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1813254058
+  GlobalObjectIdHash: 1119275276
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -73,6 +73,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   MapDatas:
   - {fileID: 11400000, guid: 8593cb8c0764d8140b81acd38aeb17b7, type: 2}
+  - {fileID: 11400000, guid: f8f46f0cf2214b0479599273d03d0eb1, type: 2}
   - {fileID: 11400000, guid: 531250e9e037de440bd11efd44c796eb, type: 2}
   _voteTime: 25
   _mapVotePanel: {fileID: 0}

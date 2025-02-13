@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/DevScenes/Do-Devroom/Dorian_Spawner.unity
     guid: 9afeeb324c5e85a4e863a62c6e689ef6
   - enabled: 1
-    path: Assets/Scenes/Scene2.unity
+    path: Assets/Scenes/Verger.unity
     guid: 2e522040b8146ca4dace28dc63f90856
   - enabled: 1
     path: Assets/Scenes/Menu.unity
