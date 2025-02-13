@@ -93,7 +93,6 @@ public class PlayerMovement : NetworkBehaviour
 
         if (Mathf.Sign(force.x) != Mathf.Sign(_rigidBody.linearVelocity.x))
         {
-            Debug.Log("frein X");
             Vector2 xForce = force * 5;
             xForce.y = 0;
             _rigidBody.AddForce(xForce, ForceMode2D.Force);
