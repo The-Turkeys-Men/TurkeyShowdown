@@ -39,6 +39,8 @@ public class PlayerDataManager : NetworkBehaviour
         PlayerDataHolder playerDataHolder = playerObject.GetComponent<PlayerDataHolder>();
         playerDataHolder.SetPseudoServerRpc(playerData.pseudo.ToString());
         playerDataHolder.SetColorServerRpc(playerData.color.ToString());
+        
+        RefreshAllPlayersServerRpc();
     }
     
     private void Awake()
@@ -68,7 +70,10 @@ public class PlayerDataManager : NetworkBehaviour
                 Debug.Log("Refreshing player with clientId: " + player);
             }
         }
+        
+        LeaderBoardHUDManager.Instance.UpdateLeaderboardUI();
         Debug.Log("Finished refreshing all players");
+        
     }
     
     public async Task ReceivingJSON(ulong clientID)

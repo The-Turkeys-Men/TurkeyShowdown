@@ -23,6 +23,12 @@ public class ColorChanger : NetworkBehaviour
         await PlayerDataManager.Datainstance.ReceivingJSON(OwnerClientId);
     }
 
+    [Rpc(SendTo.ClientsAndHost)]
+    public void ChangeColorClientRpc(string color)
+    {
+        ChangeColor(color);
+    }
+    
     public void ChangeColor(string color)
     {
         Debug.Log("Changing color to: " + color + " char count : " + color.Length);

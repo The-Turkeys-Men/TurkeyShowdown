@@ -3591,7 +3591,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  maxGameTime: 10
+  maxGameTime: 150
   scoreToWin: 20
 --- !u!4 &381450459
 Transform:
@@ -90870,7 +90870,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3445413420100344596, guid: 87976b3b7b6ea1b4cb3f4b56f99b6967, type: 3}
       propertyPath: _voteTime
-      value: 5
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 3445413420100344596, guid: 87976b3b7b6ea1b4cb3f4b56f99b6967, type: 3}
       propertyPath: _timerText
