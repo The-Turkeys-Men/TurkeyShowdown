@@ -5,8 +5,18 @@ using UnityEngine.SceneManagement;
 
 public class NetworkManagerHUD : MonoBehaviour
 {
+    public static bool hasAlreadyStarted = false;
+    
     private void Start()
     {
+        if (hasAlreadyStarted && !Application.isEditor)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+        
+        hasAlreadyStarted = true;
+        
         if (Application.isBatchMode)
         {
             OnStartServer();

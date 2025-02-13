@@ -201,6 +201,8 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
         isGameActive = false;
         if (IsServer)
         {
+            HideAllPlayersClientRpc();
+            
             Debug.Log("[DeathMatchManager] EndGame called, showing score panel.");
             PlayerScore[] playerScoresArray = PlayerScores.Value.ToArray();
 
@@ -216,6 +218,24 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
             }
 
             StartCoroutine(ResetGameAfterDelay(10f));
+        }
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void HideAllPlayersClientRpc()
+    {
+        foreach (var player in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            if (player.PlayerObject.TryGetComponent(out PlayerController playerController))
+            {
+                playerController.InputActivated = false;
+            }
+            
+            var playerHud = player.PlayerObject.GetComponentInChildren<Canvas>(true);
+            if (playerHud)
+            {
+                playerHud.gameObject.SetActive(false);
+            }
         }
     }
 

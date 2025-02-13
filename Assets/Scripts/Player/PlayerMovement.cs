@@ -27,7 +27,7 @@ public class PlayerMovement : NetworkBehaviour
             return;
         }
 
-        if (!Grappler._isGripped)
+        if (!Grappler.IsGripped && _moveDirection == Vector2.zero)
         {
             Vector2 friction = _rigidBody.linearVelocity * Friction;
             _rigidBody.AddForce(-friction, ForceMode2D.Force);
@@ -73,9 +73,37 @@ public class PlayerMovement : NetworkBehaviour
         float projectedSpeed = Vector2.Dot(velocity, movementDirection);
 
         // Apply a force only if the projected speed is less than the max speed or if the speed is negative (slowing down)
-        if (projectedSpeed < MaxWalkSpeed || projectedSpeed < 0)
+        Vector2 force = new Vector2(movementDirection.x * Acceleration, movementDirection.y * Acceleration);
+        if (Mathf.Abs(velocity.x) < MaxWalkSpeed)
         {
-            _rigidBody.AddForce(movementDirection * Acceleration, ForceMode2D.Force);
+            Vector2 xForce = new Vector2(force.x, 0);
+            _rigidBody.AddForce(xForce, ForceMode2D.Force);
+        }
+        
+        if (Mathf.Abs(velocity.y) < MaxWalkSpeed)
+        {
+            Vector2 yForce = new Vector2(0, force.y);
+            _rigidBody.AddForce(yForce, ForceMode2D.Force);
+        }
+
+        if (Grappler.IsGripped)
+        {
+            return;
+        }
+
+        if (Mathf.Sign(force.x) != Mathf.Sign(_rigidBody.linearVelocity.x))
+        {
+            Debug.Log("frein X");
+            Vector2 xForce = force * 5;
+            xForce.y = 0;
+            _rigidBody.AddForce(xForce, ForceMode2D.Force);
+        }
+        
+        if (Mathf.Sign(force.y) != Mathf.Sign(_rigidBody.linearVelocity.y))
+        {
+            Vector2 yForce = force * 5;
+            yForce.x = 0;
+            _rigidBody.AddForce(yForce, ForceMode2D.Force);
         }
     }
 }

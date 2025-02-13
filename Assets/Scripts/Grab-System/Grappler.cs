@@ -21,7 +21,7 @@ public class Grappler : NetworkBehaviour
 
     private Rigidbody2D _rb;
 
-    public bool _isGripped{get; private set;}
+    public bool IsGripped{get; private set;}
 
     private Vector2 _grappledPoint;
     private float _grappleDistance;
@@ -39,7 +39,7 @@ public class Grappler : NetworkBehaviour
     {
         InitializeWidthLineRenderer();
         _rb = GetComponent<Rigidbody2D>();
-        _isGripped = false;
+        IsGripped = false;
         _grappleVisual.positionCount = 3;
     }
 
@@ -50,7 +50,7 @@ public class Grappler : NetworkBehaviour
             return;
         }
 
-        if (_isGripped)
+        if (IsGripped)
         {
             GrabUpdate();
         }
@@ -118,7 +118,7 @@ public class Grappler : NetworkBehaviour
 
     private void StartGrab(Vector2 hitPoint)
     {
-        _isGripped = true;
+        IsGripped = true;
         _grappleDistance = Vector2.Distance(transform.position, hitPoint);
         _grappledPoint = hitPoint;
         SwitchGrabVisualEffect(hitPoint, true);
@@ -128,7 +128,7 @@ public class Grappler : NetworkBehaviour
     
     public void TryReleaseGrab()
     {
-        if (!_isGripped)
+        if (!IsGripped)
         {
             return;
         }
@@ -139,7 +139,7 @@ public class Grappler : NetworkBehaviour
     {
         SwitchGrabVisualEffect(Vector2.zero, false);
         SwitchGrabVisualEffectServerRpc(Vector2.zero, false);
-        _isGripped = false;
+        IsGripped = false;
         
         _curentGrabHead.GoBackToBody();
         ReturnHeadServerRpc();

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -76,6 +77,12 @@ public class PlayerDataManager : NetworkBehaviour
         
     }
     
+    public IEnumerator WaitAndRefreshAllPlayers()
+    {
+        yield return new WaitForSeconds(2);
+        RefreshAllPlayers();
+    }
+    
     public async Task ReceivingJSON(ulong clientID)
     {
         Debug.Log("Starting ReceivingJSON for clientID: " + clientID);
@@ -120,6 +127,6 @@ public class PlayerDataManager : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
     private void RefreshAllPlayersClientRpc()
     {
-        RefreshAllPlayers();
+        StartCoroutine(WaitAndRefreshAllPlayers());
     }
 }
