@@ -97,12 +97,13 @@ public class AudioManager : NetworkBehaviour
     {
         PlayMusic(pos, baseVolume);
     }
-    
-    public void PlaySFX(string name,Vector3 pos, float baseVolume)
+
+    public void PlaySFX(string name,Vector3 pos, float baseVolume, bool serverCheck = true)
     {
-        if (IsServer && !IsHost)
+        if (IsServer && !serverCheck)
         {
             PlaySFXClientRpc(name, pos,baseVolume);
+            return;
         }
         float sonsLocale=1f;
         bool loop=false;
@@ -114,7 +115,7 @@ public class AudioManager : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     public void PlaySFXClientRpc(string name,Vector3 pos , float baseVolume)
     {
-        PlaySFX(name,pos,baseVolume);
+        PlaySFX(name,pos,baseVolume, false);
     }
 
     public bool IsSoundInList(Sound[] soundList, string name)
