@@ -116,7 +116,7 @@ GameObject:
   - component: {fileID: 7367499722295244508}
   - component: {fileID: 7402999919468315816}
   m_Layer: 0
-  m_Name: MapObject
+  m_Name: TVSocle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

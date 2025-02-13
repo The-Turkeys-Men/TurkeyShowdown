@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce51eab2dcfd4ba9bc88713787408158, type: 3}
   m_Name: Ferme
   m_EditorClassIdentifier: 
-  SceneName: MainScene
+  SceneName: Ferme
   MapPreview: {fileID: -5478201103583437891, guid: 5e87c5a23f15b204d893ad09958503b7, type: 3}
   MapName: Ferme
