@@ -78,24 +78,15 @@ public class AudioManager : NetworkBehaviour
         StopSound(AudioSourceSFX);
     }
 
-    public void PlayMusic(Vector3 pos,float baseVolume)
+    public void PlayMusic()
     {
-        if (IsServer && !IsHost)
-        {
-            PlayMusicClientRpc(pos,baseVolume);
-        }
-        string name= nomMusic.PickRandom();
-        float sonsLocale=0f;
+        string name = nomMusic.PickRandom();
+        Sound sound = Array.Find(MusicSounds, s => s.Name == name);
+        
         AudioMixerGroup Volume= _audioMixerMusic;
-        baseVolume= 0.404f;
         bool loop=true;
-        PlaySound( MusicSounds, name,pos,Volume,sonsLocale,loop,baseVolume);
-    }
-
-    [Rpc(SendTo.ClientsAndHost)]
-    public void PlayMusicClientRpc(Vector3 pos, float baseVolume)
-    {
-        PlayMusic(pos, baseVolume);
+        AudioSourceMusic.clip = sound.Clip;
+        AudioSourceMusic.Play();
     }
 
     public void PlaySFX(string name,Vector3 pos, float baseVolume, bool serverCheck = true)

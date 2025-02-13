@@ -1,12 +1,17 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class FixCamera : MonoBehaviour
 {
     private Transform _transform;
     [SerializeField] private Transform _followTransform;
      [SerializeField] private float _speed = 5;
+     
+    public float MaxX;
+    public float MaxY;
+    public float MinX;
+    public float MinY;
     
-    [SerializeField] private int _maxX, _maxY,_minX, _minY;
     private float _newCameraPositionX ;
     private float _newCameraPositionY ;
     public bool IsSemiLock;
@@ -30,8 +35,8 @@ public class FixCamera : MonoBehaviour
     }
     private void MoveCamera()
     {
-        _newCameraPositionX = Mathf.Clamp(_followTransform.position.x, _minX, _maxX);
-        _newCameraPositionY = Mathf.Clamp(_followTransform.position.y, _minY, _maxY);
+        _newCameraPositionX = Mathf.Clamp(_followTransform.position.x, MinX, MaxX);
+        _newCameraPositionY = Mathf.Clamp(_followTransform.position.y, MinY, MaxY);
 
         _transform.position = new Vector3(_newCameraPositionX, _newCameraPositionY, _transform.position.z);
     }
@@ -44,8 +49,8 @@ public class FixCamera : MonoBehaviour
             mousePos.y = Mathf.Clamp(mousePos.y, -0.5f, 0.5f);
             Vector3 newPosition = (Vector2)_followTransform.position + mousePos * _speed;
             newPosition.z = -10;
-            newPosition.x = Mathf.Clamp(newPosition.x, _minX, _maxX);
-            newPosition.y = Mathf.Clamp(newPosition.y, _minY, _maxY);
+            newPosition.x = Mathf.Clamp(newPosition.x, MinX, MaxX);
+            newPosition.y = Mathf.Clamp(newPosition.y, MinY, MaxY);
             _transform.position = newPosition;
 
             

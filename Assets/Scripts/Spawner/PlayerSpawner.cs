@@ -17,6 +17,10 @@ public class PlayerSpawner : NetworkBehaviour
 
     [SerializeField] private BaseWeapon _spawnWeapon;
     
+    public float MapMinLimitX = 0;
+    public float MapMaxLimitX = 0;
+    public float MapMinLimitY = 0;
+    public float MapMaxLimitY = 0;
     
     private void Awake()
     {
@@ -168,7 +172,12 @@ public class PlayerSpawner : NetworkBehaviour
             //OnDeathServerRpc(playerObjectId);
 
         });
-        
+
+        var playerFixCamera = NewPlayer.GetComponentInChildren<FixCamera>(true);
+        playerFixCamera.MinY = MapMinLimitY;
+        playerFixCamera.MaxY = MapMaxLimitY;
+        playerFixCamera.MinX = MapMinLimitX;
+        playerFixCamera.MaxX = MapMaxLimitX;
 
         if (_spawnWeapon)
         {
