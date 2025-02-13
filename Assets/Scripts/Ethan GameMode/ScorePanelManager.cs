@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using AYellowpaper.SerializedCollections;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
@@ -13,6 +13,7 @@ public class ScorePanelManager : NetworkBehaviour
     [SerializeField] private Transform firstPlayer; // Référence au panneau du premier joueur
     [SerializeField] private Transform scoreBoard; // Référence au panneau des autres joueurs
     [SerializeField] private Image firstPlayerSkin; // Référence à l'image du premier joueur
+    [SerializeField] private SerializedDictionary<string, Sprite> _sprites = new(); // Dictionnaire de sprites
 
     private void Awake()
     {
@@ -147,39 +148,20 @@ public class ScorePanelManager : NetworkBehaviour
         // Mettre à jour l'image du premier joueur
         if (firstPlayerSkin != null)
         {
-            firstPlayerSkin.sprite = GetPlayerSkin(playerId);
+            string skinName = PlayerDataManager.Datainstance?.GetPlayerData(playerId)?.color.ToString();
+            if (!string.IsNullOrEmpty(skinName) && _sprites.ContainsKey(skinName))
+            {
+                firstPlayerSkin.sprite = _sprites[skinName];
+            }
+            else
+            {
+                Debug.LogWarning($"[ScorePanelManager] Skin '{skinName}' not found in the sprites dictionary.");
+            }
         }
         else
         {
             Debug.LogWarning("[ScorePanelManager] First player skin image is null.");
         }
-    }
-
-    private Sprite GetPlayerSkin(ulong playerId)
-    {
-        // Créer une texture 2D de 1x1 pixel
-        Texture2D texture = new Texture2D(1, 1);
-
-        // Générer une couleur aléatoire
-        Color randomColor = new Color(
-            Random.Range(0f, 1f), // R
-            Random.Range(0f, 1f), // G
-            Random.Range(0f, 1f), // B
-            1f // A (opacité)
-        );
-
-        // Appliquer la couleur à la texture
-        texture.SetPixel(0, 0, randomColor);
-        texture.Apply();
-
-        // Convertir la texture en Sprite
-        Sprite sprite = Sprite.Create(
-            texture,
-            new Rect(0, 0, 1, 1), // Rectangle de la texture
-            new Vector2(0.5f, 0.5f) // Point central du sprite
-        );
-
-        return sprite;
     }
 
     private void SetText(Transform parent, string path, string value)
