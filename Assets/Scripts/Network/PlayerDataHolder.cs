@@ -45,7 +45,7 @@ namespace Network
         [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
         public void RefreshEveryoneClientRpc()
         {
-            PlayerDataManager.Datainstance.RefreshAllPlayers();
+            PlayerDataManager.Datainstance.Invoke(nameof(PlayerDataManager.Datainstance.RefreshAllPlayers), 2);
         }
     }
 }
