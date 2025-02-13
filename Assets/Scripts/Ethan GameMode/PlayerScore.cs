@@ -6,14 +6,12 @@ using Unity.Collections;
 public class PlayerScore : INetworkSerializable, IEquatable<PlayerScore>
 {
     public ulong PlayerId;
-    public FixedString64Bytes PlayerName;
     public int Score;
 
     // Serialize the structure for network transmission
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         serializer.SerializeValue(ref PlayerId);
-        serializer.SerializeValue(ref PlayerName);
         serializer.SerializeValue(ref Score);
     }
 

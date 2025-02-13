@@ -12,6 +12,7 @@ namespace Health
         private Rigidbody2D _rigidbody2D;
         
         private LayerMask _originalExcludeLayers;
+        private float _originalFriction;
         
         public Action OnDeathEvent;
         public Action OnRespawnEvent;
@@ -27,6 +28,7 @@ namespace Health
             
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _originalExcludeLayers = _rigidbody2D.excludeLayers;
+            _originalFriction = GetComponent<PlayerMovement>().Friction;
         }
 
         private void OnRespawn()
@@ -40,6 +42,13 @@ namespace Health
             _rigidbody2D.linearVelocity = Vector2.zero;
             _rigidbody2D.excludeLayers = _originalExcludeLayers;
             
+            if (!IsOwner)
+            {
+                return;
+            }
+            
+            GetComponent<PlayerMovement>().Friction = _originalFriction;
+            
             ShowAliveVisuals();
             ShowAliveVisualsServerRpc();
         }
@@ -51,6 +60,7 @@ namespace Health
             
             var playerController = GetComponent<PlayerController>();
             playerController.InputActivated = false;
+            
 
             _rigidbody2D.excludeLayers = ~(1 << LayerMask.NameToLayer("World"));
 
@@ -58,6 +68,10 @@ namespace Health
             {
                 return;
             }
+            
+            GetComponent<PlayerMovement>().Friction = 3;
+            GetComponent<PlayerMovement>().TryMove(Vector2.zero);
+            
             respawnButton.enabled = true;
             KillFeedManager.Instance.AddKillServerRpc(killerObject.name, gameObject.name, 0);
             DebuggerConsole.Instance.LogServerRpc(killerObject.name + " addkill");
@@ -92,7 +106,7 @@ namespace Health
         private void ShowDeathVisuals()
         {
             _deathSpriteRenderer.SetActive(true);
-            _aliveVisuals.SetActive(false);
+            _aliveVisuals.transform.position = new Vector3(_aliveVisuals.transform.position.x, _aliveVisuals.transform.position.y, -1000);
         }
 
         [Rpc(SendTo.Server)]
@@ -114,7 +128,7 @@ namespace Health
         private void ShowAliveVisuals()
         {
             _deathSpriteRenderer.SetActive(false);
-            _aliveVisuals.SetActive(true);
+            _aliveVisuals.transform.position = new Vector3(_aliveVisuals.transform.position.x, _aliveVisuals.transform.position.y, 0);
         }
     }
 }

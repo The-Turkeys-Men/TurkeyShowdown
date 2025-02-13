@@ -15,7 +15,7 @@ public class ColorChanger : NetworkBehaviour
 
     private async void Start()
     {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        if (Application.platform == RuntimePlatform.WebGLPlayer && IsOwner)
         {
             await OnStart();
         }
@@ -53,4 +53,11 @@ public class ColorChanger : NetworkBehaviour
     //         };
     //     }
     }
+    
+    [Rpc(SendTo.ClientsAndHost)]
+    public void ChangeColorClientRpc(string color)
+    {
+        ChangeSprite(color);
+    }
+    
 } 

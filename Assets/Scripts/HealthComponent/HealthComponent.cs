@@ -3,6 +3,7 @@ using Extensions;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class HealthComponent : NetworkBehaviour
 {
@@ -16,7 +17,8 @@ public class HealthComponent : NetworkBehaviour
     [HideInInspector] public UnityEvent<ulong> OnDeath = new();
     [HideInInspector] public UnityEvent OnRespawn = new();
     [HideInInspector] public UnityEvent OnDamaged = new();
-    public ParticleSystem particleSystemDamage;
+    
+    public ParticleSystem DamageParticlePrefab;
     
     
     [SerializeField] private bool _isPlayer = false;
@@ -74,8 +76,7 @@ public class HealthComponent : NetworkBehaviour
         
         if (Armor.Value > 0)
         {
-            particleSystemDamage.maxParticles=10;
-            particleSystemDamage.Play();
+            PlayDamageParticleClientRpc(10);
             Armor.Value -= damage;
             AudioManager.Instance.PlaySFX("crisDinde",transform.position,baseVolume);
             if (Armor.Value <= 0)
@@ -110,8 +111,13 @@ public class HealthComponent : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     public void PlayDamageParticleClientRpc(int amount)
     {
-        particleSystemDamage.maxParticles=30;
-        particleSystemDamage.Play();
+        if (!DamageParticlePrefab)
+        {
+            return;
+        }
+        ParticleSystem newParticle = Instantiate(DamageParticlePrefab, transform.position, Quaternion.identity);
+        newParticle.maxParticles = amount;
+        newParticle.Play();
     }
     
     [Rpc(SendTo.ClientsAndHost)]
