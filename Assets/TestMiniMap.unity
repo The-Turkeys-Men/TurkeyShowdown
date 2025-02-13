@@ -3706,6 +3706,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 788302526}
     m_Modifications:
+    - target: {fileID: 1730842220276882520, guid: a784acdd4a96c254985feba5c2ffd170, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 3077692953404889277, guid: a784acdd4a96c254985feba5c2ffd170, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ea4f0c20edb105e499448da015b2e0a2, type: 3}
     - target: {fileID: 4461665014791053713, guid: a784acdd4a96c254985feba5c2ffd170, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3796,7 +3804,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6502137661881150045, guid: a784acdd4a96c254985feba5c2ffd170, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -17459,6 +17467,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 712e967e2712aa54a90a27a7201dfc9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _light: {fileID: 0}
 --- !u!114 &1564999118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17535,6 +17544,10 @@ PrefabInstance:
       propertyPath: _miniMap
       value: 
       objectReference: {fileID: 1636272326}
+    - target: {fileID: 7561044270501874454, guid: f6015f24347acad4d8b66f5a8483aaf5, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 16ca3d0f6f08c614890b170fe82b5b62, type: 3}
     - target: {fileID: 8483544717461389719, guid: f6015f24347acad4d8b66f5a8483aaf5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -34.64
