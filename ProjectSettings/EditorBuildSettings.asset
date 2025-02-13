@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu.unity
     guid: 70deec8dda4e136469b8fd6c40fe522c
   - enabled: 1
-    path: Assets/Scenes/MainScene.unity
+    path: Assets/Scenes/Ferme.unity
     guid: 82d3128991ec5d34ebb58f0c64b9b6d9
   - enabled: 1
     path: Assets/Scenes/LoadingScene.unity

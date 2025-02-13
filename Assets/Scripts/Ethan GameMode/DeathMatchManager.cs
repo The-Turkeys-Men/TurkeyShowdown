@@ -229,6 +229,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
             if (player.PlayerObject.TryGetComponent(out PlayerController playerController))
             {
                 playerController.InputActivated = false;
+                playerController.OnMoveCanceled();
             }
             
             var playerHud = player.PlayerObject.GetComponentInChildren<Canvas>(true);

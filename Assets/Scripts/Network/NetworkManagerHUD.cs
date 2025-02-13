@@ -31,7 +31,7 @@ public class NetworkManagerHUD : MonoBehaviour
     public void OnStartServer()
     {
         NetworkManager.Singleton.StartServer();
-        NetworkManager.Singleton.SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
+        NetworkManager.Singleton.SceneManager.LoadScene("Ferme", LoadSceneMode.Single);
         gameObject.SetActive(false);
     }
     
@@ -39,7 +39,7 @@ public class NetworkManagerHUD : MonoBehaviour
     {
         NetworkManager.Singleton.StartHost();
         gameObject.SetActive(false);
-        NetworkManager.Singleton.SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
+        NetworkManager.Singleton.SceneManager.LoadScene("Ferme", LoadSceneMode.Single);
     }
     
     public void OnStartClient()
