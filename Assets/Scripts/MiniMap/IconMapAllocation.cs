@@ -11,6 +11,7 @@ public class IconMapAttribution : NetworkBehaviour
 
     private void Start()
     {
+        _image.gameObject.SetActive(true);
         _teamComponent.OnTeamChangedEvent += OnTeamChanged;
         UpdateLocalPlayer();
     }
