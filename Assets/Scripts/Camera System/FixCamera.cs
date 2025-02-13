@@ -5,7 +5,7 @@ public class FixCamera : MonoBehaviour
 {
     private Transform _transform;
     [SerializeField] private Transform _followTransform;
-     [SerializeField] private float _speed = 5;
+    [SerializeField] private float _speed = 5;
      
     public float MaxX;
     public float MaxY;
@@ -25,7 +25,6 @@ public class FixCamera : MonoBehaviour
        if(IsSemiLock)
         {
             MoveCameraSemiLock();
-            Debug.Log (IsSemiLock);
         }
         else
         {

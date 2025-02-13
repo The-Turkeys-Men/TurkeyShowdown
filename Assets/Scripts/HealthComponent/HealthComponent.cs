@@ -3,7 +3,6 @@ using Extensions;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 public class HealthComponent : NetworkBehaviour
 {
@@ -111,7 +110,6 @@ public class HealthComponent : NetworkBehaviour
             if (_isPlayer)
             {
                 ((DeathMatchManager)DeathMatchManager.GetInstance()).OnPlayerKill(killerId);
-                DebuggerConsole.Instance.LogClientRpc("Player killed by: " + senderObject.name);
             }
         }
         OnDamaged.Invoke();

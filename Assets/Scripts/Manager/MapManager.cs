@@ -45,17 +45,4 @@ public class MapManager : MonoBehaviour
         print("Walking speed on " + clickedTile + " is " + walkingSpeed);
         return tileData;
     }
-
-    //public float GetTileWalkingSpeed(Vector2 worldPos)
-    //{
-    //    Vector3Int gridPos = _map.WorldToCell(worldPos);
-
-    //    TileBase tile = _map.GetTile(gridPos);
-
-    //    if (tile == null)
-    //        return 1f;
-
-    //    float walkingSpeed = _dataFromTiles[tile].walkSpeed;
-    //    return walkingSpeed;
-    //}
 }

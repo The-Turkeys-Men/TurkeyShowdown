@@ -35,38 +35,7 @@ public class PlayerSpawner : NetworkBehaviour
     }
 
     #region Respawn
-
-    /*[Rpc(SendTo.ClientsAndHost)]
-    private void OnDeathClientRpc(ulong playerObjectId)
-    {
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject))
-        {
-            Debug.LogError("Failed to get player object");
-            return;
-        }
-        
-        //playerObject.gameObject.SetActive(false);
-       //StartCoroutine(SpawnTimer(playerObject.gameObject));
-    }
     
-    [Rpc(SendTo.Server)]
-    private void OnDeathServerRpc(ulong playerObjectId)
-    {
-        if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject))
-        {
-            Debug.LogError("Failed to get player object");
-            return;
-        }
-        
-        //playerObject.gameObject.SetActive(false);
-        // StartCoroutine(SpawnTimer(playerObject.gameObject));
-    }
-    
-   IEnumerator SpawnTimer(GameObject player)
-    {
-        yield return new WaitForSeconds(_respawnTime);
-        RespawnPlayer(player);
-    }*/
 
     [Rpc(SendTo.Server)]
     public void RespawnPlayerServerRpc(ulong playerId)
@@ -100,19 +69,11 @@ public class PlayerSpawner : NetworkBehaviour
                 emptySpawns.Add(checkSpawn);
             }
         }
-        Debug.Log(emptySpawns.Count);
         var spawn = emptySpawns.PickRandom();
         player.transform.position = spawn.position;
         
         player.SetActive(true);
         healthComponent.OnRespawn.Invoke();
-        
-        /*if (_spawnWeapon)
-        {
-            BaseWeapon newWeapon = Instantiate(_spawnWeapon, NewPlayer.transform.position, Quaternion.identity);
-            newWeapon.GetComponent<NetworkObject>().Spawn();
-            NewPlayer.GetComponent<PlayerWeapon>().EquipWeapon(newWeapon);
-        }*/
         
         OnFinishRespawnClientRpc(player.GetNetworkObjectId());
     }
@@ -122,7 +83,6 @@ public class PlayerSpawner : NetworkBehaviour
     {
         if (!NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out var playerObject))
         {
-            Debug.LogError("Failed to get player object");
             return;
         }
 
@@ -168,8 +128,6 @@ public class PlayerSpawner : NetworkBehaviour
         NewPlayer.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
         NewPlayer.GetComponent<HealthComponent>().OnDeath.AddListener((playerObjectId) =>
         {
-            //OnDeathClientRpc(playerObjectId);
-            //OnDeathServerRpc(playerObjectId);
 
         });
 
@@ -197,7 +155,6 @@ public class PlayerSpawner : NetworkBehaviour
     {
         NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerId, out var playerObject);
         playerObject.GetComponentInChildren<Camera>(true).gameObject.SetActive(true);
-        //playerObject.GetComponentInChildren<AudioListener>().enabled = true;
     }
 
     [Rpc(SendTo.SpecifiedInParams, AllowTargetOverride = true)]

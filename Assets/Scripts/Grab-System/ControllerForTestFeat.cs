@@ -17,13 +17,10 @@ public class ControllerForTestFeat : MonoBehaviour
     void Update()
     {
         _movementDir = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-
-        
     }
 
     private void FixedUpdate()
     {
         _rb.linearVelocity = _movementDir * _movementSpeed;
     }
-
 }

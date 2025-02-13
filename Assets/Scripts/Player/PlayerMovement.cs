@@ -44,8 +44,6 @@ public class PlayerMovement : NetworkBehaviour
         
         Move(_moveDirection);
         
-        // Apply friction to gradually slow down
-        //_rigidBody.linearVelocity *= (1 - Friction * Time.fixedDeltaTime);
     }
 
     public void TryMove(Vector2 movementDirection)

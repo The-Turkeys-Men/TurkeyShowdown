@@ -42,11 +42,4 @@ public interface IWeapon : IGrabbable
 
     public void tryShoot();//verification
     public void Shoot();
-
-
-    
-    
-
 }
-
-
