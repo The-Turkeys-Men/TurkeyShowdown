@@ -1,5 +1,3 @@
-using System;
-using Unity.Mathematics;
 using Unity.Netcode;
 using UnityEngine;
 

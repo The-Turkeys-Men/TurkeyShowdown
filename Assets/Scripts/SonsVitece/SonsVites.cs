@@ -18,33 +18,19 @@ public class SonsVites : MonoBehaviour
     {
         
         if(Rb.linearVelocity.magnitude > 2)
+        {
+            if(!_active)
             {
-                
-                
-                
-                if(!_active)
-                {
-                     AudioManager.Instance.PlaySFX("vitesse",transform.position,baseVolume);
-                tempAudio = AudioManager.Instance.tempAudio;
-                tempAudio.transform .SetParent(transform);
-                _active=false;
-                }
-               
-                
-            
-
+                 AudioManager.Instance.PlaySFX("vitesse",transform.position,baseVolume);
+            tempAudio = AudioManager.Instance.tempAudio;
+            tempAudio.transform .SetParent(transform);
+            _active=false;
             }
-            if(Rb.linearVelocity.magnitude <= 2)
-            {
-                _active=true;
-            }
-
-          
-
-            
-            
-           
-            
+        }
+        if(Rb.linearVelocity.magnitude <= 2)
+        {
+            _active=true;
+        }
     }
 
 }

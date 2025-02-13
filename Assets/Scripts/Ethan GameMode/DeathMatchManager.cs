@@ -86,7 +86,6 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
                 PlayerScores.Value = new List<PlayerScore>();
             }
             
-            Debug.Log("Player score is valid: " + PlayerScores.Value.Count);
             var playerScore = PlayerScores.Value.Find(ps => ps.PlayerId == clientId);
             if (playerScore.PlayerId == clientId)
             {
@@ -121,11 +120,6 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
             TimeLeft.Value = MaxGameTime;
             PlayerScores.Value.Clear();
             PlayerScores.SetDirty(true);
-            Debug.Log("Server reset: No players connected.");
-        }
-        else
-        {
-            Debug.Log("Server not reset: Players are still connected.");
         }
     }
 
@@ -158,8 +152,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
             playerScore.Score++;
             
             PlayerScores.SetDirty(true);
-
-            Debug.Log(playerScore.Score + " points for player " + killerId);
+            
             if (playerScore.Score >= ScoreToWin)
             {
                 OnWin(killerId);
@@ -203,18 +196,12 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
         {
             HideAllPlayersClientRpc();
             
-            Debug.Log("[DeathMatchManager] EndGame called, showing score panel.");
             PlayerScore[] playerScoresArray = PlayerScores.Value.ToArray();
 
             if (ScorePanelManager.Instance != null)
             {
-                Debug.Log($"[DeathMatchManager] Calling ShowScorePanelClientRpc with {playerScoresArray.Length} players.");
                 ScorePanelManager.Instance.ShowScorePanelClientRpc(winnerId, playerScoresArray);
                 MapVoteManager.Instance?.StartMapVote();
-            }
-            else
-            {
-                Debug.LogError("[DeathMatchManager] ScorePanelManager.Instance is NULL!");
             }
 
             StartCoroutine(ResetGameAfterDelay(10f));

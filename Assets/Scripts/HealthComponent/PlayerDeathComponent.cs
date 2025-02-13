@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using Debugger;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -74,7 +72,6 @@ namespace Health
             
             respawnButton.enabled = true;
             KillFeedManager.Instance.AddKillServerRpc(killerObject.name, gameObject.name, 0);
-            DebuggerConsole.Instance.LogServerRpc(killerObject.name + " addkill");
             
             GetComponent<Grappler>().TryReleaseGrab();
             PlayerWeapon playerWeapon = GetComponent<PlayerWeapon>();

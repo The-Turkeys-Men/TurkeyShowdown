@@ -34,8 +34,7 @@ public class TeamManager : NetworkBehaviour
 
         // Ajouter le joueur à l'équipe
         AddPlayerToTeam(teamID, playerId);
-
-        Debug.Log($"[TeamManager] Joueur {playerId} a été assigné à l'équipe {teamID}");
+        
         return teamID;
     }
 
@@ -51,8 +50,6 @@ public class TeamManager : NetworkBehaviour
         {
             Teams.Value[teamID].Add(playerId);
             Teams.SetDirty(true);
-
-            Debug.Log($"[TeamManager] Joueur {playerId} ajouté à l'équipe {teamID}");
         }
     }
 
@@ -66,15 +63,11 @@ public class TeamManager : NetworkBehaviour
                 Teams.Value[teamID].Remove(playerId);
                 Teams.SetDirty(true);
 
-                Debug.Log($"[TeamManager] Joueur {playerId} retiré de l'équipe {teamID}");
-
                 // Supprimer l'équipe si elle est vide
                 if (Teams.Value[teamID].Count == 0)
                 {
                     Teams.Value.Remove(teamID);
                     Teams.SetDirty(true);
-
-                    Debug.Log($"[TeamManager] Équipe {teamID} supprimée car elle est vide");
                 }
             }
         }
@@ -88,8 +81,6 @@ public class TeamManager : NetworkBehaviour
             Teams.Value.Clear();
             NextTeamID.Value = 1; // Réinitialiser le compteur d'équipe
             Teams.SetDirty(true);
-
-            Debug.Log("[TeamManager] Équipes réinitialisées");
         }
     }
 

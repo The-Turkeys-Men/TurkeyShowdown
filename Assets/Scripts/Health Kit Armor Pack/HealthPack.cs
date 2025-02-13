@@ -1,4 +1,3 @@
-using Debugger;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
@@ -15,7 +14,6 @@ public class HealthPack : NetworkBehaviour, IGrabbable
         if (!IsServer) return;
         gameObject.SetActive(false);
         component.Heal(_healAmount);
-        DebuggerConsole.Instance.LogClientRpc("HealthPack grab on server");
         OnGrab.Invoke();
         GetComponent<NetworkObject>().Despawn(true);
         AudioManager.Instance.PlaySFX("soin",transform.position, baseVolume);

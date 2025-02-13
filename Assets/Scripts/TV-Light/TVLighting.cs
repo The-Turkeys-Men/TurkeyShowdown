@@ -19,6 +19,5 @@ public class TVLighting : MonoBehaviour
         if (_light == null) { return; }
         float intensity = Mathf.Lerp(_minValue, _maxValue, (Mathf.Sin(Time.time *_pulseSpeed) + 1) / 2);
         _light.intensity = intensity;
-
     }
 }

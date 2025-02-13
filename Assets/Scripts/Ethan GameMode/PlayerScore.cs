@@ -1,6 +1,5 @@
 using System;
 using Unity.Netcode;
-using Unity.Collections;
 
 [Serializable]
 public class PlayerScore : INetworkSerializable, IEquatable<PlayerScore>

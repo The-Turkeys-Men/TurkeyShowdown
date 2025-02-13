@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Extensions;
 using Network;
@@ -101,7 +100,6 @@ namespace MapVote
 
         public void StartMapVote()
         {
-            Debug.Log("starting map vote");
             NetworkManager.Singleton.SceneManager.LoadScene("LoadingScene", LoadSceneMode.Additive);
             _isVoting = true;
         }
@@ -110,7 +108,6 @@ namespace MapVote
         public void VoteForMapServerRpc(int mapIndex)
         {
             MapVotes[mapIndex]++;
-            Debug.Log("Received vote for map " + mapIndex + " with now " + MapVotes[mapIndex] + " votes.");
         }
 
         private void EndMapVote()
@@ -136,16 +133,6 @@ namespace MapVote
 
             int nextMapIndex = chosenMaps.PickRandom();
             
-            /*var networkObjects = FindObjectsOfType<NetworkObject>();
-            foreach (var networkObject in networkObjects)
-            {
-                if (networkObject.gameObject.scene.name == "DontDestroyOnLoad")
-                {
-                    continue;
-                }
-                networkObject.Despawn(true);
-            }*/
-            
             DisconnectAndReconnectEveryoneRpc();
             NetworkSceneSwitcher.Instance.SwitchScene(gameObject.scene, MapDatas[nextMapIndex].SceneName);
         }
@@ -157,8 +144,6 @@ namespace MapVote
             {
                 return;
             }
-            
-            Debug.Log("OOOOOOOOH DISCONNECTING EVERYONE");
 
             NetworkSceneSwitcher.Instance.DisconnectAndReconnect();
         }

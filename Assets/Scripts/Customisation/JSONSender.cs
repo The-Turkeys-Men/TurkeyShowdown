@@ -8,28 +8,6 @@ public class JSONSender : NetworkBehaviour
 {
 // Keep URL as it is
     private string url = "http://192.168.1.237/PHP/playerJSONFromUnity.php";
-    
-    public void SendPlayerData()
-    {
-        // Create PlayerJSON object dynamically based on actual player's data
-        // PlayerJSON player = new PlayerJSON()
-        // {
-        //     id = 4,
-        //     pseudo = "MonPseudo",   // Replace with dynamical data
-        //     highScore = 100,        // Replace with dynamical data
-        //     ScoreTable = new int[] { 10, 20, 30 }, // Replace with dynamical data
-        //     NbrVictory = 5,    // Replace with dynamical data
-        //     NbrDefeat = 2,     // Replace with dynamical data
-        //     Skins = new Skin[] // Replace with dynamical data
-        //     {
-        //         new Skin { Id = "skin1", Enabled = true },
-        //         new Skin { Id = "skin2", Enabled = true },
-        //         new Skin { Id = "skibidi", Enabled = true }
-        //     }
-        // };
-        // Convert the object to JSON and Send JSON to the server
-        //StartCoroutine(SendJsonToServer(JsonUtility.ToJson(player)));
-    }
 
     public IEnumerator SendJsonToServer(string jsonData)
     {
@@ -48,20 +26,6 @@ public class JSONSender : NetworkBehaviour
             if (www.result != UnityWebRequest.Result.Success || www.isHttpError || www.isNetworkError)
             {
                 Debug.Log("Error: " + www.error);
-            }
-            else
-            {
-                // Log the response body and validate it if necessary
-                Debug.Log("Received: " + www.downloadHandler.text);
-                
-                if(www.downloadHandler.text == "Expected response")
-                {
-                    // expected response handling
-                }
-                else
-                {
-                    // unexpected response handling
-                }
             }
 
             // prevent any leftover after using Dispose on UnityWebRequest

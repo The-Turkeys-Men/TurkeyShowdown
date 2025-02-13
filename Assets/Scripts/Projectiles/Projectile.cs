@@ -110,8 +110,6 @@ public class Projectile : BaseProjectile
             {
                 healthComponent.Damage(ExplosionDamage, SenderObject.GetNetworkObjectId());
             }
-
-            
         }
     }
 }

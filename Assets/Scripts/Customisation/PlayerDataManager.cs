@@ -1,10 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Customisation;
 using Network;
-using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -50,7 +47,6 @@ public class PlayerDataManager : NetworkBehaviour
         {
             Datainstance = this;
             DontDestroyOnLoad(this);
-            //NetworkManager.Singleton.OnClientConnectedCallback += RefreshAllPlayers;
         }
         else
         {
@@ -60,7 +56,6 @@ public class PlayerDataManager : NetworkBehaviour
 
     public void RefreshAllPlayers()
     {
-        Debug.Log("Refreshing all players");
         var players = NetworkManager.Singleton.ConnectedClients.Keys;
         foreach (var player in players)
         {
@@ -68,13 +63,10 @@ public class PlayerDataManager : NetworkBehaviour
             if (playerObject)
             {
                 playerObject.GetComponent<ColorChanger>().ChangeSprite(GetPlayerData(player).color.ToString());
-                Debug.Log("Refreshing player with clientId: " + player);
             }
         }
         
         LeaderBoardHUDManager.Instance.UpdateLeaderboardUI();
-        Debug.Log("Finished refreshing all players");
-        
     }
     
     public IEnumerator WaitAndRefreshAllPlayers()
@@ -85,10 +77,8 @@ public class PlayerDataManager : NetworkBehaviour
     
     public async Task ReceivingJSON(ulong clientID)
     {
-        Debug.Log("Starting ReceivingJSON for clientID: " + clientID);
         Task<PlayerJSON> playerJson = _receivingJSON.FetchJSONValue();
         await playerJson;
-        Debug.Log("Received JSON data for clientID: " + clientID);
         
         PlayerDataNetworkable playerData = new()
         {
@@ -100,9 +90,7 @@ public class PlayerDataManager : NetworkBehaviour
             nbrDefeat = playerJson.Result.nbrDefeat,
             color = playerJson.Result.color,
         };
-        Debug.Log("Created PlayerDataNetworkable for clientID: " + clientID);
 
-        Debug.Log("sending data");
         ApplyPlayerData(playerData);
         
     }
@@ -110,11 +98,7 @@ public class PlayerDataManager : NetworkBehaviour
     [Rpc(SendTo.Server, RequireOwnership = false)]
     private void AddingPlayerJsonDataServerRpc(ulong clientID, PlayerDataNetworkable newData)
     {
-        //PlayerDataList.Value.Add(newData);
-        Debug.Log("AIOJEAFIOA Added player data to list for clientID: " + clientID);
-
         RefreshAllPlayersClientRpc();
-        
         return;
     }
 

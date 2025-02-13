@@ -1,4 +1,3 @@
-using Debugger;
 using Extensions;
 using Projectiles;
 using UnityEngine;
@@ -122,7 +121,6 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
             _isDespawning = true;
             GetComponent<NetworkObject>().Despawn(true);
             AudioManager.Instance.PlaySFX(_nomColition,transform.position,baseVolume);
-            DebuggerConsole.Instance.LogClientRpc("Weapon throw touched " + other.gameObject.name);
             if (other.TryGetComponent(out HealthComponent healthComponent))
             {
                 healthComponent.Damage(DamageByThrow, LastOwner.GetComponent<NetworkObject>().NetworkObjectId);
@@ -333,13 +331,11 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     public void HideClientRpc()
     {
         Visuals.SetActive(false);
-        DebuggerConsole.Instance.Log("hide weapon on client");
     }
     
     [Rpc(SendTo.ClientsAndHost)]
     public void ShowClientRpc()
     {
         Visuals.SetActive(true);
-        DebuggerConsole.Instance.Log("hide weapon on client");
     }
 }

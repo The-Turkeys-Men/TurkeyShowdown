@@ -36,5 +36,4 @@ public class ContourDamage : MonoBehaviour
         _currentColor.a-=Time.deltaTime * _undamageSpeed;
         _panelImage.color= _currentColor;
     }
-
 }

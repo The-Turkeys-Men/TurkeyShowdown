@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -46,7 +45,6 @@ namespace Network
         [Rpc(SendTo.Everyone, RequireOwnership = false)]
         public void DisconnectAndReconnectEveryoneRpc()
         {
-            Debug.Log("DISCONNECTING");
             if (IsHost || IsServer)
             {
                 return;
@@ -63,9 +61,7 @@ namespace Network
 
         private IEnumerator Reconnect()
         {
-            Debug.Log("waiting for reconnect");
             yield return new WaitForSeconds(5);
-            Debug.Log("RECONNECTIIIIIIIIING");
             NetworkManager.Singleton.StartClient();
         }
     }

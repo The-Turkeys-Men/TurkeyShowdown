@@ -55,13 +55,7 @@ public class AudioManager : NetworkBehaviour
             Destroy(tempAudio,sound.Clip.length);
           
         }
-            
-        
-        
-        
     }
-
-
 
     private void StopSound(AudioSource audioSource)
     {

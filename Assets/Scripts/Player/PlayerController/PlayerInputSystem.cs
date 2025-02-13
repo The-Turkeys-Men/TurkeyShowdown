@@ -1,5 +1,3 @@
-using System;
-using Debugger;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;

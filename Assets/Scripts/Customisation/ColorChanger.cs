@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using AYellowpaper.SerializedCollections;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
 using SpriteRenderer = UnityEngine.SpriteRenderer;
 
@@ -39,5 +36,4 @@ public class ColorChanger : NetworkBehaviour
     {
         ChangeSprite(color);
     }
-    
 } 
