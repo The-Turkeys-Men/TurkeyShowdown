@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      DindonDefault_0: 9192323857363643088
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

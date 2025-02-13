@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ledindon_portrait_dindonmede_0: 2875191681833664260
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

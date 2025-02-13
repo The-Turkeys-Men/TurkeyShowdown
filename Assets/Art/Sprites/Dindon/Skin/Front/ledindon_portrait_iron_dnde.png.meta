@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ledindon_portrait_iron_dnde_0: 4932331953485038341
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
