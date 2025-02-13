@@ -943,7 +943,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4610527873818301035
 RectTransform:
   m_ObjectHideFlags: 0
@@ -985,13 +985,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -5197071633383868925, guid: a5fd359beff689546ad59b36a246d0b9, type: 3}
+  m_Sprite: {fileID: -286123960578248424, guid: 24ded6ffe484e194b8d0cbf591de0194, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1078,6 +1078,7 @@ GameObject:
   - component: {fileID: 5777183023841837361}
   - component: {fileID: 64585163442200541}
   - component: {fileID: 441495164867117671}
+  - component: {fileID: 8367436977217361402}
   m_Layer: 31
   m_Name: Canvas
   m_TagString: Untagged
@@ -1168,6 +1169,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!225 &8367436977217361402
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8091293723554487393}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &8253340265267100609
 GameObject:
   m_ObjectHideFlags: 0
@@ -1217,10 +1230,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _followTransform: {fileID: 4942938090148323569}
   _speed: 5
-  _maxX: 25
-  _maxY: 23
-  _minX: -55
-  _minY: -25
+  MaxX: 0
+  MaxY: 0
+  MinX: 0
+  MinY: 0
   IsSemiLock: 0
 --- !u!20 &1065087246603383647
 Camera:
