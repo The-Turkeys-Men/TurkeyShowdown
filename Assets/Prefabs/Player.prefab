@@ -483,7 +483,7 @@ MonoBehaviour:
   Health:
     m_InternalValue: 20
   MaxHealth: 100
-  BaseHealth: 75
+  BaseHealth: 100
   Armor:
     m_InternalValue: 0
   MaxArmor: 50
