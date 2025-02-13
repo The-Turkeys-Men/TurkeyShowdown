@@ -64,7 +64,7 @@ namespace Network
         private IEnumerator Reconnect()
         {
             Debug.Log("waiting for reconnect");
-            yield return new WaitForSeconds(4);
+            yield return new WaitForSeconds(5);
             Debug.Log("RECONNECTIIIIIIIIING");
             NetworkManager.Singleton.StartClient();
         }

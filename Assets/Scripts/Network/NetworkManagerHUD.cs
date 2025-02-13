@@ -5,8 +5,18 @@ using UnityEngine.SceneManagement;
 
 public class NetworkManagerHUD : MonoBehaviour
 {
+    public static bool hasAlreadyStarted = false;
+    
     private void Start()
     {
+        if (hasAlreadyStarted && !Application.isEditor)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+        
+        hasAlreadyStarted = true;
+        
         if (Application.isBatchMode)
         {
             OnStartServer();
@@ -21,7 +31,7 @@ public class NetworkManagerHUD : MonoBehaviour
     public void OnStartServer()
     {
         NetworkManager.Singleton.StartServer();
-        NetworkManager.Singleton.SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
+        NetworkManager.Singleton.SceneManager.LoadScene("Ferme", LoadSceneMode.Single);
         gameObject.SetActive(false);
     }
     
@@ -29,7 +39,7 @@ public class NetworkManagerHUD : MonoBehaviour
     {
         NetworkManager.Singleton.StartHost();
         gameObject.SetActive(false);
-        NetworkManager.Singleton.SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
+        NetworkManager.Singleton.SceneManager.LoadScene("Ferme", LoadSceneMode.Single);
     }
     
     public void OnStartClient()

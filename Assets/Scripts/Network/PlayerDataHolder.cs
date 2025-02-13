@@ -15,6 +15,7 @@ namespace Network
         {
             Debug.Log("received pseudo: " + newPseudo);
             Pseudo.Value = newPseudo;
+            RefreshEveryoneClientRpc();
         }
 
         [Rpc(SendTo.Server)]
@@ -22,6 +23,7 @@ namespace Network
         {
             Debug.Log("received color: " + newColor);
             Color.Value = newColor;
+            RefreshEveryoneClientRpc();
         }
 
         public PlayerDataNetworkable GetPlayerData()
@@ -32,6 +34,18 @@ namespace Network
                 color = Color.Value
             };
             return playerData;
+        }
+
+        [Rpc(SendTo.Server, RequireOwnership = false)]
+        public void RefreshEveryoneServerRpc()
+        {
+            RefreshEveryoneClientRpc();
+        }
+
+        [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
+        public void RefreshEveryoneClientRpc()
+        {
+            PlayerDataManager.Datainstance.Invoke(nameof(PlayerDataManager.Datainstance.RefreshAllPlayers), 2);
         }
     }
 }

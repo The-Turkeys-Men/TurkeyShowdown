@@ -25,7 +25,17 @@ public class HealthComponent : NetworkBehaviour
      
      [SerializeField] private float baseVolume;
     public bool IsDead => Health.Value <= 0;
-    
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+
+        if (IsServer)
+        {
+            Health.Value = BaseHealth;
+        }
+    }
+
     [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
     private void OnDeathClientRpc(ulong killerId)
     {

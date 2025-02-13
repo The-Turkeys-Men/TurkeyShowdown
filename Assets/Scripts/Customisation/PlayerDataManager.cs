@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -66,7 +67,7 @@ public class PlayerDataManager : NetworkBehaviour
             var playerObject = NetworkManager.ConnectedClients[player].PlayerObject;
             if (playerObject)
             {
-                playerObject.GetComponent<ColorChanger>().ChangeColor(GetPlayerData(player).color.ToString());
+                playerObject.GetComponent<ColorChanger>().ChangeSprite(GetPlayerData(player).color.ToString());
                 Debug.Log("Refreshing player with clientId: " + player);
             }
         }
@@ -74,6 +75,12 @@ public class PlayerDataManager : NetworkBehaviour
         LeaderBoardHUDManager.Instance.UpdateLeaderboardUI();
         Debug.Log("Finished refreshing all players");
         
+    }
+    
+    public IEnumerator WaitAndRefreshAllPlayers()
+    {
+        yield return new WaitForSeconds(2);
+        RefreshAllPlayers();
     }
     
     public async Task ReceivingJSON(ulong clientID)
@@ -120,6 +127,6 @@ public class PlayerDataManager : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
     private void RefreshAllPlayersClientRpc()
     {
-        RefreshAllPlayers();
+        StartCoroutine(WaitAndRefreshAllPlayers());
     }
 }

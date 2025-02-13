@@ -12,6 +12,6 @@ public class TestMenu : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void OnSwitchSceneServerRpc()
     {
-        NetworkManager.SceneManager.LoadScene("MainScene", LoadSceneMode.Additive);
+        NetworkManager.SceneManager.LoadScene("Ferme", LoadSceneMode.Additive);
     }
 }

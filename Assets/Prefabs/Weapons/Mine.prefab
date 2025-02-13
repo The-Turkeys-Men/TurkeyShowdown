@@ -113,7 +113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  <WeaponId>k__BackingField: 0
+  <WeaponId>k__BackingField: 5
   <FireRate>k__BackingField: 0.5
   <Damage>k__BackingField: 80
   <MaxAmmo>k__BackingField: 3
@@ -149,7 +149,7 @@ MonoBehaviour:
     m_InternalValue: 0
   ShouldHide:
     m_InternalValue: 0
-  _nomTir: tirLanceMissil
+  _nomTir: 
   _nomLancer: lancer
   _nomColition: 
   _nomHit: 
