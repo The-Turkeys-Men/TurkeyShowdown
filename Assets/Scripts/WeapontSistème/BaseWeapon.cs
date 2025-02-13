@@ -1,5 +1,6 @@
 using Debugger;
 using Extensions;
+using Projectiles;
 using UnityEngine;
 
 using Unity.Netcode;
@@ -40,6 +41,8 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
 
     [field:Header("raycast")]
     [field:SerializeField] public float MaxDistance { get; set; }
+
+    [SerializeField] public Color RaycastColor;
 
     [field:Header("Melee")]
     [field:SerializeField] public Vector2 MeleeRange { get; set; }
@@ -297,7 +300,7 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
         despawnTraine.StartWidth = 0.15f;
         LineRenderer lineRenderer = tempTrainé.AddComponent<LineRenderer>();
         lineRenderer.material = new(TrailMaterial);
-        lineRenderer.material.color= new Color(0, 0, 0, 0.5f);
+        lineRenderer.material.color = RaycastColor;
         lineRenderer.SetPosition(0, ShootPoint.position);
         lineRenderer.SetPosition(1, endPoint);
     }
@@ -314,8 +317,8 @@ public class BaseWeapon : NetworkBehaviour, IWeapon
     {
         direction.Normalize();
         GameObject spawnedBullet = Instantiate(ProjectilePrefab, position, Quaternion.identity);
-        spawnedBullet.GetComponent<NetworkObject>().Spawn();
-        var projectile = spawnedBullet.GetComponent<Projectile>();
+        spawnedBullet.GetComponent<NetworkObject>().Spawn(true);
+        var projectile = spawnedBullet.GetComponent<BaseProjectile>();
         projectile.Direction = direction;
         projectile.SenderObject = LastOwner;
         

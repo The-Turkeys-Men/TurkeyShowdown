@@ -148,4 +148,6 @@ MonoBehaviour:
     Clip: {fileID: 8300000, guid: c917eb22efbb09c49865e00d93d27f95, type: 3}
   - Name: colitionMurPlayer
     Clip: {fileID: 8300000, guid: 91deb1cd6c545ab48b836972152de9e1, type: 3}
+  - Name: tickClock
+    Clip: {fileID: 8300000, guid: 1718705fe7faa9047a8c94ccf7607773, type: 3}
   tempAudio: {fileID: 0}

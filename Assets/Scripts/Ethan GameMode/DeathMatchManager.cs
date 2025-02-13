@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using MapVote;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
     public NetworkVariable<List<PlayerScore>> PlayerScores { get; set; } = new(new List<PlayerScore>());
 
-    private bool isGameActive = false;
+    public bool IsGameActive { get; private set; } = false;
     private const ulong NoWinner = ulong.MaxValue;
 
     private float _timeLeftTimer = 1;
@@ -42,6 +43,10 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
         MaxGameTime = maxGameTime;
         ScoreToWin = scoreToWin;
         TimeLeft.Value = maxGameTime;
+        foreach (var connectedClient in NetworkManager.ConnectedClients)
+        {
+            OnClientConnected(connectedClient.Key);
+        }
     }
 
     public override void OnNetworkSpawn()
@@ -65,7 +70,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
                 PlayerScores.SetDirty(true);
             }
 
-            if (!isGameActive)
+            if (!IsGameActive)
             {
                 StartGame();
             }
@@ -76,6 +81,12 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     {
         if (IsServer)
         {
+            if (PlayerScores.Value == null)
+            {
+                PlayerScores.Value = new List<PlayerScore>();
+            }
+            
+            Debug.Log("Player score is valid: " + PlayerScores.Value.Count);
             var playerScore = PlayerScores.Value.Find(ps => ps.PlayerId == clientId);
             if (playerScore.PlayerId == clientId)
             {
@@ -93,7 +104,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
     private void StartGame()
     {
-        isGameActive = true;
+        IsGameActive = true;
         TimeLeft.Value = MaxGameTime;
     }
 
@@ -101,7 +112,12 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
     {
         if (NetworkManager.Singleton.ConnectedClients.Count == 0)
         {
-            isGameActive = false;
+            if (PlayerScores.Value == null)
+            {
+                PlayerScores.Value = new List<PlayerScore>();
+            }
+            
+            IsGameActive = false;
             TimeLeft.Value = MaxGameTime;
             PlayerScores.Value.Clear();
             PlayerScores.SetDirty(true);
@@ -115,7 +131,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
     private void UpdateTimer()
     {
-        if (!isGameActive) return;
+        if (!IsGameActive) return;
 
         _timeLeftTimer -= Time.deltaTime;
         if (_timeLeftTimer <= 0)
@@ -134,7 +150,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
     public void OnPlayerKill(ulong killerId)
     {
-        if (!isGameActive) return;
+        if (!IsGameActive) return;
 
         var playerScore = PlayerScores.Value.Find(ps => ps.PlayerId == killerId);
         if (playerScore.PlayerId == killerId)
@@ -182,23 +198,45 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
     public void EndGame(ulong winnerId)
     {
-        isGameActive = false;
+        IsGameActive = false;
         if (IsServer)
         {
-            Debug.Log("EndGame called, showing score panel.");
+            HideAllPlayersClientRpc();
+            
+            Debug.Log("[DeathMatchManager] EndGame called, showing score panel.");
             PlayerScore[] playerScoresArray = PlayerScores.Value.ToArray();
 
             if (ScorePanelManager.Instance != null)
             {
+                Debug.Log($"[DeathMatchManager] Calling ShowScorePanelClientRpc with {playerScoresArray.Length} players.");
                 ScorePanelManager.Instance.ShowScorePanelClientRpc(winnerId, playerScoresArray);
+                MapVoteManager.Instance?.StartMapVote();
             }
             else
             {
-                Debug.LogError("ScorePanelManager.Instance est NULL ! Assure-toi qu'il est bien instancié.");
+                Debug.LogError("[DeathMatchManager] ScorePanelManager.Instance is NULL!");
             }
 
-            // Réinitialiser la partie après un délai (exemple : 10 secondes)
             StartCoroutine(ResetGameAfterDelay(10f));
+        }
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void HideAllPlayersClientRpc()
+    {
+        foreach (var player in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            if (player.PlayerObject.TryGetComponent(out PlayerController playerController))
+            {
+                playerController.InputActivated = false;
+                playerController.OnMoveCanceled();
+            }
+            
+            var playerHud = player.PlayerObject.GetComponentInChildren<Canvas>(true);
+            if (playerHud)
+            {
+                playerHud.gameObject.SetActive(false);
+            }
         }
     }
 

@@ -3,6 +3,7 @@ using Extensions;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class HealthComponent : NetworkBehaviour
 {
@@ -16,18 +17,34 @@ public class HealthComponent : NetworkBehaviour
     [HideInInspector] public UnityEvent<ulong> OnDeath = new();
     [HideInInspector] public UnityEvent OnRespawn = new();
     [HideInInspector] public UnityEvent OnDamaged = new();
-    public ParticleSystem particleSystemDamage;
+    
+    public ParticleSystem DamageParticlePrefab;
     
     
     [SerializeField] private bool _isPlayer = false;
      
      [SerializeField] private float baseVolume;
     public bool IsDead => Health.Value <= 0;
-    
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+
+        if (IsServer)
+        {
+            Health.Value = BaseHealth;
+        }
+    }
+
     [Rpc(SendTo.ClientsAndHost, RequireOwnership = false)]
-    private void OnDeathClientRpc()
+    private void OnDeathClientRpc(ulong killerId)
     {
         OnDeath.Invoke(gameObject.GetNetworkObjectId());
+
+        if (NetworkManager.LocalClientId == killerId)
+        {
+            AudioManager.Instance.PlaySFX("audioKil",transform.position,1);
+        }
     }
 
     public void Heal(int amount)
@@ -69,8 +86,7 @@ public class HealthComponent : NetworkBehaviour
         
         if (Armor.Value > 0)
         {
-            particleSystemDamage.maxParticles=10;
-            particleSystemDamage.Play();
+            PlayDamageParticleClientRpc(10);
             Armor.Value -= damage;
             AudioManager.Instance.PlaySFX("crisDinde",transform.position,baseVolume);
             if (Armor.Value <= 0)
@@ -87,13 +103,13 @@ public class HealthComponent : NetworkBehaviour
         }
         if (Health.Value <= 0)
         {
+            var killerId = senderObject.GetComponent<NetworkObject>().OwnerClientId;
             PlayDamageParticleClientRpc(30);
             AudioManager.Instance.PlaySFX("mort",transform.position,baseVolume);
             OnDeath.Invoke(NetworkObjectId);
-            OnDeathClientRpc();
+            OnDeathClientRpc(killerId);
             if (_isPlayer)
             {
-                var killerId = senderObject.GetComponent<NetworkObject>().OwnerClientId;
                 ((DeathMatchManager)DeathMatchManager.GetInstance()).OnPlayerKill(killerId);
                 DebuggerConsole.Instance.LogClientRpc("Player killed by: " + senderObject.name);
             }
@@ -105,8 +121,13 @@ public class HealthComponent : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     public void PlayDamageParticleClientRpc(int amount)
     {
-        particleSystemDamage.maxParticles=30;
-        particleSystemDamage.Play();
+        if (!DamageParticlePrefab)
+        {
+            return;
+        }
+        ParticleSystem newParticle = Instantiate(DamageParticlePrefab, transform.position, Quaternion.identity);
+        newParticle.maxParticles = amount;
+        newParticle.Play();
     }
     
     [Rpc(SendTo.ClientsAndHost)]

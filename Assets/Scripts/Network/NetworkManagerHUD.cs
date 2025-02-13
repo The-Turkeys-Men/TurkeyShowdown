@@ -1,20 +1,37 @@
 using System;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NetworkManagerHUD : MonoBehaviour
 {
+    public static bool hasAlreadyStarted = false;
+    
     private void Start()
     {
+        if (hasAlreadyStarted && !Application.isEditor)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+        
+        hasAlreadyStarted = true;
+        
         if (Application.isBatchMode)
         {
-            NetworkManager.Singleton.StartServer();
+            OnStartServer();
+        }
+
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            OnStartClient();
         }
     }
 
     public void OnStartServer()
     {
         NetworkManager.Singleton.StartServer();
+        NetworkManager.Singleton.SceneManager.LoadScene("Ferme", LoadSceneMode.Single);
         gameObject.SetActive(false);
     }
     
@@ -22,6 +39,7 @@ public class NetworkManagerHUD : MonoBehaviour
     {
         NetworkManager.Singleton.StartHost();
         gameObject.SetActive(false);
+        NetworkManager.Singleton.SceneManager.LoadScene("Ferme", LoadSceneMode.Single);
     }
     
     public void OnStartClient()

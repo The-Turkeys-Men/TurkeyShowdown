@@ -66,7 +66,7 @@ public class ItemSpawner : NetworkBehaviour
         { 
             grabbable.OnGrab.AddListener(StartRespawn); 
         } 
-        _spawnedItem.GetComponent<NetworkObject>().Spawn();
+        _spawnedItem.GetComponent<NetworkObject>().Spawn(true);
     }
 }
 

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using AYellowpaper.SerializedCollections;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
@@ -13,15 +13,18 @@ public class ScorePanelManager : NetworkBehaviour
     [SerializeField] private Transform firstPlayer; // Référence au panneau du premier joueur
     [SerializeField] private Transform scoreBoard; // Référence au panneau des autres joueurs
     [SerializeField] private Image firstPlayerSkin; // Référence à l'image du premier joueur
+    [SerializeField] private SerializedDictionary<string, Sprite> _sprites = new(); // Dictionnaire de sprites
 
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+            Debug.Log("ScorePanelManager instance created.");
         }
         else
         {
+            Debug.LogWarning("Duplicate ScorePanelManager instance detected. Destroying the new one.");
             DestroyImmediate(this);
         }
     }
@@ -29,6 +32,7 @@ public class ScorePanelManager : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     public void ShowScorePanelClientRpc(ulong winnerId, PlayerScore[] playerScores)
     {
+        Debug.Log($"[ScorePanelManager] ShowScorePanelClientRpc called with {playerScores.Length} players.");
         ShowScorePanel(winnerId, playerScores);
     }
 
@@ -36,36 +40,43 @@ public class ScorePanelManager : NetworkBehaviour
     {
         if (scorePanel == null)
         {
-            Debug.LogError("Score panel is null. Please assign it in the editor.");
+            Debug.LogError("[ScorePanelManager] Score panel is null. Please assign it in the editor.");
             return;
         }
 
-        Debug.Log("Score panel is not null, activating it.");
+        Debug.Log("[ScorePanelManager] Activating score panel.");
         scorePanel.SetActive(true);
         UpdateScoreDisplay(winnerId, playerScores);
     }
 
     private void UpdateScoreDisplay(ulong winnerId, PlayerScore[] playerScores)
     {
-        Debug.Log("Updating score display with player scores.");
+        Debug.Log("[ScorePanelManager] Updating score display.");
+        if (playerScores == null || playerScores.Length == 0)
+        {
+            Debug.LogWarning("[ScorePanelManager] Player scores array is null or empty.");
+            return;
+        }
+
         PlayerScore[] sortedPlayers = playerScores.OrderByDescending(ps => ps.Score).ToArray();
+        Debug.Log($"[ScorePanelManager] Number of players: {sortedPlayers.Length}");
 
         if (firstPlayer == null)
         {
-            Debug.LogError("FirstPlayer transform is null.");
+            Debug.LogError("[ScorePanelManager] FirstPlayer transform is null.");
             return;
         }
 
         if (sortedPlayers.Length > 0)
         {
             var firstPlayerData = sortedPlayers[0];
-            Debug.Log($"First player: ID {firstPlayerData.PlayerId}, Score {firstPlayerData.Score}");
+            Debug.Log($"[ScorePanelManager] First player: ID {firstPlayerData.PlayerId}, Score {firstPlayerData.Score}");
             UpdateFirstPlayerDisplay(firstPlayer, firstPlayerData.PlayerId, firstPlayerData.Score, 1);
         }
 
         if (scoreBoard == null)
         {
-            Debug.LogError("ScoreBoard transform is null.");
+            Debug.LogError("[ScorePanelManager] ScoreBoard transform is null.");
             return;
         }
 
@@ -77,12 +88,12 @@ public class ScorePanelManager : NetworkBehaviour
             if (i - 1 < scoreBoard.childCount)  // Vérifie si l'élément existe déjà
             {
                 Transform playerScore = scoreBoard.GetChild(i - 1);
-                Debug.Log($"Player {i}: ID {playerData.PlayerId}, Score {playerData.Score}");
+                Debug.Log($"[ScorePanelManager] Player {i}: ID {playerData.PlayerId}, Score {playerData.Score}");
                 UpdatePlayerDisplay(playerScore, playerData.PlayerId, playerData.Score, i + 1);
             }
             else
             {
-                Debug.LogWarning($"ScoreBoard does not have enough children. Expected at least {i}, but found {scoreBoard.childCount}.");
+                Debug.LogWarning($"[ScorePanelManager] ScoreBoard does not have enough children. Expected at least {i}, but found {scoreBoard.childCount}.");
             }
         }
 
@@ -101,13 +112,18 @@ public class ScorePanelManager : NetworkBehaviour
     {
         if (playerScore == null)
         {
-            Debug.LogWarning("Player display transform is null.");
+            Debug.LogWarning("[ScorePanelManager] Player display transform is null.");
             return;
         }
 
         playerScore.gameObject.SetActive(true);
         SetText(playerScore, "PosImage/PosText", rank.ToString());
-        SetText(playerScore, "PlayerImage/PlayerNameText", $"Player {playerId}");
+
+        // Récupérer le pseudo du joueur à partir de PlayerDataManager
+        string playerName = (PlayerDataManager.Datainstance?.GetPlayerData(playerId)?.pseudo).ToString() ?? "Player " + playerId;
+        Debug.Log($"[ScorePanelManager] Updating player display for ID {playerId}: {playerName}");
+        SetText(playerScore, "PlayerImage/PlayerNameText", playerName);
+
         SetText(playerScore, "ScoreImage/ScoreText", score.ToString());
     }
 
@@ -115,51 +131,37 @@ public class ScorePanelManager : NetworkBehaviour
     {
         if (playerDisplay == null)
         {
-            Debug.LogWarning("First player display transform is null.");
+            Debug.LogWarning("[ScorePanelManager] First player display transform is null.");
             return;
         }
 
         playerDisplay.gameObject.SetActive(true);
         SetText(playerDisplay, "PlayerPosImage/PosText", rank.ToString());
-        SetText(playerDisplay, "PlayerNameImage/NameText", $"Player {playerId}");
+
+        // Récupérer le pseudo du joueur à partir de PlayerDataManager
+        string playerName = (PlayerDataManager.Datainstance?.GetPlayerData(playerId).pseudo).ToString() ?? "Player " + playerId;
+        Debug.Log($"[ScorePanelManager] Updating first player display for ID {playerId}: {playerName}");
+        SetText(playerDisplay, "PlayerNameImage/NameText", playerName);
+
         SetText(playerDisplay, "PlayerScoreImage/ScoreText", score.ToString());
 
         // Mettre à jour l'image du premier joueur
         if (firstPlayerSkin != null)
         {
-            firstPlayerSkin.sprite = GetPlayerSkin(playerId);
+            string skinName = PlayerDataManager.Datainstance?.GetPlayerData(playerId)?.color.ToString();
+            if (!string.IsNullOrEmpty(skinName) && _sprites.ContainsKey(skinName))
+            {
+                firstPlayerSkin.sprite = _sprites[skinName];
+            }
+            else
+            {
+                Debug.LogWarning($"[ScorePanelManager] Skin '{skinName}' not found in the sprites dictionary.");
+            }
         }
         else
         {
-            Debug.LogWarning("First player skin image is null.");
+            Debug.LogWarning("[ScorePanelManager] First player skin image is null.");
         }
-    }
-
-    private Sprite GetPlayerSkin(ulong playerId)
-    {
-        // Créer une texture 2D de 1x1 pixel
-        Texture2D texture = new Texture2D(1, 1);
-
-        // Générer une couleur aléatoire
-        Color randomColor = new Color(
-            Random.Range(0f, 1f), // R
-            Random.Range(0f, 1f), // G
-            Random.Range(0f, 1f), // B
-            1f // A (opacité)
-        );
-
-        // Appliquer la couleur à la texture
-        texture.SetPixel(0, 0, randomColor);
-        texture.Apply();
-
-        // Convertir la texture en Sprite
-        Sprite sprite = Sprite.Create(
-            texture,
-            new Rect(0, 0, 1, 1), // Rectangle de la texture
-            new Vector2(0.5f, 0.5f) // Point central du sprite
-        );
-
-        return sprite;
     }
 
     private void SetText(Transform parent, string path, string value)
@@ -167,7 +169,7 @@ public class ScorePanelManager : NetworkBehaviour
         Transform target = parent.Find(path);
         if (target == null)
         {
-            Debug.LogWarning($"Could not find {path} under {parent.name}");
+            Debug.LogWarning($"[ScorePanelManager] Could not find {path} under {parent.name}");
             return;
         }
 
@@ -177,7 +179,7 @@ public class ScorePanelManager : NetworkBehaviour
         }
         else
         {
-            Debug.LogWarning($"Missing TextMeshProUGUI component on {path}");
+            Debug.LogWarning($"[ScorePanelManager] Missing TextMeshProUGUI component on {path}");
         }
     }
 

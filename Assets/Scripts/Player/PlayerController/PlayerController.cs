@@ -10,6 +10,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private PlayerWeapon _playerWeapon;
     [SerializeField] private Grappler _playerGrappler;
     [SerializeField] private GameObject _PlayerHud;
+    [SerializeField] private Animator _WalkingAnimator;
 
     [SerializeField] private Transform _rotationPivot;
 
@@ -55,8 +56,18 @@ public class PlayerController : NetworkBehaviour
         {
             return;
         }
-        
+        _WalkingAnimator.SetBool("IsWalking", true);
         _playerMovement.TryMove(direction);
+    }
+    
+    public void OnMoveCanceled()
+    {
+        if (!IsOwner || !InputActivated)
+        {
+            return;
+        }
+        _WalkingAnimator.SetBool("IsWalking", false);
+        _playerMovement.TryMove(Vector2.zero);
     }
     
     #endregion
@@ -116,4 +127,6 @@ public class PlayerController : NetworkBehaviour
     }
     
     #endregion
+
+    
 }

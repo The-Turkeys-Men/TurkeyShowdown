@@ -1,0 +1,111 @@
+using Extensions;
+using Projectiles;
+using Unity.Netcode;
+using UnityEngine;
+
+public class Mine : BaseProjectile
+{
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+
+        if (other.gameObject.layer != LayerMask.NameToLayer("Player"))
+        {
+            return;
+        }
+        
+        if (SenderObject.TryGetComponent(out TeamComponent senderTeamComponent) && other.TryGetComponent(out TeamComponent otherTeamComponent))
+        {
+            if (senderTeamComponent.TeamID == otherTeamComponent.TeamID)
+            {
+                return;
+            }
+        }
+        
+        if (other.transform.TryGetComponent(out HealthComponent healthComponent))
+        {
+            healthComponent.DamageServerRpc(Damage, SenderObject.GetNetworkObjectId());
+        }
+        
+        if (IsExplosive)
+        {
+            Explode();
+        }
+        SpawnHitEffectRpc(transform.position);
+        NetworkObject.Despawn(true);
+        AudioManager.Instance.PlaySFX("missilExplotion",transform.position,_baseVolume);
+    }
+    
+    [Rpc(SendTo.ClientsAndHost)]
+    private void SpawnHitEffectRpc(Vector2 position)
+    {
+        GameObject hitEffect = Instantiate(HitEffectPrefab, position, Quaternion.identity);
+    }
+    
+    private void Update()
+    {
+        if (!IsServer)
+        {
+            return;
+        }
+        _currentLifeTime += Time.deltaTime;
+        if (_currentLifeTime >= MaxLifeTime)
+        {
+            if (IsExplosive)
+            {
+                Explode();
+                SpawnHitEffectRpc(transform.position);
+            }
+            NetworkObject.Despawn(true);
+        }
+    }
+    
+    private void Explode()
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, ExplosionRange);
+        foreach (Collider2D collider in colliders)
+        {
+            if (Physics2D.Linecast(transform.position, collider.transform.position,
+                    1 << LayerMask.NameToLayer("World")))
+            {
+                continue;
+            }
+            
+            if (SenderObject.TryGetComponent(out TeamComponent senderTeamComponent) && collider.TryGetComponent(out TeamComponent otherTeamComponent))
+            {
+                Vector2 direction = (collider.transform.position - transform.position).normalized;
+                var objectId = collider.gameObject.GetNetworkObjectId();
+                if (collider.TryGetComponent(out KnockbackHandler knockbackHandler))
+                {
+                    if (senderTeamComponent.TeamID == otherTeamComponent.TeamID)
+                    {
+                        knockbackHandler.ApplyKnockbackClientRpc(direction, ExplosionSelfKnockback);
+                    }
+                    else
+                    {
+                        knockbackHandler.ApplyKnockbackClientRpc(direction, ExplosionKnockback);
+                    }
+                        
+                }
+
+                if (collider.attachedRigidbody)
+                {
+                    collider.attachedRigidbody.AddForce(direction * ExplosionKnockback, ForceMode2D.Impulse);
+                }
+                
+                if (senderTeamComponent.TeamID == otherTeamComponent.TeamID)
+                {
+                    continue;
+                }
+            }
+            
+            if (collider.TryGetComponent(out HealthComponent healthComponent))
+            {
+                healthComponent.Damage(ExplosionDamage, SenderObject.GetNetworkObjectId());
+            }
+        }
+    }
+}

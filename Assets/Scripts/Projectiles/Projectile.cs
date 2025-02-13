@@ -1,48 +1,10 @@
-using System;
-using Debugger;
 using Extensions;
+using Projectiles;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-public class Projectile : NetworkBehaviour
+public class Projectile : BaseProjectile
 {
-    [HideInInspector] public GameObject SenderObject;
-    private Rigidbody2D _rigidbody;
-    
-    public float Speed;
-    public int Damage;
-    public float MaxLifeTime;
-    
-    [Header("Explosive")]
-    public bool IsExplosive = false;
-
-    public int ExplosionDamage;
-    public float ExplosionRange;
-    public float ExplosionKnockback;
-    public float ExplosionSelfKnockback;
-
-    public GameObject HitEffectPrefab;
-    
-    private float _currentLifeTime;
-    [HideInInspector] public Vector2 Direction;
-    [SerializeField]float baseVolume;
-    
-    private void Initialize()
-    {
-        _rigidbody = GetComponent<Rigidbody2D>();
-    }
-    
-    public override void OnNetworkSpawn()
-    {
-        base.OnNetworkSpawn();
-        if (!IsServer)
-        {
-            return;
-        }
-        Initialize();
-    }
-
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!IsServer)
@@ -74,7 +36,7 @@ public class Projectile : NetworkBehaviour
         }
         SpawnHitEffectRpc(transform.position);
         NetworkObject.Despawn(true);
-        AudioManager.Instance.PlaySFX("missilExplotion",transform.position,baseVolume);
+        AudioManager.Instance.PlaySFX("missilExplotion",transform.position,_baseVolume);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
@@ -90,8 +52,8 @@ public class Projectile : NetworkBehaviour
         {
             return;
         }
-        
         _rigidbody.linearVelocity = Direction * Speed;
+        _rigidbody.rotation = Mathf.Atan2(Direction.y, Direction.x) * Mathf.Rad2Deg;
         
         _currentLifeTime += Time.deltaTime;
         if (_currentLifeTime >= MaxLifeTime)

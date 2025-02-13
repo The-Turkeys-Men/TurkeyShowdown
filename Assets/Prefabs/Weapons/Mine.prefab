@@ -113,8 +113,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  <WeaponId>k__BackingField: 0
-  <FireRate>k__BackingField: 0
+  <WeaponId>k__BackingField: 5
+  <FireRate>k__BackingField: 0.5
   <Damage>k__BackingField: 80
   <MaxAmmo>k__BackingField: 3
   <Ammo>k__BackingField:
@@ -125,20 +125,21 @@ MonoBehaviour:
   <CanBeThrowed>k__BackingField: 1
   <CanBePickUp>k__BackingField:
     m_InternalValue: 0
-  <WeaponShootType>k__BackingField: 0
+  <WeaponShootType>k__BackingField: 1
   <DamageByThrow>k__BackingField: 3
   <ThrowForce>k__BackingField: 10
   <ThrowTorque>k__BackingField: 3
   <ThrowKnockbackForce>k__BackingField: 3
-  <ProjectilePrefab>k__BackingField: {fileID: 0}
+  <ProjectilePrefab>k__BackingField: {fileID: 4681002946919390382, guid: ee465c54dbfc50e41a04b9fbb24646af, type: 3}
   <ProjectileSpeed>k__BackingField: 0
-  <MaxLifetime>k__BackingField: 0
-  <IsExplosive>k__BackingField: 0
-  <ExplosionDamage>k__BackingField: 0
-  <ExplosionRange>k__BackingField: 0
-  <ExplosionSelfKnockback>k__BackingField: 0
-  <ExplosionKnockback>k__BackingField: 0
+  <MaxLifetime>k__BackingField: 50
+  <IsExplosive>k__BackingField: 1
+  <ExplosionDamage>k__BackingField: 80
+  <ExplosionRange>k__BackingField: 3
+  <ExplosionSelfKnockback>k__BackingField: 2
+  <ExplosionKnockback>k__BackingField: 2
   <MaxDistance>k__BackingField: 1
+  RaycastColor: {r: 1, g: 0.95895493, b: 0, a: 0.4}
   <MeleeRange>k__BackingField: {x: 0, y: 0}
   <WallHitBoost>k__BackingField: 0
   TrailMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
@@ -149,7 +150,7 @@ MonoBehaviour:
   ShouldHide:
     m_InternalValue: 0
   _nomTir: 
-  _nomLancer: pauseMine
+  _nomLancer: lancer
   _nomColition: 
   _nomHit: 
   baseVolume: 0.5
