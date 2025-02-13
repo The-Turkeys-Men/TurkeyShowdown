@@ -16,7 +16,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
     public NetworkVariable<List<PlayerScore>> PlayerScores { get; set; } = new(new List<PlayerScore>());
 
-    private bool isGameActive = false;
+    public bool IsGameActive { get; private set; } = false;
     private const ulong NoWinner = ulong.MaxValue;
 
     private float _timeLeftTimer = 1;
@@ -70,7 +70,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
                 PlayerScores.SetDirty(true);
             }
 
-            if (!isGameActive)
+            if (!IsGameActive)
             {
                 StartGame();
             }
@@ -104,7 +104,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
     private void StartGame()
     {
-        isGameActive = true;
+        IsGameActive = true;
         TimeLeft.Value = MaxGameTime;
     }
 
@@ -117,7 +117,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
                 PlayerScores.Value = new List<PlayerScore>();
             }
             
-            isGameActive = false;
+            IsGameActive = false;
             TimeLeft.Value = MaxGameTime;
             PlayerScores.Value.Clear();
             PlayerScores.SetDirty(true);
@@ -131,7 +131,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
     private void UpdateTimer()
     {
-        if (!isGameActive) return;
+        if (!IsGameActive) return;
 
         _timeLeftTimer -= Time.deltaTime;
         if (_timeLeftTimer <= 0)
@@ -150,7 +150,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
     public void OnPlayerKill(ulong killerId)
     {
-        if (!isGameActive) return;
+        if (!IsGameActive) return;
 
         var playerScore = PlayerScores.Value.Find(ps => ps.PlayerId == killerId);
         if (playerScore.PlayerId == killerId)
@@ -198,7 +198,7 @@ public class DeathMatchManager : NetworkBehaviour, IGameModeManager
 
     public void EndGame(ulong winnerId)
     {
-        isGameActive = false;
+        IsGameActive = false;
         if (IsServer)
         {
             HideAllPlayersClientRpc();

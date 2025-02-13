@@ -12,6 +12,7 @@ public interface IGameModeManager
     public int ScoreToWin { get; set; }
     public NetworkVariable<List<PlayerScore>> PlayerScores { get; set; }
 
+    public bool IsGameActive { get; }
     public void OnWin(ulong winnerId);
     public void OnLose();
 }
