@@ -1358,6 +1358,10 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1065087246603383647}
+    - target: {fileID: 1513506020252728277, guid: 764b342f154ae8244824846e3e6c285c, type: 3}
+      propertyPath: m_SortingOrder
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 1756827542377729707, guid: 764b342f154ae8244824846e3e6c285c, type: 3}
       propertyPath: _healthComponent
       value: 

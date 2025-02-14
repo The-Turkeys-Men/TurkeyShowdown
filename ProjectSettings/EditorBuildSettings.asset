@@ -9,17 +9,20 @@ EditorBuildSettings:
     path: Assets/Scenes/DevScenes/Do-Devroom/Dorian_Spawner.unity
     guid: 9afeeb324c5e85a4e863a62c6e689ef6
   - enabled: 1
-    path: Assets/Scenes/Verger.unity
-    guid: 2e522040b8146ca4dace28dc63f90856
-  - enabled: 1
     path: Assets/Scenes/Menu.unity
     guid: 70deec8dda4e136469b8fd6c40fe522c
+  - enabled: 1
+    path: Assets/Scenes/Verger.unity
+    guid: 2e522040b8146ca4dace28dc63f90856
   - enabled: 1
     path: Assets/Scenes/Ferme.unity
     guid: 82d3128991ec5d34ebb58f0c64b9b6d9
   - enabled: 1
     path: Assets/Scenes/LoadingScene.unity
     guid: eef7c43d40cbb2742a8ad8f2209f0b83
+  - enabled: 1
+    path: Assets/Scenes/Arene.unity
+    guid: ca71951e8a17cc14fbbed723e4950a65
   - enabled: 0
     path: Assets/Scenes/MainSceneTestFlo.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
@@ -53,10 +56,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/DevScenes/TestMapVote/MapVote2.unity
     guid: ff4aa12c4eed1324caabc8cdbad23937
-  - enabled: 1
-    path: Assets/Scenes/Arene.unity
-    guid: ca71951e8a17cc14fbbed723e4950a65
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/DevScenes/Flo-Devroom/TestMiniMap.unity
     guid: 5896d2dcf84ad304bb52c50330f0e61b
   m_configObjects:

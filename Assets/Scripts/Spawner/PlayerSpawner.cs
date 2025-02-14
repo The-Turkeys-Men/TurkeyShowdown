@@ -131,11 +131,7 @@ public class PlayerSpawner : NetworkBehaviour
 
         });
 
-        var playerFixCamera = NewPlayer.GetComponentInChildren<FixCamera>(true);
-        playerFixCamera.MinY = MapMinLimitY;
-        playerFixCamera.MaxY = MapMaxLimitY;
-        playerFixCamera.MinX = MapMinLimitX;
-        playerFixCamera.MaxX = MapMaxLimitX;
+        
 
         if (_spawnWeapon)
         {
@@ -155,6 +151,11 @@ public class PlayerSpawner : NetworkBehaviour
     {
         NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerId, out var playerObject);
         playerObject.GetComponentInChildren<Camera>(true).gameObject.SetActive(true);
+        var playerFixCamera = playerObject.GetComponentInChildren<FixCamera>(true);
+        playerFixCamera.MinY = MapMinLimitY;
+        playerFixCamera.MaxY = MapMaxLimitY;
+        playerFixCamera.MinX = MapMinLimitX;
+        playerFixCamera.MaxX = MapMaxLimitX;
     }
 
     [Rpc(SendTo.SpecifiedInParams, AllowTargetOverride = true)]
