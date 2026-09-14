@@ -1,0 +1,97 @@
+name: CI - Turkey Showdown
+
+on:
+  pull_request:
+    branches:
+      - DImplome-CDA
+
+permissions:
+  contents: read
+
+jobs:
+  website:
+    name: Validate WebSite
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install PHP
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y php-cli
+
+      - name: Check PHP syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Checking PHP files..."
+          find WebSite -type f -name "*.php" -print0 |
+            while IFS= read -r -d '' file; do
+              echo "Checking: $file"
+              php -l "$file"
+            done
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: WebSite/package-lock.json
+
+      - name: Install website dependencies
+        working-directory: WebSite
+        run: npm ci
+
+      - name: Build website
+        working-directory: WebSite
+        run: npm run build
+
+  unity:
+    name: Test and Build Unity WebGL
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-WebGL-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-WebGL-
+            Library-
+
+      - name: Run Unity tests
+        uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          testMode: all
+
+      - name: Build Unity WebGL
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          unityVersion: auto
+          targetPlatform: WebGL
+          buildsPath: build
+          buildName: TurkeyShowdown-WebGL
+
+      - name: Upload WebGL build from PR
+        uses: actions/upload-artifact@v4
+        with:
+          name: TurkeyShowdown-WebGL-PR
+          path: build/WebGL/TurkeyShowdown-WebGL
+          retention-days: 3

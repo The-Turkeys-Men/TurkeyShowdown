@@ -1,0 +1,121 @@
+name: CD - Turkey Showdown
+
+on:
+  push:
+    branches:
+      - DImplome-CDA
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build production package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-WebGL-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-WebGL-
+            Library-
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: WebSite/package-lock.json
+
+      - name: Install website dependencies
+        working-directory: WebSite
+        run: npm ci
+
+      - name: Build website
+        working-directory: WebSite
+        run: npm run build
+
+      - name: Build Unity WebGL
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          unityVersion: auto
+          targetPlatform: WebGL
+          buildsPath: build
+          buildName: TurkeyShowdown-WebGL
+
+      - name: Prepare production package
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf release
+          mkdir -p release/game release/website
+
+          echo "Copying Unity WebGL build..."
+          cp -a build/WebGL/TurkeyShowdown-WebGL/. release/game/
+
+          echo "Copying website..."
+          # The source website is kept intact. If npm run build creates a
+          # dist/ directory, use it; otherwise copy the website files.
+          if [ -d "WebSite/dist" ]; then
+            cp -a WebSite/dist/. release/website/
+          else
+            cp -a WebSite/. release/website/
+            rm -rf release/website/node_modules
+          fi
+
+          echo "Creating deployment manifest..."
+          cat > release/DEPLOYMENT.txt <<EOF
+          Turkey Showdown - production deployment package
+          Commit: $GITHUB_SHA
+          Branch: $GITHUB_REF_NAME
+          Generated: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          Contents:
+          - game/    Unity WebGL build
+          - website/ Website files
+          EOF
+
+      - name: Validate production package
+        run: |
+          test -f release/game/index.html
+          test -d release/website
+          test -f release/DEPLOYMENT.txt
+          echo "Production package is valid."
+
+      - name: Upload production artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TurkeyShowdown-production-${{ github.sha }}
+          path: release
+          retention-days: 14
+
+  simulated-deploy:
+    name: Simulated deployment
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download production package
+        uses: actions/download-artifact@v4
+        with:
+          name: TurkeyShowdown-production-${{ github.sha }}
+          path: release
+
+      - name: Run deployment script
+        shell: bash
+        run: |
+          chmod +x scripts/deploy.sh
+          ./scripts/deploy.sh release
