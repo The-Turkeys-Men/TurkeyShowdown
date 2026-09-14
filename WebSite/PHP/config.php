@@ -22,18 +22,6 @@ if (!class_exists('Database')) {
 
     private function __construct() {
       if ($_SERVER['SERVER_NAME'] === 'localhost') {
-        $this->host = 'localhost';
-        $this->username = 'root';
-        $this->password = '';
-        $this->dbname = 'utilisateurs';
-      } else {
-        $this->host = '192.168.1.237';
-        $this->username = 'admin';
-        $this->password = 'Turkey2025';
-        $this->dbname = 'utilisateurs';
-      }
-
-      if ($_SERVER['SERVER_NAME'] === 'localhost') {
         // Configuration locale
         $this->host = 'localhost';
         $this->username = 'root';
