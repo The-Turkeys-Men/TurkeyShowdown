@@ -95,18 +95,24 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-  simulated-deploy:
+    simulated-deploy:
     name: Simulated deployment
     needs: build-release
     runs-on: ubuntu-latest
+
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Download production artifact
         uses: actions/download-artifact@v4
         with:
           name: turkey-showdown-production
           path: release
+
       - name: Make deployment script executable
         run: chmod +x scripts/deploy.sh
+
       - name: Run simulated deployment
         env:
           DEPLOY_MODE: simulation
