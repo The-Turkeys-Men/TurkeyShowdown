@@ -75,3 +75,12 @@ crashlytics-build.properties
 # Node
 WebSite/node_modules/
 WebSite/dist/
+
+# IDE
+.vs/
+.idea/
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs

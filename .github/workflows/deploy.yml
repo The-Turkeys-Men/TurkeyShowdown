@@ -10,40 +10,38 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  build-release:
     name: Build production package
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: true
-
-      - name: Cache Unity Library
-        uses: actions/cache@v4
-        with:
-          path: Library
-          key: Library-WebGL-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
-          restore-keys: |
-            Library-WebGL-
-            Library-
-
-      - name: Install Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
           cache-dependency-path: WebSite/package-lock.json
-
-      - name: Install website dependencies
+      - name: Install WebSite dependencies
         working-directory: WebSite
         run: npm ci
-
-      - name: Build website
+      - name: Build WebSite with Webpack
         working-directory: WebSite
         run: npm run build
-
+      - name: Run PHP syntax validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t php_files < <(find WebSite -type f -name "*.php" -not -path "*/node_modules/*")
+          if [ "${#php_files[@]}" -eq 0 ]; then
+            echo "No PHP files found in WebSite."
+            exit 1
+          fi
+          for file in "${php_files[@]}"; do
+            php -l "$file"
+          done
       - name: Build Unity WebGL
         uses: game-ci/unity-builder@v4
         env:
@@ -55,67 +53,61 @@ jobs:
           targetPlatform: WebGL
           buildsPath: build
           buildName: TurkeyShowdown-WebGL
-
-      - name: Prepare production package
+      - name: Assemble production website
         shell: bash
         run: |
           set -euo pipefail
           rm -rf release
-          mkdir -p release/game release/website
-
-          echo "Copying Unity WebGL build..."
-          cp -a build/WebGL/TurkeyShowdown-WebGL/. release/game/
-
-          echo "Copying website..."
-          # The source website is kept intact. If npm run build creates a
-          # dist/ directory, use it; otherwise copy the website files.
-          if [ -d "WebSite/dist" ]; then
-            cp -a WebSite/dist/. release/website/
-          else
-            cp -a WebSite/. release/website/
-            rm -rf release/website/node_modules
-          fi
-
-          echo "Creating deployment manifest..."
-          cat > release/DEPLOYMENT.txt <<EOF
-          Turkey Showdown - production deployment package
-          Commit: $GITHUB_SHA
-          Branch: $GITHUB_REF_NAME
-          Generated: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          mkdir -p release/website
+          rsync -a             --exclude 'node_modules/'             --exclude 'dist/'             --exclude 'MyGame/'             WebSite/ release/website/
+          rsync -a WebSite/dist/ release/website/
+          mkdir -p release/website/MyGame
+          rsync -a build/WebGL/TurkeyShowdown-WebGL/ release/website/MyGame/
+          cat > release/DEPLOYMENT.txt <<'EOF'
+          Turkey Showdown - Production package
 
           Contents:
-          - game/    Unity WebGL build
-          - website/ Website files
+          - website/: complete PHP website and generated frontend
+          - website/MyGame/: Unity WebGL production build
+
+          Deployment target:
+          /var/www/turkey-showdown/
+
+          Current mode:
+          Deployment is simulated because the historical production VM
+          is currently unavailable.
           EOF
-
       - name: Validate production package
+        shell: bash
         run: |
-          test -f release/game/index.html
-          test -d release/website
+          set -euo pipefail
+          test -f release/website/homePage.php
+          test -f release/website/MyGame/index.html
+          test -d release/website/PHP
+          test -d release/website/HTML
           test -f release/DEPLOYMENT.txt
-          echo "Production package is valid."
-
+          echo "Production package validated successfully."
       - name: Upload production artifact
         uses: actions/upload-artifact@v4
         with:
-          name: TurkeyShowdown-production-${{ github.sha }}
+          name: turkey-showdown-production
           path: release
+          if-no-files-found: error
           retention-days: 14
 
   simulated-deploy:
     name: Simulated deployment
-    needs: build
+    needs: build-release
     runs-on: ubuntu-latest
-
     steps:
-      - name: Download production package
+      - name: Download production artifact
         uses: actions/download-artifact@v4
         with:
-          name: TurkeyShowdown-production-${{ github.sha }}
+          name: turkey-showdown-production
           path: release
-
-      - name: Run deployment script
-        shell: bash
-        run: |
-          chmod +x scripts/deploy.sh
-          ./scripts/deploy.sh release
+      - name: Make deployment script executable
+        run: chmod +x scripts/deploy.sh
+      - name: Run simulated deployment
+        env:
+          DEPLOY_MODE: simulation
+        run: ./scripts/deploy.sh release

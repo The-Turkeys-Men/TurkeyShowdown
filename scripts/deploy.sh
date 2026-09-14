@@ -13,13 +13,23 @@ if [ ! -d "$PACKAGE_DIR" ]; then
   exit 1
 fi
 
-if [ ! -f "$PACKAGE_DIR/game/index.html" ]; then
+if [ ! -f "$PACKAGE_DIR/website/homePage.php" ]; then
+  echo "[ERROR] Website homePage.php is missing."
+  exit 1
+fi
+
+if [ ! -f "$PACKAGE_DIR/website/MyGame/index.html" ]; then
   echo "[ERROR] Unity WebGL index.html is missing."
   exit 1
 fi
 
-if [ ! -d "$PACKAGE_DIR/website" ]; then
-  echo "[ERROR] Website directory is missing."
+if [ ! -d "$PACKAGE_DIR/website/PHP" ]; then
+  echo "[ERROR] PHP directory is missing."
+  exit 1
+fi
+
+if [ ! -d "$PACKAGE_DIR/website/HTML" ]; then
+  echo "[ERROR] HTML directory is missing."
   exit 1
 fi
 
@@ -27,18 +37,21 @@ echo "[OK] Production package validated."
 
 if [ "$DEPLOY_MODE" = "production" ]; then
   echo "[ERROR] Production deployment is intentionally disabled."
-  echo "Configure a real server and SSH secrets before enabling it."
+  echo "A real server and SSH/rsync configuration must be added first."
   exit 2
 fi
 
 echo "[INFO] Deployment mode: SIMULATION"
-echo "[INFO] A production server is not currently available."
-echo "[SIMULATION] The following files would be transferred:"
-echo "             $PACKAGE_DIR/game     -> /var/www/turkey-showdown/game"
-echo "             $PACKAGE_DIR/website  -> /var/www/turkey-showdown/website"
-echo "[SIMULATION] SSH transfer skipped."
+echo "[INFO] No production VM is currently available."
+echo
+echo "[SIMULATION] The following deployment would be performed:"
+echo "  Website -> /var/www/turkey-showdown/"
+echo "  Game    -> /var/www/turkey-showdown/MyGame/"
+echo "  Nginx   -> reload after successful transfer"
+echo
+echo "[SIMULATION] SSH/rsync transfer skipped."
 echo "[SIMULATION] Nginx reload skipped."
-
+echo
 echo "========================================"
 echo " Simulated deployment completed"
 echo "========================================"

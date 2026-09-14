@@ -33,6 +33,20 @@ if (!class_exists('Database')) {
         $this->dbname = 'utilisateurs';
       }
 
+      if ($_SERVER['SERVER_NAME'] === 'localhost') {
+        // Configuration locale
+        $this->host = 'localhost';
+        $this->username = 'root';
+        $this->password = '';
+        $this->dbname = 'utilisateurs';
+      } else {
+        // Configuration serveur via variables d'environnement
+        $this->host = getenv('DB_HOST') ?: 'localhost';
+        $this->username = getenv('DB_USER') ?: 'root';
+        $this->password = getenv('DB_PASS') ?: '';
+        $this->dbname = getenv('DB_NAME') ?: 'utilisateurs';
+      }
+
       $this->conn = new mysqli($this->host, $this->username, $this->password, $this->dbname);
 
       if ($this->conn->connect_error) {

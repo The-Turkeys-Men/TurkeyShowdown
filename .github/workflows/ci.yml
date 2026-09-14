@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - DImplome-CDA
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -12,61 +13,54 @@ jobs:
   website:
     name: Validate WebSite
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Install PHP
+      - name: Install PHP CLI
         run: |
           sudo apt-get update
           sudo apt-get install -y php-cli
-
       - name: Check PHP syntax
         shell: bash
         run: |
           set -euo pipefail
-          echo "Checking PHP files..."
-          find WebSite -type f -name "*.php" -print0 |
-            while IFS= read -r -d '' file; do
-              echo "Checking: $file"
-              php -l "$file"
-            done
-
-      - name: Install Node.js
+          mapfile -t php_files < <(find WebSite -type f -name "*.php" -not -path "*/node_modules/*")
+          if [ "${#php_files[@]}" -eq 0 ]; then
+            echo "No PHP files found in WebSite."
+            exit 1
+          fi
+          for file in "${php_files[@]}"; do
+            echo "Checking $file"
+            php -l "$file"
+          done
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
           cache-dependency-path: WebSite/package-lock.json
-
-      - name: Install website dependencies
+      - name: Install WebSite dependencies
         working-directory: WebSite
         run: npm ci
-
-      - name: Build website
+      - name: Build WebSite
         working-directory: WebSite
         run: npm run build
 
   unity:
     name: Test and Build Unity WebGL
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: true
-
       - name: Cache Unity Library
         uses: actions/cache@v4
         with:
           path: Library
-          key: Library-WebGL-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          key: Library-Unity-${{ hashFiles('ProjectSettings/ProjectVersion.txt') }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
-            Library-WebGL-
-            Library-
-
+            Library-Unity-${{ hashFiles('ProjectSettings/ProjectVersion.txt') }}-
       - name: Run Unity tests
         uses: game-ci/unity-test-runner@v4
         env:
@@ -74,9 +68,9 @@ jobs:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          unityVersion: auto
           testMode: all
-
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Unity WebGL
         uses: game-ci/unity-builder@v4
         env:
@@ -88,10 +82,10 @@ jobs:
           targetPlatform: WebGL
           buildsPath: build
           buildName: TurkeyShowdown-WebGL
-
-      - name: Upload WebGL build from PR
+      - name: Upload Unity CI build
         uses: actions/upload-artifact@v4
         with:
-          name: TurkeyShowdown-WebGL-PR
+          name: unity-webgl-ci
           path: build/WebGL/TurkeyShowdown-WebGL
+          if-no-files-found: error
           retention-days: 3
