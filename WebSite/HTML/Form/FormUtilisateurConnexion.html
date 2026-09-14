@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion utilisateur</title>
+  <style>
+    .error-message {
+      color: red;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    *@font-face {
+      font-family: 'SauceBarbe';
+      src: url(font/SauceBarbe.TTF) format('truetype');
+    }
+    .custom-font, body {
+      font-family: SauceBarbe;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Zone d'affichage du message d'erreur -->
+<div id="error-container" class="error-message"></div>
+
+<form id="login-form" action="../../PHP/authentification.php" method="POST" style="text-align: center;">
+  <label for="pseudo">Pseudonyme :</label><br>
+  <input type="text" id="pseudo" name="pseudo" required><br><br>
+
+  <label for="email">Email :</label><br>
+  <input type="email" id="email" name="email" required><br><br>
+
+  <label for="password">Mot de passe :</label><br>
+  <input type="password" id="password" name="password" required><br><br>
+
+  <button type="submit" name="connect" style="background: none; border: none; background-image: url('UI/UIButton.png'); background-size: 100% 100%; background-repeat: no-repeat; background-position: center; display: block; margin: 0 auto; width: 200px; height: 50px; color: white;">Connexion</button>
+  <button id="cancelBtn" type="button" onclick="window.location.href='../../homePage.php'" style="background: none; border: none; background-image: url('UI/UIButton.png'); background-size: 100% 100%; background-repeat: no-repeat; background-position: center; display: block; margin: 0 auto; width: 200px; height: 50px; color: white;">Annuler</button>
+</form>
+
+<script>
+  // Fonction pour récupérer les paramètres GET de l'URL
+  function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  // Récupérer les valeurs des paramètres GET
+  const pseudo = getQueryParam('pseudo');
+  const email = getQueryParam('email');
+  const error = getQueryParam('error');
+
+  // Récupérer les champs du formulaire
+  const pseudoInput = document.getElementById('pseudo');
+  const emailInput = document.getElementById('email');
+  const errorContainer = document.getElementById('error-container');
+
+  // Remplir les champs pseudo et email avec les valeurs récupérées (si disponibles)
+  if (pseudo) {
+    pseudoInput.value = pseudo;
+  }
+  if (email) {
+    emailInput.value = email;
+  }
+
+  // Afficher un message d'erreur si le paramètre "error" est présent
+  if (error) {
+    let errorMessage = '';
+    switch (error) {
+      case 'invalid':
+        errorMessage = 'Pseudo, email ou mot de passe incorrect.';
+        break;
+      case 'missing_fields':
+        errorMessage = 'Veuillez remplir tous les champs.';
+        break;
+      default:
+        errorMessage = 'Une erreur inattendue s\'est produite.';
+    }
+    errorContainer.textContent = errorMessage;
+  }
+</script>
+
+</body>
+</html>
